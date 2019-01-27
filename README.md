@@ -12,8 +12,11 @@ The team-member will receive a category, then extreme examples of a good aspect,
 
 **Category**: *Team Work*
 
-​		Green: "We are a totally gelled team with awesome collaboration!"
-​		Red: "We are a bunch of individuals that don't care what others are doing"
+- Green: "We are a totally gelled team with awesome collaboration!"
+
+- Red: "We are a bunch of individuals that don't care what others are doing"
+
+  
 
   - Should you think your team is quite close & helps each other out a lot, you would probably select green
   - Should you think you are all alone, you would probably select red

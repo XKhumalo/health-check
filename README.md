@@ -4,9 +4,9 @@ Health Check is a process where a team-member identifies whether a certain categ
 
 The team-member will receive a category, then extreme examples of a good aspect, as well as a bad aspect. They will then decide if they strongly agree with the criteria for the category, strongly disagree, or somewhere in the middle. The choices will be selected by:
 
-- Green = Strongly agree
-- Yellow = Agree to Disagree
-- Red = Strongly disagree
+- ![#00FF00](https://placehold.it/15/00FF00/000000?text=+) `Green = Strongly agree`
+- ![#FFFF00](https://placehold.it/15/FFFF00/000000?text=+) `Amber = Agree to Disagree`
+- ![#F03C15](https://placehold.it/15/F03C15/000000?text=+) `Red = Strongly disagree`
 
 ### Example
 
@@ -20,4 +20,4 @@ The team-member will receive a category, then extreme examples of a good aspect,
 
   - Should you think your team is quite close & helps each other out a lot, you would probably select green
   - Should you think you are all alone, you would probably select red
-  - Should you not be sure of whether you are apart of the team or not, you would probably select yellow
+  - Should you not be sure of whether you are apart of the team or not, you would probably select amber

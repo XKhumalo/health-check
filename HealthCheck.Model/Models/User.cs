@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HealthCheck.Model
+namespace HealthCheck.Model.Models
 {
-    public class Session : MongoEntity
+    public class User : MongoEntity
     {
-
     }
 }

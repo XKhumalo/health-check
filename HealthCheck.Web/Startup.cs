@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HealthCheck.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +32,13 @@ namespace HealthCheck.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+            builder => builder.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowCredentials());
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

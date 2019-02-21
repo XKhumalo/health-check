@@ -16,5 +16,8 @@ namespace HealthCheck.Model
         [BsonId]
         [Required]
         public ObjectId _id { get; set; }
+
+        [DataMember]
+        public bool IsDeleted { get; set; } = false;
     }
 }

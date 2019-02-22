@@ -59,6 +59,7 @@ namespace HealthCheck.Web
             {
                 routes.MapHub<AnswerHub>("/answerHub");
                 routes.MapHub<SessionHub>("/sessionHub");
+                routes.MapHub<ChatHub>("/chatHub");
             });
             app.UseMvc();
         }

@@ -8,9 +8,9 @@ namespace HealthCheck.Web.Hubs
 {
     public class AnswerHub : Hub
     {
-        public async Task SendAnswer(string user, string answer)
+        public async Task SendAnswer(string sendTo, string answer)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, answer);
+            await Clients.Client(sendTo).SendAsync("ReceiveAnswer", Context.ConnectionId, answer);
         }
 
 

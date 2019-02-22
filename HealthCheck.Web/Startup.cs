@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HealthCheck.API.Services;
+using HealthCheck.Web.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,15 +32,10 @@ namespace HealthCheck.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddCors(options => {
-                options.AddPolicy("CorsPolicy",
-            builder => builder.AllowAnyOrigin()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader()
-                              .AllowCredentials());
-            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddSignalR();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,7 +47,7 @@ namespace HealthCheck.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -60,13 +55,12 @@ namespace HealthCheck.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
-            app.UseMvc(routes =>
+            app.UseSignalR(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapHub<AnswerHub>("/answerHub");
+                routes.MapHub<SessionHub>("/sessionHub");
             });
+            app.UseMvc();
         }
     }
 }

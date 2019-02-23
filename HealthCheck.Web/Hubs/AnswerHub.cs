@@ -10,7 +10,7 @@ namespace HealthCheck.Web.Hubs
     {
         public async Task SendAnswer(string sendTo, string answer)
         {
-            await Clients.Client(sendTo).SendAsync("ReceiveAnswer", Context.ConnectionId, answer);
+            await Clients.Others.SendAsync("ReceiveAnswer", Context.ConnectionId, answer);
         }
 
 

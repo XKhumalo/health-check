@@ -26,7 +26,6 @@ namespace HealthCheck.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy",
             builder => builder.AllowAnyOrigin()
@@ -37,6 +36,7 @@ namespace HealthCheck.API
 
             services.AddMvc();
             services.AddScoped<AnswerService>();
+            services.AddScoped<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,15 +44,8 @@ namespace HealthCheck.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
-            app.UseHttpsRedirection();
+            }
             app.UseCors("CorsPolicy");
 
             app.UseMvc(routes =>

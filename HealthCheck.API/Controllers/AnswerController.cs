@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCheck.API.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
-    [ApiController]
-    public class AnswerController : ControllerBase
+    public class AnswerController : Controller
     {
         private readonly AnswerService _answerService;
 
@@ -21,14 +21,14 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
-        public ActionResult<Answer> Get(string id)
+        public async Task<ActionResult<Answer>> Get(string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var answer = _answerService.Get(id);
+            var answer = await _answerService.Get(id);
 
             if (answer == null)
             {
@@ -38,55 +38,55 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Answer>> Get()
+        public async Task<ActionResult<IEnumerable<Answer>>> Get()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var answers = _answerService.GetAll();
+            var answers = await _answerService.GetAll();
 
             if (answers == null)
             {
                 return NotFound();
             }
 
-            return answers;
+            return answers.ToList();
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Answer answer)
+        public async Task<IActionResult> Create([FromBody] Answer answer)
         {
             if (!ModelState.IsValid || answer == null)
             {
                 return BadRequest();
             }
 
-            _answerService.Create(answer);
+            await _answerService.Create(answer);
             return Ok();
         }
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult CreateList([FromBody] IEnumerable<Answer> answers)
+        public async Task<IActionResult> CreateList([FromBody] IEnumerable<Answer> answers)
         {
             foreach (var answer in answers)
             {
-                Create(answer);
+                await Create(answer);
             }
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(string id, [FromBody] Answer answerIn)
+        public async Task<IActionResult> Update(string id, [FromBody] Answer answerIn)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var answer = _answerService.Get(id);
+            var answer = await _answerService.Get(id);
             if (answer == null)
             {
                 return BadRequest();
@@ -97,37 +97,37 @@ namespace HealthCheck.API.Controllers
             {
                 return NoContent();
             }
-            _answerService.Update(id, answerIn);
+            await _answerService.Update(id, answerIn);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var answer = _answerService.Get(id);
+            var answer = await _answerService.Get(id);
             if (answer == null)
             {
                 return NotFound();
             }
 
-            _answerService.Remove(answer._id);
+            await _answerService.Remove(answer._id);
             return NoContent();
         }
 
         [HttpDelete]
-        public IActionResult Delete(Answer answer)
+        public async Task<IActionResult> Delete(Answer answer)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            _answerService.Remove(answer._id);
+            await _answerService.Remove(answer._id);
             return NoContent();
         }
     }

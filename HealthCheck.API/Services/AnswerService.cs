@@ -18,15 +18,15 @@ namespace HealthCheck.API.Services
             repository = new Repository.Repository(config.GetConnectionString("HealthCheckDB"), "healthcheck");
         }
 
-        public Answer Get(string id)
+        public async Task<Answer> Get(string id)
         {
             var docId = new ObjectId(id);
-            return repository.Single<Answer>(a => a._id == docId);
+            return await repository.Single<Answer>(a => a._id == docId);
         }
 
-        public Answer Get(Answer answer)
+        public async Task<Answer> Get(Answer answer)
         {
-            return repository.Single<Answer>(a =>
+            return await repository.Single<Answer>(a =>
                         a.CategoryChosen.Equals(answer.CategoryChosen) &&
                         a.CategoryId.Equals(answer.CategoryId) &&
                         a.SessionId.Equals(answer.SessionId) &&
@@ -34,46 +34,46 @@ namespace HealthCheck.API.Services
                     );
         }
 
-        public List<Answer> Get(List<string> ids)
+        public async Task<IEnumerable<Answer>> Get(List<string> ids)
         {
-            return repository.List<Answer>(a => ids.Contains(a._id.ToString())).ToList();
+            return await repository.List<Answer>(a => ids.Contains(a._id.ToString()));
         }
 
-        public List<Answer> GetAll()
+        public async Task<IEnumerable<Answer>> GetAll()
         {
-            return repository.List<Answer>(a => a._id != null).ToList();
+            return await repository.List<Answer>(a => a._id != null);
         }
 
-        public Answer Create(Answer answer)
+        public async Task<Answer> Create(Answer answer)
         {
-            repository.Insert<Answer>(answer);
+            await repository.Insert<Answer>(answer);
             return answer;
         }
 
-        public List<Answer> Create(List<Answer> answers)
+        public async Task<IEnumerable<Answer>> Create(List<Answer> answers)
         {
-            repository.Insert<Answer>(answers);
+            await repository.Insert<Answer>(answers);
             return answers;
         }
 
-        public void Update(string id, Answer answer)
+        public async Task Update(string id, Answer answer)
         {
             var docId = new ObjectId(id);
-            repository.Update<Answer>(id, answer);
+            await repository.Update<Answer>(id, answer);
         }
 
-        public void Remove(Answer answer)
+        public async Task Remove(Answer answer)
         {
             var docId = new ObjectId(answer._id.ToString());
             answer.IsDeleted = true;
-            repository.Update<Answer>(docId, answer);
+            await repository.Update<Answer>(docId, answer);
         }
 
-        public void Remove(ObjectId id)
+        public async Task Remove(ObjectId id)
         {
-            var answer = repository.Single<Answer>(a => a._id == id);
+            var answer = await repository.Single<Answer>(a => a._id == id);
             answer.IsDeleted = true;
-            repository.Update<Answer>(id, answer);
+            await repository.Update<Answer>(id, answer);
         }
     }
 }

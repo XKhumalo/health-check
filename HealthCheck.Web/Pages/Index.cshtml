@@ -1,24 +1,23 @@
 ﻿@page
+@model HealthCheck.Web.Pages.IndexModel
+
 <div class="container">
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            User..........<input type="text" id="userInput" />
-            <br />
-            Message...<input type="text" id="messageInput" />
-            <input type="button" id="sendButton" value="Send Message" />
+    <h1 class="h3 mb-3 font-weight-normal">Join a session</h1>
+    <form id="join-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
+        <div class="form-group">
+            <label asp-for="UserViewModel.Name"></label>
+            <input asp-for="UserViewModel.Name" type="text" class="form-control" placeholder="Enter your name">
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr />
+        <div class="form-group">
+            <label asp-for="UserViewModel.Email"></label>
+            <input asp-for="UserViewModel.Email" type="email" class="form-control" placeholder="Enter your Entelect email address">
         </div>
-    </div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            <ul id="answersList"></ul>
+        <div class="form-group">
+            <label asp-for="SessionCode">Session Code</label>
+            <input asp-for="SessionCode" type="text" class="form-control" placeholder="Enter the session code">
+            <small id="sessioncodehelp" class="form-text text-muted">The code will be provided to you by the health check administrator</small>
         </div>
-    </div>
+        <button asp-page-handler="join" class="btn btn-lg btn-primary btn-block" type="submit">Join</button>
+    </form>
+    <a asp-page="/Sessions/CreateSession">Create a session</a>
 </div>

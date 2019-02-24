@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using HealthCheck.API.Services;
 using HealthCheck.Web.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +28,9 @@ namespace HealthCheck.Web
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().AddControllersAsServices();
+            services.AddScoped<AnswerService>();
+            services.AddScoped<UserService>();
             services.AddSignalR();
 
         }
@@ -48,20 +45,20 @@ namespace HealthCheck.Web
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("DefaultApi", "api/{controller}/{id?}");
+            });
             app.UseSignalR(routes =>
             {
                 routes.MapHub<AnswerHub>("/answerHub");
                 routes.MapHub<SessionHub>("/sessionHub");
                 routes.MapHub<ChatHub>("/chatHub");
             });
-            app.UseMvc();
         }
     }
 }

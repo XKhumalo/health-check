@@ -15,5 +15,12 @@ namespace HealthCheck.Model.Models
         [BsonRequired]
         [Required]
         public string Name { get; set; }
+
+        [DataMember]
+        [BsonElement("Email")]
+        [Display(Name = "Email")]
+        [BsonRequired]
+        [Required]
+        public string Email { get; set; }
     }
 }

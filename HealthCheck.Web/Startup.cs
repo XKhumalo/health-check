@@ -31,6 +31,7 @@ namespace HealthCheck.Web
             services.AddMvc().AddControllersAsServices();
             services.AddScoped<AnswerService>();
             services.AddScoped<UserService>();
+            services.AddScoped<SessionService>();
             services.AddSignalR();
 
         }

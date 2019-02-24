@@ -24,6 +24,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{5D0694F4-DB0D-44E1-9538-7CCF5F500CAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCheck.Common", "ClassLibrary1\HealthCheck.Common.csproj", "{2235A4E7-8B17-4CB8-8693-0216754B78AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +50,10 @@ Global
 		{92A76D8C-3956-421D-83D9-0CE12A111A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92A76D8C-3956-421D-83D9-0CE12A111A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92A76D8C-3956-421D-83D9-0CE12A111A3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2235A4E7-8B17-4CB8-8693-0216754B78AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2235A4E7-8B17-4CB8-8693-0216754B78AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2235A4E7-8B17-4CB8-8693-0216754B78AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2235A4E7-8B17-4CB8-8693-0216754B78AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +63,7 @@ Global
 		{ADF5C44D-1DEC-433C-BB00-E590A9B1B38C} = {22B31276-AC78-467A-A057-10E97310EC16}
 		{72FE3198-3FCE-4401-A0C9-589879BA9C0F} = {881FE4BC-E175-4200-A489-74FB54CC8698}
 		{92A76D8C-3956-421D-83D9-0CE12A111A3C} = {4308C87F-1407-4A97-8E37-0688695F19DD}
+		{2235A4E7-8B17-4CB8-8693-0216754B78AD} = {5D0694F4-DB0D-44E1-9538-7CCF5F500CAF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E7041C2-AD15-4976-B229-FA85BF6B545A}

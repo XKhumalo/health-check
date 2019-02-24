@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
+using HealthCheck.Common;
 
 namespace HealthCheck.Model
 {
     public class Session : MongoEntity
     {
+        [DataMember]
+        [BsonElement("SessionKey")]
+        [Display(Name = "Session Key")]
+        public string SessionKey { get; } = Helpers.RandomString(6, false);
+
         [DataMember]
         [BsonElement("StartDate")]
         [Display(Name = "Start Date")]

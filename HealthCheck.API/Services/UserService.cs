@@ -1,4 +1,4 @@
-﻿using HealthCheck.Model.Models;
+﻿using HealthCheck.Model;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using System;

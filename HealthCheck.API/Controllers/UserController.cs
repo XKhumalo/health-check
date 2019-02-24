@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HealthCheck.API.Services;
-using HealthCheck.Model.Models;
+using HealthCheck.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +13,11 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private readonly UserService _userService;
+        private readonly UserService userService;
 
         public UserController(UserService userService)
         {
-            _userService = userService;
+            this.userService = userService;
         }
 
         [HttpGet("{id:length(24)}")]
@@ -28,7 +28,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var user = await _userService.Get(id);
+            var user = await userService.Get(id);
 
             if (user == null)
             {
@@ -46,7 +46,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var user = await _userService.GetByName(name);
+            var user = await userService.GetByName(name);
 
             if (user == null)
             {
@@ -64,7 +64,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var user = await _userService.GetByEmail(email);
+            var user = await userService.GetByEmail(email);
 
             if (user == null)
             {
@@ -81,7 +81,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            await _userService.Create(user);
+            await userService.Create(user);
 
             return Ok();
         }

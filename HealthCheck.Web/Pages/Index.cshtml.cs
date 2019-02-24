@@ -4,14 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using HealthCheck.Model.Models;
+using HealthCheck.Model;
 using HealthCheck.API.Controllers;
 
 namespace HealthCheck.Web.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly UserController _userController;
+        private readonly UserController userController;
 
         [BindProperty]
         public User UserViewModel { get; set; }
@@ -19,9 +19,9 @@ namespace HealthCheck.Web.Pages
         [BindProperty]
         public string SessionCode { get; set; }
 
-        public IndexModel(UserController userController)
+        public IndexModel(UserController _userController)
         {
-            _userController = userController;
+            userController = _userController;
         }
 
         public void OnGet()
@@ -31,10 +31,10 @@ namespace HealthCheck.Web.Pages
 
         public async Task<IActionResult> OnPostJoin()
         {
-            var existingUser = await _userController.GetByEmail(UserViewModel.Email);
+            var existingUser = await userController.GetByEmail(UserViewModel.Email);
             if (existingUser.Value == null)
             {
-                await _userController.Create(UserViewModel);
+                await userController.Create(UserViewModel);
             }
             return RedirectToPage("/Answer");
         }

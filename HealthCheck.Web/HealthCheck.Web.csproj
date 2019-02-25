@@ -5,6 +5,7 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -12,12 +13,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.2" />
-    <PackageReference Include="MongoDB.Driver" Version="2.7.3" />
   </ItemGroup>
 
+
   <ItemGroup>
+    <ProjectReference Include="..\HealthCheck.API\HealthCheck.API.csproj" />
     <ProjectReference Include="..\HealthCheck.Model\HealthCheck.Model.csproj" />
-    <ProjectReference Include="..\HealthCheck.Repository\HealthCheck.Repository.csproj" />
   </ItemGroup>
 
 </Project>

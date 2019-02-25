@@ -19,5 +19,8 @@
         </div>
         <button asp-page-handler="join" class="btn btn-lg btn-primary btn-block" type="submit">Join</button>
     </form>
-    <a asp-page="/Sessions/CreateSession">Create a session</a>
+    <br />
+    <form id="create-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
+        <button asp-page="/Sessions/CreateSession" class="btn btn-lg btn-secondary btn-block">Create a session</button>
+    </form>
 </div>

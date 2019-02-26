@@ -16,9 +16,14 @@ namespace HealthCheck.Model
         public string SessionKey { get; } = Helpers.RandomString(6, false);
 
         [DataMember]
-        [BsonElement("StartDate")]
-        [Display(Name = "Start Date")]
-        public DateTime StartDate { get; set; }
+        [BsonElement("CreatedBy")]
+        [Display(Name = "Created By")]
+        public string CreatedBy { get; set;  }
+
+        [DataMember]
+        [BsonElement("StartTime")]
+        [Display(Name = "Start Time")]
+        public DateTime StartTime { get; set; }
 
         [DataMember]
         [BsonElement("EndTime")]

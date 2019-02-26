@@ -4,6 +4,40 @@
     ViewData["Title"] = "ViewSession";
 }
 
-<h1>ViewSession</h1>
+@if (Model.IsAuthorized)
+{
+    <h1>Session</h1>
 
-<h3>This works</h3>
+    <div class="container">
+        <h3>Session Key: @Model.Session.SessionKey</h3>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Categories</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var category in Model.Categories)
+                            {
+                            <tr>
+                                <td>@category._id</td>
+                                <td>@category.Name</td>
+                                <td>@category.Description</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

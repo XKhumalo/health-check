@@ -45,7 +45,7 @@ namespace HealthCheck.Repository
 
         public async Task<IEnumerable<T>> List<T>() where T : MongoEntity
         {
-            return await GetCollection<T>().FindAsync(e => e._id != null).ContinueWith(t => t.Result.ToEnumerable());
+            return await GetCollection<T>().FindAsync(e => e._id != null).Result.ToListAsync();
         }
 
         public async Task<IEnumerable<T>> List<T>(Expression<Func<T, bool>> exp) where T : MongoEntity

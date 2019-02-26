@@ -74,16 +74,14 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] User user)
+        public async Task<ActionResult<User>> Create([FromBody] User user)
         {
             if (!ModelState.IsValid || user == null)
             {
                 return BadRequest();
             }
 
-            await userService.Create(user);
-
-            return Ok();
+            return await userService.Create(user);
         }
     }
 }

@@ -33,18 +33,20 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task<IActionResult> OnPostCreate()
         {
+            User newUser = null;
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
             if (!UserExists().Result)
             {
-                await userController.Create(UserViewModel);
+                newUser = await userController.Create(UserViewModel).ContinueWith(r => r.Result.Value);
             }
+            SessionViewModel.CreatedBy = newUser == null ? UserViewModel._id.ToString() : newUser._id.ToString();
             var createdSession = await sessionController.Create(SessionViewModel);
             if (createdSession != null)
             {
-                return RedirectToPage("/Sessions/ViewSession");
+                return RedirectToPage("../Sessions/ViewSession", new { sessionId = createdSession.Value._id, userId = createdSession.Value.CreatedBy });
             }
             else
             {
@@ -55,7 +57,7 @@ namespace HealthCheck.Web.Pages.Sessions
         private async Task<bool> UserExists()
         {
             var existingUser = await userController.GetByEmail(UserViewModel.Email);
-            return existingUser.Result != null;
+            return existingUser.Value != null;
         }
     }
 }

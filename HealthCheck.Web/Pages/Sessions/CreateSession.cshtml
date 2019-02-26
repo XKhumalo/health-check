@@ -4,10 +4,11 @@
     ViewData["Title"] = "CreateSession";
 }
 
-
 <div class="container">
-    <h1 class="h3 mb-3 font-weight-normal">Administrator Details</h1>
+    
     <form id="join-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
+        <h1 class="h3 mb-3 font-weight-normal">Administrator Details</h1>
+        <input asp-for="UserViewModel._id" type="hidden" />
         <div class="form-group">
             <label asp-for="UserViewModel.Name"></label>
             <input asp-for="UserViewModel.Name" type="text" class="form-control" placeholder="Enter your name">
@@ -16,5 +17,9 @@
             <label asp-for="UserViewModel.Email"></label>
             <input asp-for="UserViewModel.Email" type="email" class="form-control" placeholder="Enter your Entelect email address">
         </div>
+        <hr class="mb-4">
+        <h1 class="h3 mb-3 font-weight-normal">Session Details</h1>
+
         <button asp-page-handler="create" class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
     </form>
+</div>

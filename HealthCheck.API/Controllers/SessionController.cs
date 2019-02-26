@@ -21,7 +21,8 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<Session>> Get(string id)
+        [Route("[action]")]
+        public async Task<ActionResult<Session>> GetById(string id)
         {
             if (!ModelState.IsValid)
             {
@@ -35,6 +36,24 @@ namespace HealthCheck.API.Controllers
                 return NotFound();
             }
             return session;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Session>>> Get()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var sessions = await sessionService.GetAll();
+
+            if (sessions == null)
+            {
+                return NotFound();
+            }
+
+            return sessions.ToList();
         }
 
         [HttpGet("{key}")]
@@ -55,8 +74,26 @@ namespace HealthCheck.API.Controllers
             return session;
         }
 
+        [HttpGet("{key}")]
+        [Route("[action]")]
+        public async Task<ActionResult<Session>> GetByCreatedById(string createdById)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var session = await sessionService.GetByCreatedById(createdById);
+
+            if (session == null)
+            {
+                return NotFound();
+            }
+            return session;
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Session session)
+        public async Task<ActionResult<Session>> Create([FromBody] Session session)
         {
             if (!ModelState.IsValid || session == null)
             {
@@ -65,7 +102,53 @@ namespace HealthCheck.API.Controllers
 
             await sessionService.Create(session);
 
-            return Ok();
+            return session;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, Session sessionIn)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var session = sessionService.Get(id);
+
+            if (session == null)
+            {
+                return NotFound();
+            }
+
+            if (!sessionIn._id.ToString().Equals(id))
+            {
+                sessionIn._id = new MongoDB.Bson.ObjectId(id);
+            }
+
+            await sessionService.Update(id, sessionIn);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var session = await sessionService.Get(id);
+
+            if (session == null)
+            {
+                return NotFound();
+            }
+
+            await sessionService.Delete(session);
+
+            return NoContent();
+
         }
     }
 }

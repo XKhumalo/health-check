@@ -13,22 +13,23 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class AnswerController : Controller
     {
-        private readonly AnswerService _answerService;
+        private readonly AnswerService answerService;
 
         public AnswerController(AnswerService answerService)
         {
-            _answerService = answerService;
+            this.answerService = answerService;
         }
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<Answer>> Get(string id)
+        [Route("[action]")]
+        public async Task<ActionResult<Answer>> GetById(string id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var answer = await _answerService.Get(id);
+            var answer = await answerService.Get(id);
 
             if (answer == null)
             {
@@ -45,7 +46,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var answers = await _answerService.GetAll();
+            var answers = await answerService.GetAll();
 
             if (answers == null)
             {
@@ -63,7 +64,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            await _answerService.Create(answer);
+            await answerService.Create(answer);
             return Ok();
         }
 
@@ -86,7 +87,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var answer = await _answerService.Get(id);
+            var answer = await answerService.Get(id);
             if (answer == null)
             {
                 return BadRequest();
@@ -97,7 +98,7 @@ namespace HealthCheck.API.Controllers
             {
                 return NoContent();
             }
-            await _answerService.Update(id, answerIn);
+            await answerService.Update(id, answerIn);
             return NoContent();
         }
 
@@ -109,26 +110,15 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var answer = await _answerService.Get(id);
+            var answer = await answerService.Get(id);
             if (answer == null)
             {
                 return NotFound();
             }
 
-            await _answerService.Remove(answer._id);
+            await answerService.Remove(answer._id);
             return NoContent();
         }
-
-        [HttpDelete]
-        public async Task<IActionResult> Delete(Answer answer)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            await _answerService.Remove(answer._id);
-            return NoContent();
-        }
+        
     }
 }

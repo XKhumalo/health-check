@@ -25,9 +25,9 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task OnGet(string sessionId)
         {
-            Session = await sessionController.GetById(sessionId).ContinueWith(r => r.Result.Value);
+            Session = await sessionController.GetById(sessionId);
             var categoryIds = Session.Categories;
-            //Categories = await categoryController.GetByIds(categoryIds).ContinueWith(r => r.Result.Value);
+            Categories = await categoryController.GetByIds(categoryIds);
         }
     }
 }

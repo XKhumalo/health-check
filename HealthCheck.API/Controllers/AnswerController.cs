@@ -22,102 +22,53 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<ActionResult<Answer>> GetById(string id)
+        public async Task<Answer> GetById(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var answer = await answerService.Get(id);
-
-            if (answer == null)
-            {
-                return NotFound();
-            }
-            return answer;
+            return await answerService.Get(id);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Answer>>> Get()
+        public async Task<IEnumerable<Answer>> Get()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var answers = await answerService.GetAll();
-
-            if (answers == null)
-            {
-                return NotFound();
-            }
-
-            return answers.ToList();
+            return await answerService.GetAll();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Answer answer)
+        public async Task<Answer> Create([FromBody] Answer answer)
         {
-            if (!ModelState.IsValid || answer == null)
+            if (answer == null)
             {
-                return BadRequest();
+                return null;
             }
-
-            await answerService.Create(answer);
-            return Ok();
+            return await answerService.Create(answer);
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> CreateList([FromBody] IEnumerable<Answer> answers)
+        public async Task<IEnumerable<Answer>> CreateList([FromBody] IEnumerable<Answer> answers)
         {
-            foreach (var answer in answers)
+            if (answers == null)
             {
-                await Create(answer);
+                return null;
             }
-            return Ok();
+
+            return await answerService.Create(answers);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] Answer answerIn)
+        public async Task Update(string id, [FromBody] Answer answerIn)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             var answer = await answerService.Get(id);
-            if (answer == null)
-            {
-                return BadRequest();
-            }
             answerIn._id = new MongoDB.Bson.ObjectId(id);
             answerIn.SessionId = answer.SessionId;
-            if (answerIn.Equals(answer))
-            {
-                return NoContent();
-            }
             await answerService.Update(id, answerIn);
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task Delete(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             var answer = await answerService.Get(id);
-            if (answer == null)
-            {
-                return NotFound();
-            }
-
             await answerService.Remove(answer._id);
-            return NoContent();
         }
         
     }

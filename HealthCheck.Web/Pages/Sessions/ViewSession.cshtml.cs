@@ -26,16 +26,16 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task OnGet(string sessionId, string userId)
         {
-            Session = await sessionController.GetById(sessionId).ContinueWith(r => r.Result.Value);
-            if (Session.CreatedBy.Equals(userId))
-            {
-                IsAuthorized = true;
-                var _categories = await categoryController.GetByIds(Session.Categories);
-            }
-            else
-            {
-                RedirectToPage("/Error");
-            }
+            //Session = await sessionController.GetById(sessionId);
+            //if (Session.CreatedBy.Equals(userId))
+            //{
+            //    IsAuthorized = true;
+            //    Categories = await categoryController.GetByIds(Session.Categories);
+            //}
+            //else
+            //{
+            //    RedirectToPage("/Error");
+            //}
         }
     }
 }

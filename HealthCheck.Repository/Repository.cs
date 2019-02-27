@@ -38,24 +38,24 @@ namespace HealthCheck.Repository
             await GetCollection<T>().InsertOneAsync(entity);
         }
 
-        public async Task Insert<T>(ICollection<T> entities) where T : MongoEntity
+        public async Task InsertMany<T>(IEnumerable<T> entities) where T : MongoEntity
         {
             await GetCollection<T>().InsertManyAsync(entities);
         }
 
         public async Task<IEnumerable<T>> List<T>() where T : MongoEntity
         {
-            return await GetCollection<T>().FindAsync(e => e._id != null).Result.ToListAsync();
+            return await GetCollection<T>().Find(e => e._id != null).ToListAsync();
         }
 
         public async Task<IEnumerable<T>> List<T>(Expression<Func<T, bool>> exp) where T : MongoEntity
         {
-            return await GetCollection<T>().FindAsync(exp).ContinueWith(t => t.Result.ToEnumerable());
+            return await GetCollection<T>().Find(exp).ToListAsync();
         }
 
         public async Task<T> Single<T>(Expression<Func<T, bool>> exp) where T : MongoEntity
         {
-            return await GetCollection<T>().FindAsync<T>(exp).Result.FirstOrDefaultAsync();
+            return await GetCollection<T>().Find<T>(exp).FirstOrDefaultAsync();
         }
 
         public async Task Update<T>(object id, T entity) where T : MongoEntity

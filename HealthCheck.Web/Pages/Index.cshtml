@@ -2,8 +2,8 @@
 @model HealthCheck.Web.Pages.IndexModel
 
 <div class="container">
-    <h1 class="h3 mb-3 font-weight-normal">Join a session</h1>
-    <form id="join-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
+    <form class="form-signin" method="post">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <div class="form-group">
             <label asp-for="UserViewModel.Name"></label>
             <input asp-for="UserViewModel.Name" type="text" class="form-control" placeholder="Enter your name">
@@ -12,15 +12,7 @@
             <label asp-for="UserViewModel.Email"></label>
             <input asp-for="UserViewModel.Email" type="email" class="form-control" placeholder="Enter your Entelect email address">
         </div>
-        <div class="form-group">
-            <label asp-for="SessionCode">Session Code</label>
-            <input asp-for="SessionCode" type="text" class="form-control" placeholder="Enter the session code">
-            <small id="sessioncodehelp" class="form-text text-muted">The code will be provided to you by the health check administrator</small>
-        </div>
-        <button asp-page-handler="join" class="btn btn-lg btn-primary btn-block" type="submit">Join</button>
-    </form>
-    <br />
-    <form id="create-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
-        <button asp-page="/Sessions/CreateSession" class="btn btn-lg btn-secondary btn-block">Create a session</button>
+        <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+        <p class="mt-5 mb-3 text-muted"></p>
     </form>
 </div>

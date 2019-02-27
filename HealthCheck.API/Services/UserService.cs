@@ -23,7 +23,12 @@ namespace HealthCheck.API.Services
             return user;
         }
 
-        public async Task<User> Get(string id)
+        public async Task<IEnumerable<User>> Get()
+        {
+            return await repository.List<User>();
+        }
+
+        public async Task<User> GetById(string id)
         {
             var docId = new ObjectId(id);
             return await repository.Single<User>(user => user._id == docId);

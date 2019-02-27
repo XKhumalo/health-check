@@ -13,6 +13,8 @@ namespace HealthCheck.Web.Pages.Sessions
     {
         private readonly UserController userController;
         private readonly SessionController sessionController;
+        private readonly CategoryController categoryController;
+
 
         [BindProperty]
         public User UserViewModel { get; set; }
@@ -20,44 +22,45 @@ namespace HealthCheck.Web.Pages.Sessions
         [BindProperty]
         public Session SessionViewModel { get; set; }
 
-        public CreateSessionModel(UserController userController, SessionController sessionController)
+        [BindProperty]
+        public IEnumerable<Category> CategoriesViewModel { get; set; }
+
+        public bool IsAuthorized { get; set; }
+
+        public CreateSessionModel(UserController userController,
+            SessionController sessionController,
+            CategoryController categoryController)
         {
             this.userController = userController;
             this.sessionController = sessionController;
+            this.categoryController = categoryController;
         }
 
-        public void OnGet()
+        public async Task OnGet(string userId)
         {
-
+            UserViewModel = await userController.GetById(userId);
+            CategoriesViewModel = await categoryController.Get();
         }
 
         public async Task<IActionResult> OnPostCreate()
         {
-            User newUser = null;
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            if (!UserExists().Result)
-            {
-                newUser = await userController.Create(UserViewModel).ContinueWith(r => r.Result.Value);
-            }
-            SessionViewModel.CreatedBy = newUser == null ? UserViewModel._id.ToString() : newUser._id.ToString();
-            var createdSession = await sessionController.Create(SessionViewModel);
-            if (createdSession != null)
-            {
-                return RedirectToPage("../Sessions/ViewSession", new { sessionId = createdSession.Value._id, userId = createdSession.Value.CreatedBy });
-            }
-            else
+            var user = await userController.GetByEmail(UserViewModel.Email);
+            if (user == null)
             {
                 return RedirectToPage("/Error");
             }
+            return RedirectToPage("/Error");
+            //SessionViewModel.CreatedBy = newUser == null ? UserViewModel._id.ToString() : newUser._id.ToString();
+            //var createdSession = await sessionController.Create(SessionViewModel);
+            //if (createdSession != null)
+            //{
+            //    return RedirectToPage("../Sessions/ViewSession", new { sessionId = createdSession.Value._id, userId = createdSession.Value.CreatedBy });
+            //}
+            //else
+            //{
+            //    return RedirectToPage("/Error");
+            //}
         }
-
-        private async Task<bool> UserExists()
-        {
-            var existingUser = await userController.GetByEmail(UserViewModel.Email);
-            return existingUser.Value != null;
-        }
+        
     }
 }

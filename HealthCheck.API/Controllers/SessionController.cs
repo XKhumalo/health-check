@@ -22,87 +22,40 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<ActionResult<Session>> GetById(string id)
+        public async Task<Session> GetById(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var session = await sessionService.Get(id);
-
-            if (session == null)
-            {
-                return NotFound();
-            }
-            return session;
+            return await sessionService.Get(id);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Session>>> Get()
+        public async Task<IEnumerable<Session>> Get()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var sessions = await sessionService.GetAll();
-
-            if (sessions == null)
-            {
-                return NotFound();
-            }
-
-            return sessions.ToList();
+            return await sessionService.GetAll();
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public async Task<ActionResult<Session>> GetBySessionKey(string sessionKey)
+        public async Task<Session> GetBySessionKey(string sessionKey)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var session = await sessionService.GetBySessionKey(sessionKey);
-
-            if (session == null)
-            {
-                return NotFound();
-            }
-            return session;
+            return await sessionService.GetBySessionKey(sessionKey);
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public async Task<ActionResult<Session>> GetByCreatedById(string createdById)
+        public async Task<Session> GetByCreatedById(string createdById)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var session = await sessionService.GetByCreatedById(createdById);
-
-            if (session == null)
-            {
-                return NotFound();
-            }
-            return session;
+            return await sessionService.GetByCreatedById(createdById);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Session>> Create([FromBody] Session session)
+        public async Task<Session> Create([FromBody] Session session)
         {
             if (!ModelState.IsValid || session == null)
             {
-                return BadRequest();
+                return null;
             }
 
-            await sessionService.Create(session);
-
-            return session;
+            return await sessionService.Create(session);
         }
 
         [HttpPut("{id}")]

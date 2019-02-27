@@ -20,65 +20,38 @@ namespace HealthCheck.API.Controllers
             this.userService = userService;
         }
 
-        [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<User>> Get(string id)
+        public async Task<IEnumerable<User>> Get()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+            return await userService.Get();
+        }
 
-            var user = await userService.Get(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return user;
+        [HttpGet("{id:length(24)}")]
+        [Route("[action]")]
+        public async Task<User> GetById(string id)
+        {
+            return await userService.GetById(id);
         }
 
         [HttpGet("{name}")]
         [Route("[action]")]
-        public async Task<ActionResult<User>> GetByName(string name)
+        public async Task<User> GetByName(string name)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var user = await userService.GetByName(name);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return user;
+            return await userService.GetByName(name);
         }
 
         [HttpGet("{email}")]
         [Route("[action]")]
-        public async Task<ActionResult<User>> GetByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var user = await userService.GetByEmail(email);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return user;
+            return await userService.GetByEmail(email);
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> Create([FromBody] User user)
+        public async Task<User> Create([FromBody] User user)
         {
-            if (!ModelState.IsValid || user == null)
+            if (user == null)
             {
-                return BadRequest();
+                return null;
             }
 
             return await userService.Create(user);

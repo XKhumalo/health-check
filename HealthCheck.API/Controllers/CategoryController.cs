@@ -21,115 +21,55 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<ActionResult<Category>> GetById(string id)
+        public async Task<Category> GetById(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var category = await categoryService.Get(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return category;
+            return await categoryService.Get(id);
         }
 
         [HttpGet]
         [Route("[action]")]
-        public async Task<IActionResult> GetByIds(IEnumerable<string> ids)
+        public async Task<IEnumerable<Category>> GetByIds(IEnumerable<string> ids)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var categories = await categoryService.Get(ids);
-
-            if (categories == null)
-            {
-                return NotFound();
-            }
-            return Ok(categories);
+            return await categoryService.Get(ids);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> Get()
+        public async Task<IEnumerable<Category>> Get()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var categories = await categoryService.GetAll();
-
-            if (categories == null)
-            {
-                return NotFound();
-            }
-
-            return categories.ToList();
+            return await categoryService.GetAll();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, Category categoryIn)
+        public async Task Update(string id, Category categoryIn)
         {
-            if (!ModelState.IsValid)
+            var category = await categoryService.Get(id);
+
+            if (category != null)
             {
-                return BadRequest();
+                if (!categoryIn._id.ToString().Equals(id))
+                {
+                    categoryIn._id = new MongoDB.Bson.ObjectId(id);
+                }
+
+                await categoryService.Update(id, categoryIn);
             }
-
-            var category = categoryService.Get(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            if (!categoryIn._id.ToString().Equals(id))
-            {
-                categoryIn._id = new MongoDB.Bson.ObjectId(id);
-            }
-
-            await categoryService.Update(id, categoryIn);
-
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task Delete(string id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             var category = await categoryService.Get(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-
             await categoryService.Delete(category);
-
-            return NoContent();
-
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> Create([FromBody] Category category)
+        public async Task<Category> Create([FromBody] Category category)
         {
-            if (!ModelState.IsValid)
+            if (category == null)
             {
-                return BadRequest();
+                return null;
             }
-
-            await categoryService.Create(category);
-
-            return Ok();
+            return await categoryService.Create(category);
         }
     }
 }

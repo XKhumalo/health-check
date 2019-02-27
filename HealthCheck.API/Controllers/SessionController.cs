@@ -21,7 +21,8 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<Session>> Get(string id)
+        [Route("[action]")]
+        public async Task<ActionResult<Session>> GetById(string id)
         {
             if (!ModelState.IsValid)
             {
@@ -35,6 +36,14 @@ namespace HealthCheck.API.Controllers
                 return NotFound();
             }
             return session;
+        }
+
+
+        [HttpGet]
+        public async Task<List<Session>> Get()
+        {
+            var sessionsEnum = await sessionService.GetAll();
+            return  sessionsEnum.ToList();
         }
 
         [HttpGet("{key}")]

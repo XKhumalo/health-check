@@ -11,6 +11,11 @@ namespace HealthCheck.Model
     public class Session : MongoEntity
     {
         [DataMember]
+        [BsonElement("SessionName")]
+        [Display(Name = "Session Name")]
+        public string SessionName { get; set; }
+
+        [DataMember]
         [BsonElement("SessionKey")]
         [Display(Name = "Session Key")]
         public string SessionKey { get; } = Helpers.RandomString(6, false);

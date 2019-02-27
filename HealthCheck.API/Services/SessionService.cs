@@ -23,6 +23,11 @@ namespace HealthCheck.API.Services
             return session;
         }
 
+        public async Task<IEnumerable<Session>> GetAll()
+        {
+            return await repository.List<Session>();
+        }
+
         public async Task<Session> Get(string id)
         {
             var docId = new ObjectId(id);

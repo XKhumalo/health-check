@@ -44,7 +44,7 @@ namespace HealthCheck.Web.Pages.Sessions
             var createdSession = await sessionController.Create(SessionViewModel);
             if (createdSession != null)
             {
-                return RedirectToPage("/Sessions/ViewSession");
+                return RedirectToPage("/Sessions/ViewAllSessions");
             }
             else
             {

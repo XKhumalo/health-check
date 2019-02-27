@@ -1,0 +1,54 @@
+﻿@page
+@model HealthCheck.Web.Pages.Sessions.ViewAllSessionsModel
+@{
+    ViewData["Title"] = "ViewAllSessions";
+}
+
+<div class="container">
+    <h1 class="h3 mb-3 font-weight-normal">View All Sessions</h1>
+
+    @foreach (var item in Model.ViewAllSessionModel)
+    {
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <form id="single-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
+                        <h5 class="mb-3">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <label asp-for=@item.SessionName></label>
+                            </button>
+                        </h5>
+                    </form>
+                </div>
+                <form id="join-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
+                    <div class="form-group">
+                        <label asp-for=@item.SessionKey></label>
+                        <input asp-for=@item.SessionKey type="text" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for=@item.StartDate></label>
+                        <input asp-for=@item.StartDate type="datetime-local" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for=@item.EndTime></label>
+                        <input asp-for=@item.StartDate type="datetime-local" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for=@item.DateCreated></label>
+                        <input asp-for=@item.DateCreated type="datetime-local" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for=@item.IsComplete></label>
+                        <input asp-for=@item.IsComplete type="text" class="form-control" readonly>
+
+                    </div>
+                    <div class="form-group">
+                        <label asp-for=@item.Categories></label>
+                        <input asp-for=@item.Categories type="text" class="form-control" readonly>
+                    </div>
+                    <button asp-page-handler="create" class="btn btn-lg btn-primary btn-block" type="submit">Go To Session</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

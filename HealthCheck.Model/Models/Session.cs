@@ -13,7 +13,7 @@ namespace HealthCheck.Model
         [DataMember]
         [BsonElement("SessionKey")]
         [Display(Name = "Session Key")]
-        public string SessionKey { get; } = Helpers.RandomString(6, false);
+        public string SessionKey { get; set; }
 
         [DataMember]
         [BsonElement("CreatedBy")]
@@ -33,15 +33,15 @@ namespace HealthCheck.Model
         [DataMember]
         [BsonElement("DateCreated")]
         [Display(Name = "Created Date")]
-        public DateTime DateCreated { get; set; } = DateTime.Now;
+        public DateTime DateCreated { get; set; }
 
         [DataMember]
         [BsonElement("IsComplete")]
         [Display(Name = "Is Complete")]
-        public bool IsComplete { get; set; } = false;
+        public bool IsComplete { get; set; }
 
         [DataMember]
         [BsonElement("Categories")]
-        public List<string> Categories { get; set; }
+        public IEnumerable<string> Categories { get; set; }
     }
 }

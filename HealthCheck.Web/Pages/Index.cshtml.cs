@@ -33,7 +33,7 @@ namespace HealthCheck.Web.Pages
             {
                 await userController.Create(UserViewModel);
             }
-            return RedirectToPage("/Sessions/Index", new { id = existingUser._id });
+            return RedirectToPage("/Sessions/Index", new { userId = existingUser._id });
         }
     }
 }

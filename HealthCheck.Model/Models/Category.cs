@@ -17,5 +17,15 @@ namespace HealthCheck.Model
         [BsonElement("Description")]
         [Display(Name = "Description")]
         public string Description { get; set; }
+
+        [DataMember]
+        [BsonElement("Positive")]
+        [Display(Name = "Positive")]
+        public string Positive { get; set; }
+
+        [DataMember]
+        [BsonElement("Negative")]
+        [Display(Name = "Negative")]
+        public string Negative { get; set; }
     }
 }

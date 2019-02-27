@@ -14,6 +14,7 @@
         <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
     </form>
     <a asp-page="/Sessions/CreateSession" asp-route-userid="@Model.UserId">Create a session</a>
+    <a asp-page="/Sessions/ViewSessions" asp-route-userid="@Model.UserId">View my sessions</a>
 </div>
 
 

@@ -9,35 +9,42 @@
     <h1>Session</h1>
 
     <div class="container">
-        <h3>Session Key: @Model.Session.SessionKey</h3>
+        <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
 
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Categories</h5>
-                </div>
-                <div class="table-responsive">
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var category in Model.Categories)
-                            {
-                            <tr>
-                                <td>@category._id</td>
-                                <td>@category.Name</td>
-                                <td>@category.Description</td>
-                            </tr>
-                            }
-                        </tbody>
-                    </table>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Categories</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Green</th>
+                                    <th scope="col">Red</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in Model.CategoriesViewModel)
+                                {
+                                    <tr>
+                                        <td>@category.Name</td>
+                                        <td>@category.Description</td>
+                                        <td class="text-success">@category.Positive</td>
+                                        <td class="text-danger">@category.Negative</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+        <form method="post">
+            <button asp-page-handler="start" class="btn btn-lg btn-primary btn-block" type="submit">Start Session</button>
+        </form>
     </div>
 }

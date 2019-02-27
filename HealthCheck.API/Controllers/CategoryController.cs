@@ -30,6 +30,10 @@ namespace HealthCheck.API.Controllers
         [Route("[action]")]
         public async Task<IEnumerable<Category>> GetByIds(IEnumerable<string> ids)
         {
+            if (ids == null)
+            {
+                return null;
+            }
             return await categoryService.Get(ids);
         }
 

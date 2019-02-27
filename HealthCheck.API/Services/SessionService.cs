@@ -39,9 +39,9 @@ namespace HealthCheck.API.Services
             return await repository.Single<Session>(session => session.SessionKey.Equals(sessionKey));
         }
 
-        public async Task<Session> GetByCreatedById(string createdById)
+        public async Task<IEnumerable<Session>> GetByCreatedById(string createdById)
         {
-            return await repository.Single<Session>(session => session.CreatedBy.Equals(createdById));
+            return await repository.List<Session>(session => session.CreatedBy.Equals(createdById));
         }
 
         public async Task Delete(Session session)

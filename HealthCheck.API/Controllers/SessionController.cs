@@ -42,7 +42,7 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public async Task<Session> GetByCreatedById(string createdById)
+        public async Task<IEnumerable<Session>> GetByCreatedById(string createdById)
         {
             return await sessionService.GetByCreatedById(createdById);
         }

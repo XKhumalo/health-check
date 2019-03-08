@@ -32,6 +32,7 @@ namespace HealthCheck.Web
             services.AddScoped<AnswerService>();
             services.AddScoped<UserService>();
             services.AddScoped<SessionService>();
+            services.AddScoped<CategoryService>();
             services.AddSignalR();
 
         }

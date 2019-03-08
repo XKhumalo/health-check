@@ -4,17 +4,32 @@
     ViewData["Title"] = "CreateSession";
 }
 
-
 <div class="container">
-    <h1 class="h3 mb-3 font-weight-normal">Administrator Details</h1>
-    <form id="join-session-form" class="col-lg-6 col-md-12 col-sm-12" method="post">
-        <div class="form-group">
-            <label asp-for="UserViewModel.Name"></label>
-            <input asp-for="UserViewModel.Name" type="text" class="form-control" placeholder="Enter your name">
-        </div>
-        <div class="form-group">
-            <label asp-for="UserViewModel.Email"></label>
-            <input asp-for="UserViewModel.Email" type="email" class="form-control" placeholder="Enter your Entelect email address">
-        </div>
+    <h1 class="h3 mb-3 font-weight-normal">Session Details</h1>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Description</th>
+                <th class="text-success">Green</th>
+                <th class="text-danger">Red</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model.CategoriesViewModel)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>@category.Description</td>
+                    <td class="text-success">@category.Positive</td>
+                    <td class="text-danger">@category.Negative</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <form id="join-session-form" class="col-lg-12 col-md-12 col-sm-12" method="post">
+        <input type="hidden" asp-for="UserId" />
         <button asp-page-handler="create" class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
     </form>
+</div>

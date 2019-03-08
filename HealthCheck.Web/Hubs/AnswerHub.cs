@@ -12,7 +12,5 @@ namespace HealthCheck.Web.Hubs
         {
             await Clients.Client(sendTo).SendAsync("ReceiveAnswer", Context.ConnectionId, answer);
         }
-
-
     }
 }

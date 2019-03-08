@@ -15,28 +15,25 @@ namespace HealthCheck.Web.Pages
 
         [BindProperty]
         public User UserViewModel { get; set; }
-
-        [BindProperty]
-        public string SessionCode { get; set; }
-
-        public IndexModel(UserController _userController)
+        
+        public IndexModel(UserController userController)
         {
-            userController = _userController;
+            this.userController = userController;
         }
 
         public void OnGet()
         {
-
+            
         }
 
-        public async Task<IActionResult> OnPostJoin()
+        public async Task<IActionResult> OnPostLogin()
         {
             var existingUser = await userController.GetByEmail(UserViewModel.Email);
-            if (existingUser.Value == null)
+            if (existingUser == null)
             {
                 await userController.Create(UserViewModel);
             }
-            return RedirectToPage("/Answer");
+            return RedirectToPage("/Sessions/Index", new { userId = existingUser._id });
         }
     }
 }

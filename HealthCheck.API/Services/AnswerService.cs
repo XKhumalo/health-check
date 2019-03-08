@@ -50,9 +50,9 @@ namespace HealthCheck.API.Services
             return answer;
         }
 
-        public async Task<IEnumerable<Answer>> Create(List<Answer> answers)
+        public async Task<IEnumerable<Answer>> Create(IEnumerable<Answer> answers)
         {
-            await repository.Insert<Answer>(answers);
+            await repository.InsertMany<Answer>(answers);
             return answers;
         }
 

@@ -1,9 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace HealthCheck.Model
 {
@@ -20,5 +17,15 @@ namespace HealthCheck.Model
         [BsonElement("Description")]
         [Display(Name = "Description")]
         public string Description { get; set; }
+
+        [DataMember]
+        [BsonElement("Positive")]
+        [Display(Name = "Positive")]
+        public string Positive { get; set; }
+
+        [DataMember]
+        [BsonElement("Negative")]
+        [Display(Name = "Negative")]
+        public string Negative { get; set; }
     }
 }

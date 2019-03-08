@@ -81,7 +81,7 @@ namespace HealthCheck.API.Services
 
             var mySearcher = new DirectorySearcher(entry)
             {
-                Filter = "(&objectClass=user)(!(cn={userName})(sAMAccountName={username})))"
+                Filter = $"(&(objectClass=user)(|(mail={ldapUsername})(userPrincipalName={ldapUsername})))"
             };
 
             mySearcher.PropertiesToLoad.AddRange(GetPropertyList(mappings).Split(','));
@@ -93,7 +93,7 @@ namespace HealthCheck.API.Services
             }
             catch (Exception exception)
             {
-                //throw new Exception($"Active Directory login failed for username: {userName}. Error: {exception.Message}");
+                throw new Exception(string.Format("Active Directory login failed for username: {0}. Error: {1}", ldapUsername, exception.Message));
             }
 
             if (searchResult == null)

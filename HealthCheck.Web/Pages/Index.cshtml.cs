@@ -17,7 +17,7 @@ namespace HealthCheck.Web.Pages
         private readonly AuthenticationService authenticationService;
 
         [BindProperty]
-        public LoginUserViewModel loginUserViewModel { get; set; }
+        public LoginUserViewModel LoginUserViewModel { get; set; }
         
         public IndexModel(UserController userController, AuthenticationService authenticationService)
         {
@@ -32,8 +32,8 @@ namespace HealthCheck.Web.Pages
 
         public async Task<IActionResult> OnPostLogin()
         {
-            var existingUser = await authenticationService.GetUserAsync(loginUserViewModel.Username, loginUserViewModel.Password);
-            return RedirectToPage("/Sessions/Index", new { userId = existingUser._id });
+            var existingUser = await authenticationService.GetUserAsync(LoginUserViewModel.Username, LoginUserViewModel.Password);
+            return RedirectToPage("/Sessions/Index", new { userId = existingUser._id }).AddCookie(HttpContext.Response, "user", existingUser._id.ToString());
         }
 
         //public async Task<IActionResult> OnPostLogin()

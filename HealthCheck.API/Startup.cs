@@ -39,6 +39,7 @@ namespace HealthCheck.API
             services.AddScoped<UserService>();
             services.AddScoped<SessionService>();
             services.AddScoped<CategoryService>();
+            services.AddScoped<AuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

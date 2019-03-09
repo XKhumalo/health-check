@@ -5,14 +5,14 @@
     <form class="form-signin" method="post">
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <div class="form-group">
-            <label asp-for="UserViewModel.Name"></label>
-            <input asp-for="UserViewModel.Name" type="text" class="form-control" placeholder="Enter your name">
+            <label asp-for="LoginUserViewModel.Username"></label>
+            <input asp-for="LoginUserViewModel.Username" type="email" class="form-control" placeholder="Enter your Domain email address">
         </div>
         <div class="form-group">
-            <label asp-for="UserViewModel.Email"></label>
-            <input asp-for="UserViewModel.Email" type="email" class="form-control" placeholder="Enter your Entelect email address">
+            <label asp-for="LoginUserViewModel.Password"></label>
+            <input asp-for="LoginUserViewModel.Password" type="password" class="form-control" placeholder="Enter your Doamin password">
         </div>
-        <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+        <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
         <p class="mt-5 mb-3 text-muted"></p>
     </form>
 </div>

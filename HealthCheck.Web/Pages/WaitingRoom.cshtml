@@ -40,16 +40,22 @@
                             @foreach (var category in Model.CategoriesViewModel)
                             {
                                 var answer = Model.AnswersViewModel.FirstOrDefault(a => a.CategoryId.Equals(category._id));
-                                <tr>
-                                    <td>@category.Name</td>
-                                    <td>@category.Description</td>
-                                    @if (answer != null)
-                                    {
-                                        <td>
-                                            @answer.CategoryChosen.ToString()
-                                        </td>
-                                    }
-                                </tr>
+                            <tr>
+                                <td>@category.Name</td>
+                                <td>@category.Description</td>
+                                @if (answer != null)
+                                {
+                                    <td>
+                                        @answer.CategoryChosen.ToString()
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        -
+                                    </td>
+                                }
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -57,16 +63,4 @@
             </div>
         </div>
     </div>
-    @if (Model.SessionViewModel.IsOpen)
-    {
-        <form method="post">
-            <button asp-page-handler="close" asp-route-sessionid="@Model.SessionViewModel._id" class="btn btn-lg btn-primary btn-block" type="submit">Close Session</button>
-        </form>
-    }
-    else
-    {
-        <form method="post">
-            <button asp-page-handler="start" asp-route-sessionid="@Model.SessionViewModel._id" class="btn btn-lg btn-primary btn-block" type="submit">Start Session</button>
-        </form>
-    }
 </div>

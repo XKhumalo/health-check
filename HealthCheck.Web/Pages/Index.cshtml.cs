@@ -38,7 +38,7 @@ namespace HealthCheck.Web.Pages
                 var dbUser = await userController.GetByEmail(activeDirectoryUser.Email);
                 if (dbUser == null)
                 {
-                    dbUser = await userController.Create(dbUser);
+                    dbUser = await userController.Create(activeDirectoryUser);
                 }
                 return RedirectToPage("/Sessions/Index").AddCookie(HttpContext.Response, "user", dbUser._id.ToString());
             }

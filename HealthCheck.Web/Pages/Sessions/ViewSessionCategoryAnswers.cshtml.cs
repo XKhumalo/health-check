@@ -7,32 +7,34 @@ using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace HealthCheck.Web.Pages
+namespace HealthCheck.Web.Pages.Sessions
 {
-    public class AnswerModel : PageModel
+    public class ViewSessionCategoryAnswersModel : PageModel
     {
         private readonly SessionController sessionController;
         private readonly CategoryController categoryController;
         private readonly UserController userController;
 
-        public AnswerModel(SessionController sessionController, CategoryController categoryController, UserController userController)
+        public Session SessionViewModel { get; set; }
+        public Category CategoryViewModel { get; set; }
+        public bool IsAuthorized { get; set; }
+
+        public ViewSessionCategoryAnswersModel(SessionController sessionController, CategoryController categoryController, UserController userController)
         {
             this.sessionController = sessionController;
             this.categoryController = categoryController;
             this.userController = userController;
         }
 
-        public Session SessionViewModel { get; set; }
-        public Category CategoryViewModel { get; set; }
-        public User UserViewModel { get; set; }
-        public string AdminId { get; set; }
-
-        public async Task OnGet(string sentBy, string categoryId)
+        public async Task OnGet(string sessionId, string categoryId)
         {
             var userId = Request.Cookies["user"];
-            AdminId = sentBy;
+            SessionViewModel = await sessionController.GetById(sessionId);
+            if (SessionViewModel.CreatedBy.Equals(userId))
+            {
+                IsAuthorized = true;
+            }
             CategoryViewModel = await categoryController.GetById(categoryId);
-            UserViewModel = await userController.GetById(userId);
         }
     }
 }

@@ -1,0 +1,36 @@
+﻿@page
+@model HealthCheck.Web.Pages.Sessions.ViewSessionCategoryAnswersModel
+@{
+    ViewData["Title"] = "ViewSessionCategoryAnswers";
+}
+
+<h1>ViewSessionCategoryAnswers</h1>
+
+<div class="container">
+    <h4 class="h4">Category Details</h4>
+    <table class="table table-bordered mb-5">
+        <tbody>
+            <tr>
+                <td>Session Key</td>
+                <td>@Model.SessionViewModel.SessionKey</td>
+            </tr>
+            <tr>
+                <td>Category</td>
+                <td>@Model.CategoryViewModel.Description</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br />
+    <h4 class="h4">Category Answers</h4>
+    <table id="answersList" class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Answer</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>

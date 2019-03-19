@@ -4,7 +4,7 @@ $(document).ready(() => {
     var chatHub = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
     
     chatHub.on("ReceiveMessage", (user, message, sentBy) => {
-        window.location = "https://localhost:44324/Answer?sentBy=" + sentBy;
+        window.location = "Answer?sentBy=" + sentBy;
     });
 
     chatHub.start().then(() => {

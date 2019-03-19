@@ -32,7 +32,7 @@ namespace HealthCheck.API.Services
                 return new User()
                 {
                     Name = "Xolani",
-                    Email = "xolani.khumalo@entelect.co.za"
+                    Email = username
                 };
             }
             var isAuthenticated = false;

@@ -16,10 +16,6 @@ namespace HealthCheck.Web.Pages.Sessions
         private readonly SessionController sessionController;
         private readonly CategoryController categoryController;
 
-
-        [BindProperty]
-        public string UserId { get; set; }
-
         [BindProperty]
         public Session SessionViewModel { get; set; }
 
@@ -37,25 +33,25 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public async Task OnGet(string userId)
+        public async Task OnGet()
         {
             CategoriesViewModel = await categoryController.Get();
-            UserId = userId;
         }
 
         public async Task<IActionResult> OnPostCreate()
         {
             var categories = await categoryController.Get();
+            string userId = Request.Cookies["user"];
             SessionViewModel = new Session()
             {
                 Categories = categories.Select(c => c._id.ToString()),
-                CreatedBy = UserId,
+                CreatedBy = userId,
                 DateCreated = DateTime.Now,
                 IsComplete = false,
                 SessionKey = Helpers.RandomString(6, false)
             };
             var createdSession = await sessionController.Create(SessionViewModel);
-            return RedirectToPage("/Sessions/ViewSession", new { userId = UserId, sessionId = SessionViewModel._id });
+            return RedirectToPage("/Sessions/ViewSession", new { sessionId = SessionViewModel._id });
         }
         
     }

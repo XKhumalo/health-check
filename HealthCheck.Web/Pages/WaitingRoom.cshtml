@@ -1,0 +1,72 @@
+﻿@page
+@model HealthCheck.Web.Pages.WaitingRoomModel
+@{
+    ViewData["Title"] = "WaitingRoom";
+}
+
+<h1>WaitingRoom</h1>
+
+<div class="container">
+    <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
+    @if (Model.SessionViewModel.IsComplete)
+    {
+        <div class="alert alert-danger">Session is closed</div>
+    }
+    else if (!Model.SessionViewModel.IsOpen)
+    {
+        <div class="alert alert-info">Session has not been started</div>
+    }
+    else
+    {
+        <div class="alert alert-success">Session is open</div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Categories</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var category in Model.CategoriesViewModel)
+                            {
+                                var answer = Model.AnswersViewModel.FirstOrDefault(a => a.CategoryId.Equals(category._id));
+                                <tr>
+                                    <td>@category.Name</td>
+                                    <td>@category.Description</td>
+                                    @if (answer != null)
+                                    {
+                                        <td>
+                                            @answer.CategoryChosen.ToString()
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model.SessionViewModel.IsOpen)
+    {
+        <form method="post">
+            <button asp-page-handler="close" asp-route-sessionid="@Model.SessionViewModel._id" class="btn btn-lg btn-primary btn-block" type="submit">Close Session</button>
+        </form>
+    }
+    else
+    {
+        <form method="post">
+            <button asp-page-handler="start" asp-route-sessionid="@Model.SessionViewModel._id" class="btn btn-lg btn-primary btn-block" type="submit">Start Session</button>
+        </form>
+    }
+</div>

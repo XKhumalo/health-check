@@ -9,7 +9,7 @@
         <h1 class="h3 mb-3 font-weight-normal">Join a session</h1>
         <div class="form-group">
             <label for="sessionKey"></label>
-            <input id="sessionKey" type="text" class="form-control" placeholder="Enter the session Key">
+            <input asp-for="SessionKey" type="text" class="form-control" placeholder="Enter the session Key">
         </div>
         <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
     </form>

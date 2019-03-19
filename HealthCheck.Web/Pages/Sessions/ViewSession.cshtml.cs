@@ -31,8 +31,9 @@ namespace HealthCheck.Web.Pages.Sessions
             this.userController = userController;
         }
 
-        public async Task OnGet(string userId, string sessionId)
+        public async Task OnGet(string sessionId)
         {
+            var userId = Request.Cookies["user"];
             UserViewModel = await userController.GetById(userId);
             SessionViewModel = await sessionController.GetById(sessionId);
             if (SessionViewModel.CreatedBy.Equals(userId))
@@ -44,6 +45,26 @@ namespace HealthCheck.Web.Pages.Sessions
             {
                 RedirectToPage("/Error");
             }
+        }
+
+        public async Task<IActionResult> OnPostStart(string sessionId)
+        {
+            var session = await sessionController.GetById(sessionId);
+            session.IsOpen = true;
+            session.IsComplete = false;
+            session.StartTime = DateTime.Now;
+            await sessionController.Update(sessionId, session);
+            return RedirectToPagePermanent("/Sessions/ViewSession", new { sessionId });
+        }
+
+        public async Task<IActionResult> OnPostClose(string sessionId)
+        {
+            var session = await sessionController.GetById(sessionId);
+            session.IsOpen = false;
+            session.IsComplete = true;
+            session.EndTime = DateTime.Now;
+            await sessionController.Update(sessionId, session);
+            return RedirectToPagePermanent("/Sessions/ViewSession", new { sessionId });
         }
     }
 }

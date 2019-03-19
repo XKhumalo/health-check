@@ -15,9 +15,12 @@ namespace HealthCheck.Web.Pages
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        public void OnGet()
+        public string ErrorMessage { get; set; }
+
+        public void OnGet(string errorMessage)
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            this.ErrorMessage = errorMessage;
         }
     }
 }

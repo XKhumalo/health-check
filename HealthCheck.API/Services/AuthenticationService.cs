@@ -1,4 +1,5 @@
 ﻿using HealthCheck.Model;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -11,23 +12,31 @@ namespace HealthCheck.API.Services
 {
     public class AuthenticationService
     {
-        private readonly UserService userService;
-
         private const string EmailAttributeKey = "mail";
         private const string EmailAttributeValue = "mail";
 
         private const string NameAttributeKey = "name";
         private const string NameAttributeValue = "name";
 
-        public AuthenticationService(UserService userService)
+        private readonly IConfiguration config;
+
+        public AuthenticationService(IConfiguration config)
         {
-            this.userService = userService;
+            this.config = config;
         }
 
-        public async Task<User> GetUserAsync(string username, string password)
+        public User GetADUser(string username, string password)
         {
+            if (config.GetValue<string>("Environment").Equals("Development"))
+            {
+                return new User()
+                {
+                    Name = "Xolani",
+                    Email = "xolani.khumalo@entelect.co.za"
+                };
+            }
             var isAuthenticated = false;
-            var contextName = String.Empty;
+            var contextName = string.Empty;
 
             try
             {
@@ -42,32 +51,26 @@ namespace HealthCheck.API.Services
                 throw new Exception($"There was an error while authenticating with the LDAP server [{contextName}],  {exception}");
             }
 
-            IDictionary<String, Object> activeDirectoryUser = GetADUser(username, password);
+            IDictionary<String, Object> activeDirectoryUser = SearchADUser(username, password);
 
             if (!isAuthenticated && !activeDirectoryUser.ContainsKey(NameAttributeKey))
             {
                 return null;
             }
 
-            var localUser = await userService.GetByEmail(username);
-            if (localUser == null)
+            var name = ((string)activeDirectoryUser[NameAttributeKey]).Split(' ');
+            var email = ((string)activeDirectoryUser[EmailAttributeKey]);
+
+            var localUser = new User()
             {
-                var name = ((string) activeDirectoryUser[NameAttributeKey]).Split(' ');
-                var email = (activeDirectoryUser[EmailAttributeKey] as string);
-
-                localUser = new User()
-                {
-                    Name = name.Length > 0 ? name[0] : username,
-                    Email = email
-                };
-
-                await userService.Create(localUser);
-            }
+                Name = name.Length > 0 ? name[0] : username,
+                Email = email
+            };
 
             return localUser;
         }
 
-        private IDictionary<string, object> GetADUser(string username, string password)
+        private IDictionary<string, object> SearchADUser(string username, string password)
         {
             var ldapUsername = username;
             var ldapPassword = password;
@@ -79,17 +82,17 @@ namespace HealthCheck.API.Services
                 {NameAttributeKey, NameAttributeValue}
             };
 
-            var mySearcher = new DirectorySearcher(entry)
+            var directorySearcher = new DirectorySearcher(entry)
             {
                 Filter = $"(&(objectClass=user)(|(mail={ldapUsername})(userPrincipalName={ldapUsername})))"
             };
-
-            mySearcher.PropertiesToLoad.AddRange(GetPropertyList(mappings).Split(','));
+            directorySearcher.Asynchronous = true;
+            directorySearcher.PropertiesToLoad.AddRange(GetPropertyList(mappings).Split(','));
 
             SearchResult searchResult = null;
             try
             {
-                searchResult = mySearcher.FindOne();
+                searchResult = directorySearcher.FindOne();
             }
             catch (Exception exception)
             {
@@ -105,7 +108,7 @@ namespace HealthCheck.API.Services
 
             entry.Close();
             entry.Dispose();
-            mySearcher.Dispose();
+            directorySearcher.Dispose();
 
             return user;
         }        

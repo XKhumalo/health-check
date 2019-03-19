@@ -30,7 +30,8 @@
                                     <td>@session.DateCreated.ToString()</td>
                                     <td class="text-success">@session.StartTime.ToString()</td>
                                     <td class="text-danger">@session.EndTime.ToString()</td>
-                                    <td><a asp-page="/Sessions/ViewSession" asp-route-userid="@Model.UserViewModel._id" asp-route-sessionid="@Model.UserViewModel._id"></a></td>
+                                    <td>@(session.IsComplete ? "Yes" : "No")</td>
+                                    <td><a asp-page="/Sessions/ViewSession" asp-route-sessionid="@session._id.ToString()">View</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -40,6 +41,6 @@
         </div>
     </div>
     <form method="post">
-        <button asp-page-handler="start" class="btn btn-lg btn-primary btn-block" type="submit">Start Session</button>
+        <button asp-page-handler="create" class="btn btn-lg btn-primary btn-block" type="submit">Create New Session</button>
     </form>
 </div>

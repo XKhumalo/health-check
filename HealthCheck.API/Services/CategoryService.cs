@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
@@ -31,12 +32,13 @@ namespace HealthCheck.API.Services
         public async Task<Category> Get(string id)
         {
             var docId = new ObjectId(id);
-            return await repository.Single<Category>(category => category._id == docId);
+            return await repository.Single<Category>(category => category._id.Equals(docId));
         }
 
         public async Task<IEnumerable<Category>> Get(IEnumerable<string> ids)
         {
-            return await repository.List<Category>(c => ids.Contains(c._id.ToString()));
+            var docIds = ids.Select(i => new ObjectId(i));
+            return await repository.List<Category>(c => docIds.Contains(c._id));
         }
 
         public async Task Delete(Category category)

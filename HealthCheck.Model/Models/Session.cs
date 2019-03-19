@@ -41,6 +41,11 @@ namespace HealthCheck.Model
         public bool IsComplete { get; set; }
 
         [DataMember]
+        [BsonElement("IsOpen")]
+        [Display(Name = "Is Open")]
+        public bool IsOpen { get; set; }
+
+        [DataMember]
         [BsonElement("Categories")]
         public IEnumerable<string> Categories { get; set; }
     }

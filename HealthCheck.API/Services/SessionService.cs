@@ -31,7 +31,7 @@ namespace HealthCheck.API.Services
         public async Task<Session> Get(string id)
         {
             var docId = new ObjectId(id);
-            return await repository.Single<Session>(session => session._id == docId);
+            return await repository.Single<Session>(session => session._id.Equals(docId));
         }
 
         public async Task<Session> GetBySessionKey(string sessionKey)

@@ -10,9 +10,9 @@ $(document).ready(() => {
     chatHub.start().then(() => {
 
     })
-        .catch(err => {
-            return console.error(err.toString());
-        });
+    .catch(err => {
+        return console.error(err.toString());
+    });
 
     $("#sendButton").click(event => {
         var user = $("#userInput").value;

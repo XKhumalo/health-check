@@ -19,10 +19,19 @@ namespace HealthCheck.Web.Pages.Sessions
         [BindProperty]
         public string UserId { get; set; }
 
-
-        public void OnGet(string userId)
+        public IndexModel(SessionController sessionController)
         {
-            UserId = userId;
+            this.sessionController = sessionController;
+        }
+
+        public async Task<IActionResult> OnPostLogin()
+        {
+            var session = await sessionController.GetBySessionKey(SessionKey);
+            if (!session.IsOpen && !session.IsComplete) return RedirectToPage("/Error");
+            else
+            {
+                return RedirectToPage("/WaitingRoom", new { sessionId = session._id });
+            }
         }
     }
 }

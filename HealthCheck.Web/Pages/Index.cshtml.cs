@@ -32,18 +32,17 @@ namespace HealthCheck.Web.Pages
 
         public async Task<IActionResult> OnPostLogin()
         {
-            var existingUser = await authenticationService.GetUserAsync(LoginUserViewModel.Username, LoginUserViewModel.Password);
-            return RedirectToPage("/Sessions/Index", new { userId = existingUser._id }).AddCookie(HttpContext.Response, "user", existingUser._id.ToString());
+            var activeDirectoryUser = authenticationService.GetADUser(LoginUserViewModel.Username, LoginUserViewModel.Password);
+            if (activeDirectoryUser != null)
+            {
+                var dbUser = await userController.GetByEmail(activeDirectoryUser.Email);
+                if (dbUser == null)
+                {
+                    dbUser = await userController.Create(dbUser);
+                }
+                return RedirectToPage("/Sessions/Index").AddCookie(HttpContext.Response, "user", dbUser._id.ToString());
+            }
+            return RedirectToPage("/Error");
         }
-
-        //public async Task<IActionResult> OnPostLogin()
-        //{
-        //    var existingUser = await userController.GetByEmail(UserViewModel.Email);
-        //    if (existingUser == null)
-        //    {
-        //        await userController.Create(UserViewModel);
-        //    }
-        //    return RedirectToPage("/Sessions/Index", new { userId = existingUser._id });
-        //}
     }
 }

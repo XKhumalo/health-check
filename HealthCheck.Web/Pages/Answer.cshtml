@@ -5,9 +5,6 @@
 }
 
 <div class="container">
-    <h1>Sent by @Model.SentBy</h1>
-</div>
-<div class="container">
     <div class="card-deck mb-3 text-center">
         <div class="card mb-4 box-shadow">
             <div class="card-header">
@@ -21,7 +18,7 @@
                     <li>Email support</li>
                     <li>Help center access</li>
                 </ul>
-                <a id="btn_bad" data-send_to="@Model.SentBy" class="btn btn-lg btn-block btn-danger">Bad</a>
+                <a data-send_to="@Model.AdminId" data-answer="bad" class="btn btn-lg btn-block btn-danger answer">Bad</a>
             </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -36,7 +33,7 @@
                     <li>Priority email support</li>
                     <li>Help center access</li>
                 </ul>
-                <a id="btn_neutral" class="btn btn-lg btn-block btn-warning">Meh</a>
+                <a data-send_to="@Model.AdminId" data-answer="neutral" class="btn btn-lg btn-block btn-neutral answer">Neutral</a>
             </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -51,7 +48,7 @@
                     <li>Phone and email support</li>
                     <li>Help center access</li>
                 </ul>
-                <a id="btn_good" class="btn btn-lg btn-block btn-success">Awesome</a>
+                <a data-send_to="@Model.AdminId" data-answer="good" class="btn btn-lg btn-block btn-success answer">Good</a>
             </div>
         </div>
     </div>

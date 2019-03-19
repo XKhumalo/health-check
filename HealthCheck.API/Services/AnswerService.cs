@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
@@ -37,6 +38,11 @@ namespace HealthCheck.API.Services
         public async Task<IEnumerable<Answer>> Get(List<string> ids)
         {
             return await repository.List<Answer>(a => ids.Contains(a._id.ToString()));
+        }
+
+        public async Task<IEnumerable<Answer>> Get(Expression<Func<Answer, bool>> exp)
+        {
+            return await repository.List<Answer>(exp);
         }
 
         public async Task<IEnumerable<Answer>> GetAll()

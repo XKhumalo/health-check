@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HealthCheck.API.Services;
 using HealthCheck.Model;
@@ -28,7 +29,14 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Answer>> Get()
+        public async Task<IEnumerable<Answer>> Get(Expression<Func<Answer, bool>> exp)
+        {
+            return await answerService.Get(exp);
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IEnumerable<Answer>> GetAll()
         {
             return await answerService.GetAll();
         }

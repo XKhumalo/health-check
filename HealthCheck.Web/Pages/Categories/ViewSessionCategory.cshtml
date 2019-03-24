@@ -1,0 +1,57 @@
+﻿@page
+@model HealthCheck.Web.Pages.Categories.ViewSessionCategoryModel
+@{
+    ViewData["Title"] = "ViewSessionCategory";
+}
+
+<div class="container">
+    @if (Model.IsAuthorized)
+    {
+        <h4 class="h4">Category Details</h4>
+        <main role="main" class="container">
+            <table class="table table-bordered m-3">
+                <tbody>
+                    <tr>
+                        <td>Session Key</td>
+                        <td>@Model.SessionViewModel.SessionKey</td>
+                    </tr>
+                    <tr>
+                        <td>Category</td>
+                        <td>@Model.CategoryViewModel.Description</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="starter-template">
+                <h1>@Model.CategoryViewModel.Name</h1>
+                <p class="lead">@Model.CategoryViewModel.Description</p>
+            </div>
+
+
+            <h4 class="h4">Answers</h4>
+            <table id="answersList" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">User</th>
+                        <th scope="col">Answer</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </main>
+    }
+    else
+    {
+        <h1>You are not authorized to view this page</h1>
+    }
+</div>
+
+@section Scripts
+    {
+    <environment include="Development">
+        <script type="text/javascript" src="~/js/viewsessioncategory.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" src="~/js/viewsessioncategory.min.js"></script>
+    </environment>
+}

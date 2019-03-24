@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using HealthCheck.API.Controllers;
 using HealthCheck.API.Services;
@@ -27,12 +28,12 @@ namespace HealthCheck.Web.Pages
             this.answerController = answerController;
         }
         
-        public async Task OnGet(string sessionId)
+        public async Task OnGet(string sessionKey)
         {
-            var userId = Request.Cookies["user"];
-            SessionViewModel = await sessionController.GetById(sessionId);
+            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
+            SessionViewModel = await sessionController.GetBySessionKey(sessionKey);
             CategoriesViewModel = await categoryController.GetByIds(SessionViewModel.Categories);
-            AnswersViewModel = await answerController.Get(a => a.SessionId.Equals(sessionId) && a.UserId.Equals(userId));
+            AnswersViewModel = await answerController.Get(a => a.SessionId.Equals(SessionViewModel._id.ToString()) && a.UserId.Equals(userId));
         }
     }
 }

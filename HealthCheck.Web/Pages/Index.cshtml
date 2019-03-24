@@ -3,16 +3,22 @@
 
 <div class="container">
     <form class="form-signin" method="post">
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <div class="form-group">
+        <div class="row">
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        </div>
+        <div class="form-group row">
             <label asp-for="LoginUserViewModel.Username"></label>
             <input asp-for="LoginUserViewModel.Username" type="email" class="form-control" placeholder="Enter your Domain email address">
         </div>
-        <div class="form-group">
+        <div class="form-group row">
             <label asp-for="LoginUserViewModel.Password"></label>
-            <input asp-for="LoginUserViewModel.Password" type="password" class="form-control" placeholder="Enter your Doamin password">
+            <input asp-for="LoginUserViewModel.Password" type="password" class="form-control" placeholder="Enter your Domain password">
+            <small class="form-text text-muted">Don't worry, I can't see it at all</small>
         </div>
-        <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-        <p class="mt-5 mb-3 text-muted"></p>
+        <div class="row justify-content-center mt-5">
+            <div class="col-3">
+                <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+            </div>
+        </div>
     </form>
 </div>

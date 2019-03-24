@@ -1,13 +1,11 @@
 ﻿@page
 @model HealthCheck.Web.Pages.WaitingRoomModel
 @{
-    ViewData["Title"] = "WaitingRoom";
+    ViewData["Title"] = "Waiting Room";
 }
 
-<h1>WaitingRoom</h1>
-
 <div class="container">
-    <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
+    <h3 id="sessionkey">Session Key: @Model.SessionViewModel.SessionKey</h3>
     @if (Model.SessionViewModel.IsComplete)
     {
         <div class="alert alert-danger">Session is closed</div>
@@ -40,22 +38,22 @@
                             @foreach (var category in Model.CategoriesViewModel)
                             {
                                 var answer = Model.AnswersViewModel.FirstOrDefault(a => a.CategoryId.Equals(category._id));
-                            <tr>
-                                <td>@category.Name</td>
-                                <td>@category.Description</td>
-                                @if (answer != null)
-                                {
-                                    <td>
-                                        @answer.CategoryChosen.ToString()
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        -
-                                    </td>
-                                }
-                            </tr>
+                                <tr>
+                                    <td>@category.Name</td>
+                                    <td>@category.Description</td>
+                                    @if (answer != null)
+                                    {
+                                        <td>
+                                            @answer.CategoryChosen.ToString()
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            -
+                                        </td>
+                                    }
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -64,3 +62,13 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+    {
+    <environment include="Development">
+        <script type="text/javascript" src="~/js/waitingroom.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" src="~/js/waitingroom.min.js"></script>
+    </environment>
+}

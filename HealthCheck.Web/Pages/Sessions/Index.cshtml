@@ -6,15 +6,30 @@
 
 <div class="container">
     <form class="form-joinsession" method="post">
-        <h1 class="h3 mb-3 font-weight-normal">Join a session</h1>
-        <div class="form-group">
+        <div class="row">
+            <h1 class="h3 mb-3 font-weight-normal">Join a session</h1>
+        </div>
+        <div class="form-group row">
             <label for="sessionKey"></label>
             <input asp-for="SessionKey" type="text" class="form-control" placeholder="Enter the session Key">
         </div>
-        <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+        <div class="row justify-content-center mt-2">
+            <div class="col-3">
+                <button id="join-session" class="btn btn-lg btn-primary btn-block">Join</button>
+            </div>
+            <div class="col-3">
+                <a asp-page="/Sessions/CreateSession" class="btn btn-lg btn-secondary btn-block">Create a session</a>
+            </div>
+        </div>
     </form>
-    <a asp-page="/Sessions/CreateSession" asp-route-userid="@Model.UserId">Create a session</a>
-    <a asp-page="/Sessions/ViewSessions" asp-route-userid="@Model.UserId">View my sessions</a>
 </div>
 
-
+@section Scripts
+    {
+    <environment include="Development">
+        <script type="text/javascript" src="~/js/sessionindex.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" src="~/js/sessionindex.min.js"></script>
+    </environment>
+}

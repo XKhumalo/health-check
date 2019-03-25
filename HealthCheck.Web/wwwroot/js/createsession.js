@@ -4,8 +4,8 @@ $(document).ready(() => {
     var sessionHub = new signalR.HubConnectionBuilder().withUrl("/sessionHub").build();
 
     sessionHub.start().catch(function (err) {
-            return console.error(err.toString());
-        });
+        return console.error(err.toString());
+    });
 
 
     $("#join-session").click(async (event) => {

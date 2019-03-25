@@ -7,12 +7,32 @@ $(document).ready(() => {
         return console.error(err.toString());
     });
     
-    $(".answer").click(event => {
-        const sessionKey = $(event.target).data("sessionKey");
+    $(".answer").click(async (event) => {
         const name = $(event.target).data("name");
+        const userId = $(event.target).data("user");
+        const categoryId = $(event.target).data("category");
+        const sessionId = $(event.target).data("session");
         const answer = $(event.target).data("answer");
-        answerHub.invoke("SendAnswer", sessionKey, name, answer).catch(err => {
-            return console.log(err.toString());
+        const admin = $(event.target).data("admin");
+        $.ajax({
+            contentType: 'application/json',
+            type: "POST",
+            data: JSON.stringify({
+                UserId: userId,
+                SessionId: sessionId,
+                CategoryId: categoryId,
+                CategoryChosen: answer
+            }),
+            url: "api/answer",
+            success: (data, textStatus, jqXHR) => {
+                answerHub.invoke("SendAnswer", sessionKey, name, answer).catch(err => {
+                    return console.log(err.toString());
+                });
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                
+            }
         });
+        
     });
 });

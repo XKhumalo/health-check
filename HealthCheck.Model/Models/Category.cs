@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 
 namespace HealthCheck.Model
 {
+    [DataContract]
     public class Category : MongoEntity
     {
         [DataMember]

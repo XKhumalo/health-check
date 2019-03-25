@@ -7,6 +7,7 @@ using System.Text;
 
 namespace HealthCheck.Model
 {
+    [DataContract]
     public class User : MongoEntity
     {
         [DataMember]

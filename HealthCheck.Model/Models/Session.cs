@@ -8,6 +8,7 @@ using HealthCheck.Common;
 
 namespace HealthCheck.Model
 {
+    [DataContract]
     public class Session : MongoEntity
     {
         [DataMember]

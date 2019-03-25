@@ -8,9 +8,9 @@ namespace HealthCheck.Web.Hubs
 {
     public class CategoryHub : Hub
     {
-        public async Task BroadcastCategory(string sessionKey, string categoryId)
+        public async Task BroadcastCategory(string sessionId, string categoryId)
         {
-            await Clients.OthersInGroup(sessionKey).SendAsync("ReceiveCategory", Context.ConnectionId, sessionKey, categoryId);
+            await Clients.Others.SendAsync("ReceiveCategory", Context.UserIdentifier, sessionId, categoryId);
         }
     }
 }

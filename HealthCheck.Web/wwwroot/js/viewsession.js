@@ -7,14 +7,14 @@ $(document).ready(() => {
         return console.error(err.toString());
     });
 
-    $("#ask").click(event => {
+    $("#ask").click(async (event) => {
         event.preventDefault();
         var btn = event.target;
         var categoryId = $(btn).data("category");
         var sessionId = $(btn).data("session");
-        categoryHub.invoke("BroadcastCategory", sessionId, categoryId)
+        await categoryHub.invoke("BroadcastCategory", sessionId, categoryId)
             .then(() => {
-                window.location = `ViewSessionCategory?sessionId=${sessionId}&categoryId=${categoryId}`;
+                window.location = `/Categories/ViewSessionCategory?sessionId=${sessionId}&categoryId=${categoryId}`;
             })
             .catch(err => {
                 return console.error(err.toString());

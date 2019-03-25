@@ -7,7 +7,7 @@ $(document).ready(() => {
         return console.error(err.toString());
     });
 
-    categoryHub.on("ReceiveCategory", (adminId, sessionKey, categoryId) => {
-        window.location = `Answer?adminId=${adminId}&sessionKey=${sessionKey}&categoryId=${categoryId}`;
+    categoryHub.on("ReceiveCategory", (adminId, sessionId, categoryId) => {
+        window.location = `Answer?adminId=${adminId}&sessionId=${sessionId}&categoryId=${categoryId}`;
     });
 });

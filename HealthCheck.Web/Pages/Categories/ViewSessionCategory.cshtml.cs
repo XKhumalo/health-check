@@ -14,15 +14,17 @@ namespace HealthCheck.Web.Pages.Categories
     {
         private readonly SessionController sessionController;
         private readonly CategoryController categoryController;
+        private readonly AnswerController answerController;
 
         public Session SessionViewModel { get; set; }
         public Category CategoryViewModel { get; set; }
         public bool IsAuthorized { get; set; }
 
-        public ViewSessionCategoryModel(SessionController sessionController, CategoryController categoryController)
+        public ViewSessionCategoryModel(SessionController sessionController, CategoryController categoryController, AnswerController answerController)
         {
             this.sessionController = sessionController;
             this.categoryController = categoryController;
+            this.answerController = answerController;
         }
 
         public async Task OnGet(string sessionId, string categoryId)
@@ -34,6 +36,14 @@ namespace HealthCheck.Web.Pages.Categories
                 IsAuthorized = true;
             }
             CategoryViewModel = await categoryController.GetById(categoryId);
+        }
+
+        public async Task<IActionResult> OnPostClose([FromBody] List<Answer> answers)
+        {
+            var a = await answerController.CreateList(answers);
+
+
+            return RedirectToPage("/ViewSession");
         }
     }
 }

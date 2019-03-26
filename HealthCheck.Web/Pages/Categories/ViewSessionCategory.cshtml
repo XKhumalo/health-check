@@ -7,7 +7,6 @@
 <div class="container">
     @if (Model.IsAuthorized)
     {
-        <h4 class="h4">Category Details</h4>
         <main role="main" class="container">
             <table class="table table-bordered m-3">
                 <tbody>
@@ -16,18 +15,15 @@
                         <td>@Model.SessionViewModel.SessionKey</td>
                     </tr>
                     <tr>
-                        <td>Category</td>
+                        <td>Category Name</td>
+                        <td>@Model.CategoryViewModel.Name</td>
+                    </tr>
+                    <tr>
+                        <td>Category Description</td>
                         <td>@Model.CategoryViewModel.Description</td>
                     </tr>
                 </tbody>
             </table>
-
-            <div class="starter-template">
-                <h1>@Model.CategoryViewModel.Name</h1>
-                <p class="lead">@Model.CategoryViewModel.Description</p>
-            </div>
-
-
             <h4 class="h4">Answers</h4>
             <table id="answersList" class="table table-bordered">
                 <thead>
@@ -38,6 +34,13 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            <div class="row justify-content-center mt-5">
+                <div class="col-3">
+                    <form id="join-session-form" method="post">
+                        <button id="close" data-sessionkey="@Model.SessionViewModel.SessionKey" data-sessionid="@Model.SessionViewModel._id.ToString()" class="btn btn-lg btn-primary btn-block">Close Category</button>
+                    </form>
+                </div>
+            </div>
         </main>
     }
     else

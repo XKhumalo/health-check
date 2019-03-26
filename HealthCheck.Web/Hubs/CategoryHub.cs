@@ -12,5 +12,10 @@ namespace HealthCheck.Web.Hubs
         {
             await Clients.Others.SendAsync("ReceiveCategory", Context.UserIdentifier, sessionId, categoryId);
         }
+
+        public async Task CloseCategory(string sessionKey)
+        {
+            await Clients.Others.SendAsync("BackToWaitingRoom", sessionKey);
+        }
     }
 }

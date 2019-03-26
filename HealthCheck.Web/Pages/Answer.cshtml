@@ -5,7 +5,14 @@
 }
 
 <div class="container">
-    <div class="card-deck mb-3 text-center">
+    <div class="row">
+        <h1 class="h1">@Model.CategoryViewModel.Name</h1>
+    </div>
+    <div class="row">
+        <h3 class="h3">@Model.CategoryViewModel.Description</h3>
+    </div>
+    <hr />
+    <div class="row card-deck mb-3 text-center">
         <div class="card mb-4 box-shadow">
             <div class="card-header">
                 <h4 class="my-0 font-weight-normal">Red</h4>
@@ -16,8 +23,8 @@
                    data-name="@Model.UserViewModel.Name"
                    data-user="@Model.UserViewModel._id.ToString()"
                    data-category="@Model.CategoryViewModel._id.ToString()"
-                   data-session="@Model.SessionViewModel._id.ToString()"  
-                   data-answer="bad" class="btn btn-lg btn-block btn-danger answer">Bad</a>
+                   data-session="@Model.SessionViewModel._id.ToString()"
+                   data-answer="red" class="btn btn-lg btn-block btn-danger answer">Red</a>
             </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -30,8 +37,8 @@
                    data-name="@Model.UserViewModel.Name"
                    data-user="@Model.UserViewModel._id.ToString()"
                    data-category="@Model.CategoryViewModel._id.ToString()"
-                   data-session="@Model.SessionViewModel._id.ToString()" 
-                   data-answer="neutral" class="btn btn-lg btn-block btn-warning answer">Neutral</a>
+                   data-session="@Model.SessionViewModel._id.ToString()"
+                   data-answer="neutral" class="btn btn-lg btn-block btn-warning answer">Amber</a>
             </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -45,8 +52,13 @@
                    data-user="@Model.UserViewModel._id.ToString()"
                    data-category="@Model.CategoryViewModel._id.ToString()"
                    data-session="@Model.SessionViewModel._id.ToString()"
-                   data-answer="good" class="btn btn-lg btn-block btn-success answer">Good</a>
+                   data-answer="green" class="btn btn-lg btn-block btn-success answer">Green</a>
             </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div id="answerSubmitted" class="alert alert-success" role="alert">
+            Your answer has been submitted
         </div>
     </div>
 </div>

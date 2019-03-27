@@ -11,6 +11,8 @@ using HealthCheck.Web.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.Extensions;
+using HealthCheck.Model.Models;
 
 namespace HealthCheck.Web.Pages
 {
@@ -39,14 +41,22 @@ namespace HealthCheck.Web.Pages
 
         public async Task<IActionResult> OnPostLogin()
         {
-            var activeDirectoryUser = authenticationService.GetADUser(LoginUserViewModel.Username, LoginUserViewModel.Password);
+            User activeDirectoryUser = null;
+            try
+            {
+                activeDirectoryUser = authenticationService.GetADUser(LoginUserViewModel.Username, LoginUserViewModel.Password);
+            }
+            catch (Exception e)
+            {
+                return RedirectToPage("/Error", new { ReturnUrl = "/Index", ErrorMessage = "Incorrect Email or Password." });
+            }
             if (activeDirectoryUser != null)
             {
                 User dbUser = await GetDatabaseUser(activeDirectoryUser);
                 await SignInClaimsUser(dbUser);
                 return RedirectToPage("/Sessions/Index");
             }
-            return RedirectToPage("/Error");
+            return RedirectToPage("/Error", new { ReturnUrl = "/Index", ErrorMessage = "Something went wrong." });
         }
         
         private async Task<User> GetDatabaseUser(User activeDirectoryUser)

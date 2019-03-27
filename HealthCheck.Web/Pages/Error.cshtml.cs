@@ -17,7 +17,9 @@ namespace HealthCheck.Web.Pages
 
         public string ErrorMessage { get; set; }
 
-        public void OnGet(string errorMessage)
+        public string ReturnUrl { get; set; }
+
+        public void OnGet(string returnUrl, string errorMessage)
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
             this.ErrorMessage = errorMessage;

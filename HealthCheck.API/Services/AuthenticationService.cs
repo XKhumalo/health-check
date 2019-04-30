@@ -27,14 +27,14 @@ namespace HealthCheck.API.Services
 
         public User GetADUser(string username, string password)
         {
-            if (config.GetValue<string>("Environment").Equals("Development"))
-            {
-                return new User()
-                {
-                    Name = "Xolani",
-                    Email = username
-                };
-            }
+            //if (config.GetValue<string>("Environment").Equals("Development"))
+            //{
+            //    return new User()
+            //    {
+            //        Name = "Xolani",
+            //        Email = username
+            //    };
+            //}
             var isAuthenticated = false;
             var contextName = string.Empty;
 

@@ -35,11 +35,13 @@
                                 <th scope="col">Description</th>
                                 <th scope="col">Green</th>
                                 <th scope="col">Red</th>
+                                <th scope="col">Answers</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var category in Model.CategoriesViewModel)
                             {
+                                int categoryAnswers = Model.Answers.Count(a => a.CategoryId == category._id.ToString());
                                 <tr>
                                     <td>@category.Name</td>
                                     <td>@category.Description</td>
@@ -48,14 +50,14 @@
                                     @if (Model.SessionViewModel.IsOpen)
                                     {
                                         <td>
-                                            <button id="ask"
-                                                    data-session="@Model.SessionViewModel._id.ToString()"
+                                            <button data-session="@Model.SessionViewModel._id.ToString()"
                                                     data-category="@category._id.ToString()"
-                                                    class="btn btn-info">
+                                                    class="btn btn-info ask">
                                                 Ask Category
                                             </button>
                                         </td>
                                     }
+                                    <td>@categoryAnswers</td>
                                 </tr>
                             }
                         </tbody>

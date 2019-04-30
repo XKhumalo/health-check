@@ -15,27 +15,33 @@ namespace HealthCheck.Web.Pages.Categories
         private readonly SessionController sessionController;
         private readonly CategoryController categoryController;
         private readonly AnswerController answerController;
+        private readonly UserController userController;
 
-        public Session SessionViewModel { get; set; }
-        public Category CategoryViewModel { get; set; }
+        public Session Session { get; set; }
+        public Category Category { get; set; }
+        public IEnumerable<Answer> Answers { get; set; }
+        public IEnumerable<User> Users { get; set; }
         public bool IsAuthorized { get; set; }
 
-        public ViewSessionCategoryModel(SessionController sessionController, CategoryController categoryController, AnswerController answerController)
+        public ViewSessionCategoryModel(SessionController sessionController, CategoryController categoryController, AnswerController answerController, UserController userController)
         {
             this.sessionController = sessionController;
             this.categoryController = categoryController;
             this.answerController = answerController;
+            this.userController = userController;
         }
 
         public async Task OnGet(string sessionId, string categoryId)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
-            SessionViewModel = await sessionController.GetById(sessionId);
-            if (SessionViewModel.CreatedBy.Equals(userId))
+            Session = await sessionController.GetById(sessionId);
+            if (Session.CreatedBy.Equals(userId))
             {
                 IsAuthorized = true;
             }
-            CategoryViewModel = await categoryController.GetById(categoryId);
+            Category = await categoryController.GetById(categoryId);
+            Answers = await answerController.Get(a => a.CategoryId.Equals(categoryId) && a.SessionId.Equals(sessionId));
+            Users = await userController.Get();
         }
 
         public async Task<IActionResult> OnPostClose([FromBody] List<Answer> answers)

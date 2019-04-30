@@ -48,6 +48,13 @@ namespace HealthCheck.API.Controllers
             {
                 return null;
             }
+            var existingAnswer = await answerService.Get(a => a.CategoryId.Equals(answer.CategoryId) && a.SessionId.Equals(answer.SessionId) && a.UserId.Equals(answer.UserId));
+            if (existingAnswer != null)
+            {
+                await answerService.Update(existingAnswer.FirstOrDefault()._id.ToString(), answer);
+                answer._id = existingAnswer.FirstOrDefault()._id;
+                return answer;
+            }
             return await answerService.Create(answer);
         }
 

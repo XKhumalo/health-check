@@ -7,7 +7,7 @@ $(document).ready(() => {
         return console.error(err.toString());
     });
 
-    $("#ask").click(async (event) => {
+    $(".ask").click(async (event) => {
         event.preventDefault();
         var btn = event.target;
         var categoryId = $(btn).data("category");

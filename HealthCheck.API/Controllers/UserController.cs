@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HealthCheck.API.Services;
 using HealthCheck.Model;
@@ -23,6 +24,12 @@ namespace HealthCheck.API.Controllers
         public async Task<IEnumerable<User>> Get()
         {
             return await userService.Get();
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<User>> Get(Expression<Func<User, bool>> exp)
+        {
+            return await userService.Get(exp);
         }
 
         [HttpGet("{id:length(24)}")]

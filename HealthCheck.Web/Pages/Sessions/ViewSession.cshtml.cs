@@ -15,6 +15,7 @@ namespace HealthCheck.Web.Pages.Sessions
         private readonly SessionController sessionController;
         private readonly UserController userController;
         private readonly CategoryController categoryController;
+        private readonly AnswerController answerController;
 
         [BindProperty]
         public Session SessionViewModel { get; set; }
@@ -22,14 +23,17 @@ namespace HealthCheck.Web.Pages.Sessions
         public User UserViewModel { get; set; }
         [BindProperty]
         public IEnumerable<Category> CategoriesViewModel { get; set; }
+        [BindProperty]
+        public IEnumerable<Answer> Answers { get; set; }
 
         public bool IsAuthorized { get; set; }
 
-        public ViewSessionModel(SessionController sessionController, CategoryController categoryController, UserController userController)
+        public ViewSessionModel(SessionController sessionController, CategoryController categoryController, UserController userController, AnswerController answerController)
         {
             this.sessionController = sessionController;
             this.categoryController = categoryController;
             this.userController = userController;
+            this.answerController = answerController;
         }
 
         public async Task OnGet(string sessionId)
@@ -46,6 +50,7 @@ namespace HealthCheck.Web.Pages.Sessions
             {
                 RedirectToPage("/Error");
             }
+            Answers = await answerController.Get(a => a.SessionId == sessionId);
         }
 
         public async Task<IActionResult> OnPostStart(string sessionId)

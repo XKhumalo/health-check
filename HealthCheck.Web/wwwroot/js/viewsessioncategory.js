@@ -33,9 +33,8 @@ $(document).ready(() => {
     $("#close").click(event => {
         event.preventDefault();
         var btn = event.target;
-        var sessionKey = $(btn).data("sessionkey");
         var sessionId = $(btn).data("sessionid");
-        categoryHub.invoke("CloseCategory", sessionKey)
+        categoryHub.invoke("CloseCategory")
             .then(() => {
                 window.location = "/Sessions/ViewSession?sessionId=" + sessionId;
             })
@@ -44,4 +43,17 @@ $(document).ready(() => {
         });
     });
 
+    $(".ask").click(async (event) => {
+        event.preventDefault();
+        var btn = event.target;
+        var categoryId = $(btn).data("category");
+        var sessionId = $(btn).data("session");
+        await categoryHub.invoke("BroadcastCategory", sessionId, categoryId)
+            .then(() => {
+                window.location = `/Categories/ViewSessionCategory?sessionId=${sessionId}&categoryId=${categoryId}`;
+            })
+            .catch(err => {
+                return console.error(err.toString());
+            });
+    });
 });

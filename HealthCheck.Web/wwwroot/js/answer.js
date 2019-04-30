@@ -3,6 +3,11 @@
 $(document).ready(() => {
     var answerHub = new signalR.HubConnectionBuilder().withUrl("/answerHub").build();
     var categoryHub = new signalR.HubConnectionBuilder().withUrl("/categoryHub").build();
+
+    let categoryId = '';
+    let sessionId = '';
+    let answer = '';
+
     $("#answerSubmitted").hide();
 
     answerHub.start().catch(function (err) {
@@ -16,20 +21,21 @@ $(document).ready(() => {
     $(".answer").click(async (event) => {
         const name = $(event.target).data("name");
         const userId = $(event.target).data("user");
-        const categoryId = $(event.target).data("category");
-        const sessionId = $(event.target).data("session");
-        const answer = $(event.target).data("answer");
+        categoryId = $(event.target).data("category");
+        sessionId = $(event.target).data("session");
+        answer = $(event.target).data("answer");
         const admin = $(event.target).data("admin");
         answerHub.invoke("SendAnswer", userId, name, categoryId, sessionId, answer, admin)
             .then(() => {
                 $("#answerSubmitted").show();
+                $(".answer").prop("disabled", true);
             })
             .catch(err => {
             return console.log(err.toString());
         });
     });
 
-    categoryHub.on("BackToWaitingRoom", sessionKey => {
-        window.location = "WaitingRoom?sessionKey=" + sessionKey;
+    categoryHub.on("BackToWaitingRoom", () => {
+        window.location = `/SaveAnswer?categoryId=${categoryId}&sessionId=${sessionId}&answer=${answer}`;
     });
 });

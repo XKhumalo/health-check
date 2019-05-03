@@ -46,6 +46,7 @@ namespace HealthCheck.Web
             services.AddScoped<SessionService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<AuthenticationService>();
+            services.AddScoped<ExcelExportService>();
             services.AddSignalR();
 
         }

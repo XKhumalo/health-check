@@ -47,8 +47,14 @@ namespace HealthCheck.API
         {
             if (env.IsDevelopment())
             {
-
+                app.UseDeveloperExceptionPage();
             }
+
+            if (env.IsProduction() || env.IsStaging())
+            {
+                app.UseExceptionHandler("/Error");
+            }
+
             app.UseCors("CorsPolicy");
 
             app.UseMvc(routes =>

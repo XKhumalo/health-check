@@ -15,10 +15,12 @@ namespace HealthCheck.API.Controllers
     public class AnswerController : Controller
     {
         private readonly AnswerService answerService;
+        private readonly ExcelExportService excelExportService;
 
-        public AnswerController(AnswerService answerService)
+        public AnswerController(AnswerService answerService, ExcelExportService excelExportService)
         {
             this.answerService = answerService;
+            this.excelExportService = excelExportService;
         }
 
         [HttpGet("{id:length(24)}")]
@@ -49,7 +51,7 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
             var existingAnswer = await answerService.Get(a => a.CategoryId.Equals(answer.CategoryId) && a.SessionId.Equals(answer.SessionId) && a.UserId.Equals(answer.UserId));
-            if (existingAnswer != null)
+            if (existingAnswer.Any())
             {
                 await answerService.Update(existingAnswer.FirstOrDefault()._id.ToString(), answer);
                 answer._id = existingAnswer.FirstOrDefault()._id;
@@ -85,6 +87,20 @@ namespace HealthCheck.API.Controllers
             var answer = await answerService.Get(id);
             await answerService.Remove(answer._id);
         }
-        
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(string currentSessionId)
+        {            
+            var answers = await answerService.Get(x => x.SessionId == currentSessionId);            
+
+            ExcelExportService.StringReplacementDelegate headingReplacer = s =>
+            {
+                return excelExportService.PascalToSpacedString(s);
+            };
+
+            var fileName = "Answers.xlsx";
+            return File(excelExportService.ExportToExcel(answers.ToList(), "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
+        }
     }
 }

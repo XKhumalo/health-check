@@ -5,17 +5,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace HealthCheck.API.Services
 {
     public class ExcelExportService
     {
-        protected const string ExcelMimeType = @"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-        // Make sure that the default constructor is not used
-        [Obsolete("Please specify an argument", true)]
-        private ExcelExportService() { }
+        public const string ExcelMimeType = @"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
         public byte[] ExportToExcel<T>(IEnumerable<T> items, string worksheetName, bool useSpacedColumnHeaders = false, ExcelExportService.StringReplacementDelegate columnHeaderReplacer = null)
         {
@@ -133,21 +130,10 @@ namespace HealthCheck.API.Services
             }
         }
 
-        //TODO: Find how Entelect implemented this
-        private string PascalToSpacedString(string str)
+        public string PascalToSpacedString(string input)
         {
-            return str;
-        }
-
-        public ExcelExportService(string workSheetName, string pathToSaveFile)
-        {
-            // Creates a blank workbook. Use the using statements, so the package is disposed when complete.
-            using (var excelPackage = new ExcelPackage())
-            {
-                var worksheet = excelPackage.Workbook.Worksheets.Add(workSheetName);
-                worksheet.Cells["A1"].Value = $"{workSheetName} - {DateTime.Now:YYYY:MMM:dd}";
-                excelPackage.SaveAs(new FileInfo($"{pathToSaveFile}\\{workSheetName}.xlsx"));
-            }
+            const string PascalCaseSplit = @"([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))";
+            return Regex.Replace(input, PascalCaseSplit, "$1 ");
         }
 
         public delegate string StringReplacementDelegate(string stringToBeReplaced);

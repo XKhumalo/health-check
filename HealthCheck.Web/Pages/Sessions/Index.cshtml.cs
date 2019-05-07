@@ -32,7 +32,7 @@ namespace HealthCheck.Web.Pages.Sessions
             }
             else
             {
-                return RedirectToPage("/WaitingRoom", new { sessionId = session._id });
+                return RedirectToPage("/WaitingRoom", new { sessionId = session.SessionId });
             }
         }
     }

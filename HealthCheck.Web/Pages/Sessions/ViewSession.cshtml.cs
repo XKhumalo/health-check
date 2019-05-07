@@ -24,6 +24,8 @@ namespace HealthCheck.Web.Pages.Sessions
         [BindProperty]
         public IEnumerable<Category> CategoriesViewModel { get; set; }
         [BindProperty]
+        public IEnumerable<SessionCategory> SessionCategoriesViewModel { get; set; }
+        [BindProperty]
         public IEnumerable<Answer> Answers { get; set; }
 
         public bool IsAuthorized { get; set; }
@@ -36,45 +38,48 @@ namespace HealthCheck.Web.Pages.Sessions
             this.answerController = answerController;
         }
 
-        public async Task OnGet(string sessionId)
+        public async Task OnGet(int sessionId)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
-            UserViewModel = await userController.GetById(userId);
-            SessionViewModel = await sessionController.GetById(sessionId);
-            if (SessionViewModel.CreatedBy.Equals(userId))
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            UserViewModel = userController.GetById(userId);
+            SessionViewModel = sessionController.GetById(sessionId);
+            SessionCategoriesViewModel = sessionController.GetSessionCategories(sessionId);
+
+            if (SessionViewModel.CreatedById == userId)
             {
                 IsAuthorized = true;
-                CategoriesViewModel = await categoryController.GetByIds(SessionViewModel.Categories);
+                var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
+                CategoriesViewModel = categoryController.GetByIds(categoryIds);
             }
             else
             {
                 RedirectToPage("/Error");
             }
-            Answers = await answerController.Get(a => a.SessionId == sessionId);
+            Answers = answerController.Get(a => a.SessionId == sessionId);
         }
 
-        public async Task<IActionResult> OnPostStart(string sessionId)
+        public IActionResult OnPostStart(int sessionId)
         {
-            var session = await sessionController.GetById(sessionId);
+            var session = sessionController.GetById(sessionId);
             session.IsOpen = true;
             session.IsComplete = false;
             session.StartTime = DateTime.Now;
-            await sessionController.Update(sessionId, session);
+            sessionController.Update(session);
             return RedirectToPagePermanent("/Sessions/ViewSession", new { sessionId });
         }
 
-        public async Task<ActionResult> OnPostExportToExcel(string sessionId)
+        public async Task<ActionResult> OnPostExportToExcel(int sessionId)
         {
             return await answerController.ExportSessionsAnswersToExcelAsync(sessionId);
         }
 
-        public async Task<IActionResult> OnPostClose(string sessionId)
+        public async Task<IActionResult> OnPostClose(int sessionId)
         {
-            var session = await sessionController.GetById(sessionId);
+            var session = sessionController.GetById(sessionId);
             session.IsOpen = false;
             session.IsComplete = true;
             session.EndTime = DateTime.Now;
-            await sessionController.Update(sessionId, session);
+            sessionController.Update(session);
             return RedirectToPagePermanent("/Sessions/ViewSession", new { sessionId });
         }
     }

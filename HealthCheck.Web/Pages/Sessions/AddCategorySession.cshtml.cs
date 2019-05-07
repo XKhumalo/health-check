@@ -26,13 +26,13 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task OnGet(string sessionId)
         {
-            var allCategories = await categoryController.Get();
-            Session = await sessionController.GetById(sessionId);
-            if (Session.Categories != null)
-            {
-                ChosenCategories = allCategories.Where(c => Session.Categories.Contains(c._id.ToString()));
-                AvailableCategories = allCategories.Where(c => !Session.Categories.Contains(c._id.ToString()));
-            }
+            //var allCategories = await categoryController.Get();
+            //Session = await sessionController.GetById(sessionId);
+            //if (Session.Categories != null)
+            //{
+            //    ChosenCategories = allCategories.Where(c => Session.Categories.Contains(c._id.ToString()));
+            //    AvailableCategories = allCategories.Where(c => !Session.Categories.Contains(c._id.ToString()));
+            //}
         }
     }
 }

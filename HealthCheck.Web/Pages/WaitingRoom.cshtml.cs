@@ -20,6 +20,7 @@ namespace HealthCheck.Web.Pages
         public Session SessionViewModel;
         public IEnumerable<Category> CategoriesViewModel;
         public IEnumerable<Answer> AnswersViewModel;
+        public IEnumerable<SessionCategory> SessionCategoriesViewModel { get; set; }
 
         public WaitingRoomModel(SessionController sessionController, CategoryController categoryController, AnswerController answerController)
         {
@@ -30,10 +31,12 @@ namespace HealthCheck.Web.Pages
         
         public async Task OnGet(string sessionKey)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             SessionViewModel = await sessionController.GetBySessionKey(sessionKey);
-            CategoriesViewModel = await categoryController.GetByIds(SessionViewModel.Categories);
-            AnswersViewModel = await answerController.Get(a => a.SessionId.Equals(SessionViewModel._id.ToString()) && a.UserId.Equals(userId));
+            SessionCategoriesViewModel = sessionController.GetSessionCategories(SessionViewModel.SessionId);
+            var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
+            CategoriesViewModel = categoryController.GetByIds(categoryIds);
+            AnswersViewModel = answerController.Get(a => a.SessionId == SessionViewModel.SessionId && a.UserId == userId);
         }
     }
 }

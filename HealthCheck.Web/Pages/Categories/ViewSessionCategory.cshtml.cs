@@ -31,23 +31,22 @@ namespace HealthCheck.Web.Pages.Categories
             this.userController = userController;
         }
 
-        public async Task OnGet(string sessionId, string categoryId)
+        public async Task OnGet(int sessionId, int categoryId)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
-            Session = await sessionController.GetById(sessionId);
-            if (Session.CreatedBy.Equals(userId))
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            Session = sessionController.GetById(sessionId);
+            if (Session.CreatedById == userId)
             {
                 IsAuthorized = true;
             }
-            Category = await categoryController.GetById(categoryId);
-            Answers = await answerController.Get(a => a.CategoryId.Equals(categoryId) && a.SessionId.Equals(sessionId));
-            Users = await userController.Get();
+            Category = categoryController.GetById(categoryId);
+            Answers = answerController.Get(a => a.CategoryId == categoryId && a.SessionId == sessionId);
+            Users = userController.Get();
         }
 
         public async Task<IActionResult> OnPostClose([FromBody] List<Answer> answers)
         {
             var a = await answerController.CreateList(answers);
-
 
             return RedirectToPage("/ViewSession");
         }

@@ -33,26 +33,24 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task OnGet(string sessionId)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
-            UserViewModel = await userController.GetById(userId);
-            SessionsViewModel = await sessionController.GetByCreatedById(userId);
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            UserViewModel = userController.GetById(userId);
+            SessionsViewModel = sessionController.GetByCreatedById(userId);
         }
 
         public async Task<IActionResult> OnPostCreate()
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
-            var categories = await categoryController.Get();
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             var newSession = new Session()
             {
-                CreatedBy = userId,
-                Categories = categories.Select(c => c._id.ToString()),
+                CreatedById = userId,
                 DateCreated = DateTime.Now,
                 IsComplete = false,
                 IsOpen = false,
                 SessionKey = Helpers.RandomString(6, false)
             };
             var createdSession = await sessionController.Create(newSession);
-            return RedirectToPage("/Sessions/ViewSession", new { sessionId = createdSession._id.ToString() });
+            return RedirectToPage("/Sessions/ViewSession", new { sessionId = createdSession.SessionId });
         }
     }
 }

@@ -74,8 +74,8 @@ namespace HealthCheck.Web.Pages
         {
             var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Sid, dbUser._id.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, dbUser._id.ToString()),
+                    new Claim(ClaimTypes.Sid, dbUser.UserId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, dbUser.UserId.ToString()),
                     new Claim(ClaimTypes.Name, dbUser.Name),
                     new Claim(ClaimTypes.Email, dbUser.Email)
                 };

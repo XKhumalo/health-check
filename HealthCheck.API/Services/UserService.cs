@@ -1,6 +1,5 @@
 ﻿using HealthCheck.Model;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
+using HealthCheck.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,45 +8,50 @@ using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
-    public class UserService 
+    public class UserService
     {
-        private readonly Repository.Repository repository;
+        private readonly IEFRepository<User> repository;
+        private readonly DatabaseContext databaseContext;
 
-        public UserService(IConfiguration config)
+        public UserService(IEFRepository<User> repository, DatabaseContext databaseContext)
         {
-            repository = new Repository.Repository(config.GetConnectionString("HealthCheckDB"), "healthcheck");
+            this.repository = repository;
+            this.databaseContext = databaseContext;
         }
 
         public async Task<User> Create(User user)
         {
-            await repository.Insert<User>(user);
-            return user;
+            return await repository.Create(user);
         }
 
-        public async Task<IEnumerable<User>> Get()
+        public IEnumerable<User> GetAll()
         {
-            return await repository.List<User>();
+            return databaseContext.Users.ToList();
         }
 
-        public async Task<IEnumerable<User>> Get(Expression<Func<User, bool>> exp)
+        public IEnumerable<User> GetUsers(Expression<Func<User, bool>> where)
         {
-            return await repository.List<User>(exp);
+            return databaseContext.Users.Where(where);
         }
 
-        public async Task<User> GetById(string id)
+        public User GetById(int id)
         {
-            var docId = new ObjectId(id);
-            return await repository.Single<User>(user => user._id == docId);
+            return databaseContext.Users.SingleOrDefault(u => u.UserId == id);
         }
 
-        public async Task<User> GetByName(string name)
+        public async Task<User> SingleOrDefault(Expression<Func<User, bool>> where)
         {
-            return await repository.Single<User>(u => u.Name.Equals(name));
+            return await repository.SingleOrDefault(where);
         }
 
-        public async Task<User> GetByEmail(string email)
+        public async Task<User> FirstOrDefault(Expression<Func<User, bool>> where)
         {
-            return await repository.Single<User>(u => u.Email.Equals(email));
+            return await repository.FirstOrDefault(where);
+        }
+
+        public void SaveChanges()
+        {
+            databaseContext.SaveChanges();
         }
     }
 }

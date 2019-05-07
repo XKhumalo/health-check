@@ -1,7 +1,5 @@
 ﻿using HealthCheck.Model;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using HealthCheck.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,74 +10,72 @@ namespace HealthCheck.API.Services
 {
     public class AnswerService
     {
-        private readonly Repository.Repository repository;
+        private readonly IEFRepository<Answer> repository;
+        private readonly DatabaseContext databaseContext;
 
-        public AnswerService(IConfiguration config)
+        public AnswerService(IEFRepository<Answer> repository, DatabaseContext databaseContext)
         {
-            repository = new Repository.Repository(config.GetConnectionString("HealthCheckDB"), "healthcheck");
+            this.repository = repository;
+            this.databaseContext = databaseContext;
         }
 
-        public async Task<Answer> Get(string id)
+        public async Task<Answer> GetById(int id)
         {
-            var docId = new ObjectId(id);
-            return await repository.Single<Answer>(a => a._id == docId);
+            return await repository.Get(id);
         }
 
-        public async Task<Answer> Get(Answer answer)
+        public async Task<Answer> SingleOrDefault(Expression<Func<Answer, bool>> where)
         {
-            return await repository.Single<Answer>(a =>
-                        a.CategoryChosen.Equals(answer.CategoryChosen) &&
-                        a.CategoryId.Equals(answer.CategoryId) &&
-                        a.SessionId.Equals(answer.SessionId) &&
-                        a.UserId.Equals(answer.UserId)
-                    );
+            return await repository.SingleOrDefault(where);
         }
 
-        public async Task<IEnumerable<Answer>> Get(List<string> ids)
+        public async Task<Answer> FirstOrDefault(Expression<Func<Answer, bool>> where)
         {
-            return await repository.List<Answer>(a => ids.Contains(a._id.ToString()));
+            return await repository.FirstOrDefault(where);
         }
 
-        public async Task<IEnumerable<Answer>> Get(Expression<Func<Answer, bool>> exp)
+        public async Task<Answer> GetAnswer(Answer answer)
         {
-            return await repository.List<Answer>(exp);
+            return await repository.SingleOrDefault(a => a.AnswerId == answer.AnswerId
+                        //&& a.AnswerOptions == answer.AnswerOptions
+                        && a.CategoryId == answer.CategoryId
+                        && a.SessionId == answer.SessionId
+                        && a.UserId == answer.UserId);
         }
 
-        public async Task<IEnumerable<Answer>> GetAll()
+        public async Task<ICollection<Answer>> GetAll()
         {
-            return await repository.List<Answer>(a => a._id != null);
+            return await repository.GetAll();
+        }
+
+        public IQueryable<Answer> GetAnswers(Expression<Func<Answer, bool>> where)
+        {
+            return databaseContext.Answers.Where(where);
         }
 
         public async Task<Answer> Create(Answer answer)
         {
-            await repository.Insert<Answer>(answer);
-            return answer;
+            return await repository.Create(answer);
         }
 
         public async Task<IEnumerable<Answer>> Create(IEnumerable<Answer> answers)
         {
-            await repository.InsertMany<Answer>(answers);
-            return answers;
+            return await repository.CreateMany(answers);
         }
 
-        public async Task Update(string id, Answer answer)
+        public async Task<Answer> Update(Answer answer)
         {
-            var docId = new ObjectId(id);
-            await repository.Update<Answer>(id, answer);
+            return await repository.Update(answer);
         }
 
-        public async Task Remove(Answer answer)
+        public void Delete(Answer answer)
         {
-            var docId = new ObjectId(answer._id.ToString());
-            answer.IsDeleted = true;
-            await repository.Update<Answer>(docId, answer);
+            repository.Delete(answer);
         }
 
-        public async Task Remove(ObjectId id)
+        public void SaveChanges()
         {
-            var answer = await repository.Single<Answer>(a => a._id == id);
-            answer.IsDeleted = true;
-            await repository.Update<Answer>(id, answer);
+            repository.SaveChanges();
         }
     }
 }

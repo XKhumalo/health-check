@@ -1,6 +1,5 @@
 ﻿using HealthCheck.Model;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
+using HealthCheck.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,45 +10,55 @@ namespace HealthCheck.API.Services
 {
     public class CategoryService
     {
-        private readonly Repository.Repository repository;
+        private readonly IEFRepository<Category> repository;
+        private readonly DatabaseContext databaseContext;
 
-        public CategoryService(IConfiguration config)
+        public CategoryService(IEFRepository<Category> repository, DatabaseContext databaseContext)
         {
-            repository = new Repository.Repository(config.GetConnectionString("HealthCheckDB"), "healthcheck");
+            this.repository = repository;
+            this.databaseContext = databaseContext;
         }
 
         public async Task<Category> Create(Category category)
         {
-            await repository.Insert<Category>(category);
-            return category;
+            return await repository.Create(category);
         }
 
         public async Task<IEnumerable<Category>> GetAll()
         {
-            return await repository.List<Category>();
+            return await repository.GetAll();
         }
 
-        public async Task<Category> Get(string id)
+        public IEnumerable<Category> GetCategories(Expression<Func<Category, bool>> where)
         {
-            var docId = new ObjectId(id);
-            return await repository.Single<Category>(category => category._id.Equals(docId));
+            return databaseContext.Categories.Where(where);
         }
 
-        public async Task<IEnumerable<Category>> Get(IEnumerable<string> ids)
+        public IEnumerable<Category> GetCategories(IEnumerable<int> ids)
         {
-            var docIds = ids.Select(i => new ObjectId(i));
-            return await repository.List<Category>(c => docIds.Contains(c._id));
+            var listOfCategoryIds = databaseContext.Categories.Select(s => s.CategoryId);
+            return databaseContext.Categories.Where(c => listOfCategoryIds.Contains(c.CategoryId));
         }
 
-        public async Task Delete(Category category)
+        public Category GetById(int id)
         {
-            await repository.Delete<Category>(category);
+            return databaseContext.Categories.SingleOrDefault(x => x.CategoryId == id);
         }
 
-        public async Task Update(string id, Category category)
+        public async Task<Category> SingleOrDefault(Expression<Func<Category, bool>> where)
         {
-            var docId = new ObjectId(id);
-            await repository.Update<Category>(id, category);
+            return await repository.SingleOrDefault(where);
+        }
+
+        public void Delete(Category category)
+        {
+            repository.Delete(category);
+        }
+
+        public async Task<Category> Update(Category category)
+        {
+            await repository.Update(category);
+            return category;
         }
     }
 }

@@ -1,58 +1,74 @@
 ﻿using HealthCheck.Model;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
+using HealthCheck.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
     public class SessionService
     {
-        private readonly Repository.Repository repository;
+        private readonly IEFRepository<Session> repository;
+        private readonly DatabaseContext databaseContext;
 
-        public SessionService(IConfiguration config)
+        public SessionService(IEFRepository<Session> repository, DatabaseContext databaseContext)
         {
-            repository = new Repository.Repository(config.GetConnectionString("HealthCheckDB"), "healthcheck");
+            this.repository = repository;
+            this.databaseContext = databaseContext;
+        }
+
+        public Session GetById(int id)
+        {
+            return databaseContext.Sessions.SingleOrDefault(s => s.SessionId == id);
+        }
+
+        public async Task<Session> SingleOrDefault(Expression<Func<Session, bool>> where)
+        {
+            return await repository.SingleOrDefault(where);
+        }
+
+        public async Task<Session> FirstOrDefault(Expression<Func<Session, bool>> where)
+        {
+            return await repository.FirstOrDefault(where);
+        }
+
+        public async Task<ICollection<Session>> GetAll()
+        {
+            return await repository.GetAll();
+        }
+
+        public IQueryable<Session> GetSessions(Expression<Func<Session, bool>> where)
+        {
+            return databaseContext.Sessions.Where(where);
         }
 
         public async Task<Session> Create(Session session)
         {
-            await repository.Insert<Session>(session);
-            return session;
+            return await repository.Create(session);
         }
 
-        public async Task<IEnumerable<Session>> GetAll()
+        public async Task<IEnumerable<Session>> Create(IEnumerable<Session> sessions)
         {
-            return await repository.List<Session>();
+            return await repository.CreateMany(sessions);
         }
 
-        public async Task<Session> Get(string id)
+        public Session Update(Session session)
         {
-            var docId = new ObjectId(id);
-            return await repository.Single<Session>(session => session._id.Equals(docId));
+            var persistedSession =  databaseContext.Sessions.Update(session);
+            databaseContext.SaveChanges();
+            return persistedSession.Entity;
         }
 
-        public async Task<Session> GetBySessionKey(string sessionKey)
+        public void Delete(Session session)
         {
-            return await repository.Single<Session>(session => session.SessionKey.Equals(sessionKey));
+            repository.Delete(session);
         }
 
-        public async Task<IEnumerable<Session>> GetByCreatedById(string createdById)
+        public void SaveChanges()
         {
-            return await repository.List<Session>(session => session.CreatedBy.Equals(createdById));
-        }
-
-        public async Task Delete(Session session)
-        {
-            await repository.Delete<Session>(session);
-        }
-
-        public async Task Update(string id, Session session)
-        {
-            var docId = new ObjectId(id);
-            await repository.Update<Session>(id, session);
+            repository.SaveChanges();
         }
     }
 }

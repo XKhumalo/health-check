@@ -1,32 +1,30 @@
 ﻿using HealthCheck.Model.Enums;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using System.Text;
+using System.ComponentModel.DataAnnotations.Schema;
+using HealthCheck.Model.Models;
 
 namespace HealthCheck.Model
 {
-    public class Answer : MongoEntity
+    public class Answer
     {
-        [BsonElement("UserId")]
-        [Display(Name = "UserId")]
-        [BsonRequired]
-        [Required]
-        public string UserId { get; set; }
-        
-        [BsonElement("SessionId")]
-        [Display(Name = "SessionId")]
-        public string SessionId { get; set; }
-        
-        [BsonElement("CategoryId")]
-        [Display(Name = "CategoryId")]
-        public string CategoryId { get; set; }
-        
-        [BsonElement("CategoryChosen")]
-        [Display(Name = "CategoryChosen")]
-        public AnswerOption CategoryChosen { get; set; }
+        [Key]
+        public int AnswerId { get; set; }
 
+        [Required]
+        public int UserId { get; set; }
+        
+        public int SessionId { get; set; }
+        
+        public int CategoryId { get; set; }
+
+        public int AnswerOptionId { get; set; }
+
+        public User User { get; set; }
+        public Session Session { get; set; }
+        public Category Category { get; set; }
+
+        [ForeignKey("AnswerOptionId")]
+        public AnswerOption AnswerOption { get; set; }
+        //public AnswerOptions AnswerOptions { get; set; }
     }
 }

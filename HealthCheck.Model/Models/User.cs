@@ -1,32 +1,18 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace HealthCheck.Model
 {
     [DataContract]
-    public class User : MongoEntity
+    public class User
     {
-        [DataMember]
-        [BsonElement("Name")]
-        [Display(Name = "Name")]
-        [BsonRequired]
-        [Required]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserId { get; set; }
+
         public string Name { get; set; }
 
-        [DataMember]
-        [BsonElement("Email")]
-        [Display(Name = "Email")]
-        [BsonRequired]
-        [Required]
         public string Email { get; set; }
-
-        [DataMember]
-        [BsonElement("Token")]
-        [Display(Name = "Token")]
-        public string Token { get; set; }
     }
 }

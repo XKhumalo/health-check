@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using HealthCheck.API.Models;
 using HealthCheck.API.Services;
 using HealthCheck.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -25,15 +24,15 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<Answer> GetById(string id)
+        public async Task<Answer> GetById(int id)
         {
-            return await answerService.Get(id);
+            return await answerService.GetById(id);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Answer>> Get(Expression<Func<Answer, bool>> exp)
+        public IEnumerable<Answer> Get(Expression<Func<Answer, bool>> exp)
         {
-            return await answerService.Get(exp);
+            return answerService.GetAnswers(exp);
         }
 
         [HttpGet]
@@ -50,14 +49,10 @@ namespace HealthCheck.API.Controllers
             {
                 return null;
             }
-            var existingAnswer = await answerService.Get(a => a.CategoryId.Equals(answer.CategoryId) && a.SessionId.Equals(answer.SessionId) && a.UserId.Equals(answer.UserId));
-            if (existingAnswer.Any())
-            {
-                await answerService.Update(existingAnswer.FirstOrDefault()._id.ToString(), answer);
-                answer._id = existingAnswer.FirstOrDefault()._id;
-                return answer;
-            }
-            return await answerService.Create(answer);
+
+            await answerService.Create(answer);
+            answerService.SaveChanges();
+            return answer;
         }
 
         [HttpPost]
@@ -69,38 +64,60 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            return await answerService.Create(answers);
+            await answerService.Create(answers);
+            answerService.SaveChanges();
+            return answers;
         }
 
         [HttpPut("{id}")]
-        public async Task Update(string id, [FromBody] Answer answerIn)
+        public async Task Update(int id, [FromBody] Answer answerIn)
         {
-            var answer = await answerService.Get(id);
-            answerIn._id = new MongoDB.Bson.ObjectId(id);
-            answerIn.SessionId = answer.SessionId;
-            await answerService.Update(id, answerIn);
+            await answerService.Update(answerIn);
+            answerService.SaveChanges();
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(string id)
+        public async Task Delete(int id)
         {
-            var answer = await answerService.Get(id);
-            await answerService.Remove(answer._id);
+            var answer = await answerService.GetById(id);
+            answerService.Delete(answer);
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(string currentSessionId)
+        public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
-            var answers = await answerService.Get(x => x.SessionId == currentSessionId);            
+            var answers = answerService.GetAnswers(x => x.SessionId == currentSessionId);
+
+            List<AnswerReportItem> reportItems = new List<AnswerReportItem>();
+            foreach (var answer in answers)
+            {
+                var reportItem = new AnswerReportItem()
+                {
+                    AnsweredBy = answer.UserId.ToString(),
+                    Answer = answer.AnswerId.ToString(),
+                    Category = answer.CategoryId.ToString()
+                };
+                reportItems.Add(reportItem);
+            }
 
             ExcelExportService.StringReplacementDelegate headingReplacer = s =>
             {
-                return excelExportService.PascalToSpacedString(s);
+                switch (s)
+                {
+                    case "CategoryChosen":
+                        return "Answer";
+                    case "CategoryId":
+                        return "Category";
+                    case "UserId":
+                        return "User";
+                    default:
+                        return excelExportService.PascalToSpacedString(s);
+                }                
             };
 
             var fileName = "Answers.xlsx";
-            return File(excelExportService.ExportToExcel(answers.ToList(), "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
+            return File(excelExportService.ExportToExcel(reportItems, "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
         }
     }
 }

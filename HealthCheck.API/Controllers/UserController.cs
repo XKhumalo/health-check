@@ -1,12 +1,10 @@
-﻿using System;
+﻿using HealthCheck.API.Services;
+using HealthCheck.Model;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using HealthCheck.API.Services;
-using HealthCheck.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCheck.API.Controllers
 {
@@ -21,36 +19,36 @@ namespace HealthCheck.API.Controllers
             this.userService = userService;
         }
 
-        public async Task<IEnumerable<User>> Get()
+        public IEnumerable<User> Get()
         {
-            return await userService.Get();
+            return userService.GetAll();
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> Get(Expression<Func<User, bool>> exp)
+        public IEnumerable<User> Get(Expression<Func<User, bool>> exp)
         {
-            return await userService.Get(exp);
+            return userService.GetUsers(exp);
         }
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<User> GetById(string id)
+        public User GetById(int id)
         {
-            return await userService.GetById(id);
+            return userService.GetById(id);
         }
 
         [HttpGet("{name}")]
         [Route("[action]")]
         public async Task<User> GetByName(string name)
         {
-            return await userService.GetByName(name);
+            return await userService.SingleOrDefault(u => u.Name.Contains(name));
         }
 
         [HttpGet("{email}")]
         [Route("[action]")]
         public async Task<User> GetByEmail(string email)
         {
-            return await userService.GetByEmail(email);
+            return await userService.SingleOrDefault(u => u.Email.Contains(email));
         }
 
         [HttpPost]
@@ -61,7 +59,9 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            return await userService.Create(user);
+            var persistedUser = await userService.Create(user);
+            userService.SaveChanges();
+            return persistedUser;
         }
     }
 }

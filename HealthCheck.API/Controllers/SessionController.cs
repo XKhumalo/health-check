@@ -1,11 +1,9 @@
-﻿using System;
+﻿using HealthCheck.API.Services;
+using HealthCheck.Model;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HealthCheck.API.Services;
-using HealthCheck.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HealthCheck.API.Controllers
 {
@@ -14,17 +12,19 @@ namespace HealthCheck.API.Controllers
     public class SessionController : ControllerBase
     {
         private readonly SessionService sessionService;
+        private readonly SessionCategoryService sessionCategoryService;
 
-        public SessionController(SessionService sessionService)
+        public SessionController(SessionService sessionService, SessionCategoryService sessionCategoryService)
         {
             this.sessionService = sessionService;
+            this.sessionCategoryService = sessionCategoryService;
         }
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<Session> GetById(string id)
+        public Session GetById(int id)
         {
-            return await sessionService.Get(id);
+            return sessionService.GetById(id);
         }
 
         [HttpGet]
@@ -37,14 +37,21 @@ namespace HealthCheck.API.Controllers
         [Route("[action]")]
         public async Task<Session> GetBySessionKey(string sessionKey)
         {
-            return await sessionService.GetBySessionKey(sessionKey);
+            return await sessionService.SingleOrDefault(s => s.SessionKey.Contains(sessionKey));
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public async Task<IEnumerable<Session>> GetByCreatedById(string createdById)
+        public IEnumerable<Session> GetByCreatedById(int createdById)
         {
-            return await sessionService.GetByCreatedById(createdById);
+            return sessionService.GetSessions(s => s.CreatedById == createdById);
+        }
+
+        [HttpGet("{key}")]
+        [Route("[action]")]
+        public IEnumerable<SessionCategory> GetSessionCategories(int sessionId)
+        {
+            return sessionCategoryService.GetSessionCategoriesBySessionId(sessionId);
         }
 
         [HttpPost]
@@ -55,50 +62,54 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            return await sessionService.Create(session);
+            var savedSession = await sessionCategoryService.CreateSession(session);
+            var categories = await sessionCategoryService.GetCategories();
+            var categoryIds = categories.Select(c => c.CategoryId);
+            sessionCategoryService.CreateSessionCategory(savedSession, categoryIds);
+            sessionCategoryService.SaveChanges();
+            return session;
+        }
+
+        [HttpPost]
+        public IEnumerable<SessionCategory> CreateSessionCategories([FromBody] Session session)
+        {
+            if (!ModelState.IsValid || session == null)
+            {
+                return null;
+            }
+
+            return sessionCategoryService.CreateSessionCategory(session);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, Session sessionIn)
+        public IActionResult Update(Session sessionIn)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var session = sessionService.Get(id);
-
-            if (session == null)
-            {
-                return NotFound();
-            }
-
-            if (!sessionIn._id.ToString().Equals(id))
-            {
-                sessionIn._id = new MongoDB.Bson.ObjectId(id);
-            }
-
-            await sessionService.Update(id, sessionIn);
+            sessionService.Update(sessionIn);
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var session = await sessionService.Get(id);
+            var session = sessionService.GetById(id);
 
             if (session == null)
             {
                 return NotFound();
             }
 
-            await sessionService.Delete(session);
+            sessionService.Delete(session);
 
             return NoContent();
 

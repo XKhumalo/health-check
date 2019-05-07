@@ -1,4 +1,5 @@
 using HealthCheck.API.Services;
+using HealthCheck.Repository;
 using HealthCheck.Web.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.Web
 {
@@ -39,16 +41,19 @@ namespace HealthCheck.Web
                 options.MinimumSameSitePolicy = SameSiteMode.Strict;
             });
 
-
             services.AddMvc().AddControllersAsServices();
+            services.AddTransient(typeof(IEFRepository<>), typeof(EFRepository<>));
             services.AddScoped<AnswerService>();
             services.AddScoped<UserService>();
             services.AddScoped<SessionService>();
             services.AddScoped<CategoryService>();
+            services.AddScoped<SessionCategoryService>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<ExcelExportService>();
             services.AddSignalR();
 
+            var connection = Configuration.GetConnectionString("SQLConnectionString");
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

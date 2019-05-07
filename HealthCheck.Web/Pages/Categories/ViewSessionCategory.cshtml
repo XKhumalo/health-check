@@ -34,8 +34,8 @@
                         @foreach (var answer in Model.Answers)
                         {
                             <tr>
-                                <td class="user-email">@Model.Users.FirstOrDefault(u => u._id.ToString().Equals(answer.UserId)).Email</td>
-                                <td class="user-answer">@answer.CategoryChosen.ToString()</td>
+                                <td class="user-email">@Model.Users.FirstOrDefault(u => u.UserId.Equals(answer.UserId)).Email</td>
+                                <td class="user-answer">@answer.AnswerOptionId</td>
                             </tr>
                         }
                     </tbody>
@@ -43,7 +43,7 @@
                 <div class="row justify-content-center mt-5">
                     <div class="col-3">
                         <form id="join-session-form" method="post">
-                            <button id="close" data-sessionkey="@Model.Session.SessionKey" data-sessionid="@Model.Session._id.ToString()" class="btn btn-lg btn-primary btn-block">Close Category</button>
+                            <button id="close" data-sessionkey="@Model.Session.SessionKey" data-sessionid="@Model.Session.SessionId" class="btn btn-lg btn-primary btn-block">Close Category</button>
                         </form>
                     </div>
                 </div>

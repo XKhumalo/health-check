@@ -4,29 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
-    public class CategoryService
+    public class CategoryRepository
     {
-        private readonly IEFRepository<Category> repository;
         private readonly DatabaseContext databaseContext;
 
-        public CategoryService(IEFRepository<Category> repository, DatabaseContext databaseContext)
+        public CategoryRepository(DatabaseContext databaseContext)
         {
-            this.repository = repository;
             this.databaseContext = databaseContext;
         }
 
-        public async Task<Category> Create(Category category)
+        public IEnumerable<Category> GetAll()
         {
-            return await repository.Create(category);
-        }
-
-        public async Task<IEnumerable<Category>> GetAll()
-        {
-            return await repository.GetAll();
+            return databaseContext.Categories.ToList();
         }
 
         public IEnumerable<Category> GetCategories(Expression<Func<Category, bool>> where)
@@ -45,20 +37,33 @@ namespace HealthCheck.API.Services
             return databaseContext.Categories.SingleOrDefault(x => x.CategoryId == id);
         }
 
-        public async Task<Category> SingleOrDefault(Expression<Func<Category, bool>> where)
+        public Category SingleOrDefault(Expression<Func<Category, bool>> where)
         {
-            return await repository.SingleOrDefault(where);
+            return databaseContext.Categories.SingleOrDefault(where);
+        }
+        public Category Create(Category category)
+        {
+            var persistedCategory = databaseContext.Categories.Add(category);
+            SaveChanges();
+            return persistedCategory.Entity;
+        }
+
+        public Category Update(Category category)
+        {
+            databaseContext.Categories.Update(category);
+            SaveChanges();
+            return category;
         }
 
         public void Delete(Category category)
         {
-            repository.Delete(category);
+            databaseContext.Categories.Remove(category);
+            SaveChanges();
         }
 
-        public async Task<Category> Update(Category category)
+        public void SaveChanges()
         {
-            await repository.Update(category);
-            return category;
+            databaseContext.SaveChanges();
         }
     }
 }

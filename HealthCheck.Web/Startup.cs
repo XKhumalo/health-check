@@ -46,7 +46,7 @@ namespace HealthCheck.Web
             services.AddScoped<AnswerRepository>();
             services.AddScoped<UserRepository>();
             services.AddScoped<SessionService>();
-            services.AddScoped<CategoryService>();
+            services.AddScoped<CategoryRepository>();
             services.AddScoped<SessionCategoryService>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<ExcelExportService>();

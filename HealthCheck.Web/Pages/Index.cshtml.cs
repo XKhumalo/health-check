@@ -52,20 +52,16 @@ namespace HealthCheck.Web.Pages
             }
             if (activeDirectoryUser != null)
             {
-                User dbUser = await GetDatabaseUser(activeDirectoryUser);
+                User dbUser = GetDatabaseUser(activeDirectoryUser);
                 await SignInClaimsUser(dbUser);
                 return RedirectToPage("/Sessions/Index");
             }
             return RedirectToPage("/Error", new { ReturnUrl = "/Index", ErrorMessage = "Something went wrong." });
         }
         
-        private async Task<User> GetDatabaseUser(User activeDirectoryUser)
+        private User GetDatabaseUser(User activeDirectoryUser)
         {
-            var dbUser = await userController.GetByEmail(activeDirectoryUser.Email);
-            if (dbUser == null)
-            {
-                dbUser = await userController.Create(activeDirectoryUser);
-            }
+            var dbUser = userController.GetByEmail(activeDirectoryUser.Email) ?? userController.Create(activeDirectoryUser);
 
             return dbUser;
         }

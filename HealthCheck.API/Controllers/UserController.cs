@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -12,9 +11,9 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private readonly UserService userService;
+        private readonly UserRepository userService;
 
-        public UserController(UserService userService)
+        public UserController(UserRepository userService)
         {
             this.userService = userService;
         }
@@ -39,27 +38,27 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{name}")]
         [Route("[action]")]
-        public async Task<User> GetByName(string name)
+        public User GetByName(string name)
         {
-            return await userService.SingleOrDefault(u => u.Name.Contains(name));
+            return userService.SingleOrDefault(u => u.Name.Contains(name));
         }
 
         [HttpGet("{email}")]
         [Route("[action]")]
-        public async Task<User> GetByEmail(string email)
+        public User GetByEmail(string email)
         {
-            return await userService.SingleOrDefault(u => u.Email.Contains(email));
+            return userService.SingleOrDefault(u => u.Email.Contains(email));
         }
 
         [HttpPost]
-        public async Task<User> Create([FromBody] User user)
+        public User Create([FromBody] User user)
         {
             if (user == null)
             {
                 return null;
             }
 
-            var persistedUser = await userService.Create(user);
+            var persistedUser = userService.Create(user);
             userService.SaveChanges();
             return persistedUser;
         }

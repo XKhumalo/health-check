@@ -44,7 +44,7 @@ namespace HealthCheck.Web
             services.AddMvc().AddControllersAsServices();
             services.AddTransient(typeof(IEFRepository<>), typeof(EFRepository<>));
             services.AddScoped<AnswerRepository>();
-            services.AddScoped<UserService>();
+            services.AddScoped<UserRepository>();
             services.AddScoped<SessionService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<SessionCategoryService>();

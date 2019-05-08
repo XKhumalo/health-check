@@ -1,11 +1,9 @@
-﻿using HealthCheck.API.Models;
-using HealthCheck.API.Services;
+﻿using HealthCheck.API.Services;
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -13,20 +11,20 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class AnswerController : Controller
     {
-        private readonly AnswerService answerService;
+        private readonly AnswerRepository answerService;
         private readonly ExcelExportService excelExportService;
 
-        public AnswerController(AnswerService answerService, ExcelExportService excelExportService)
+        public AnswerController(AnswerRepository answerService, ExcelExportService excelExportService)
         {
             this.answerService = answerService;
             this.excelExportService = excelExportService;
         }
 
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{id}")]
         [Route("[action]")]
-        public async Task<Answer> GetById(int id)
+        public Answer GetById(int id)
         {
-            return await answerService.GetById(id);
+            return answerService.GetById(id);
         }
 
         [HttpGet]
@@ -35,68 +33,59 @@ namespace HealthCheck.API.Controllers
             return answerService.GetAnswers(exp);
         }
 
-        [HttpGet]
-        [Route("[action]")]
-        public async Task<IEnumerable<Answer>> GetAll()
-        {
-            return await answerService.GetAll();
-        }
-
         [HttpPost]
-        public async Task<Answer> Create([FromBody] Answer answer)
+        public Answer Create([FromBody] Answer answer)
         {
             if (answer == null)
             {
                 return null;
             }
 
-            await answerService.Create(answer);
-            answerService.SaveChanges();
-            return answer;
+            var persistedAnswer = answerService.Create(answer);
+            return persistedAnswer;
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IEnumerable<Answer>> CreateList([FromBody] IEnumerable<Answer> answers)
+        public IEnumerable<Answer> CreateList([FromBody] IEnumerable<Answer> answers)
         {
             if (answers == null)
             {
                 return null;
             }
 
-            await answerService.Create(answers);
-            answerService.SaveChanges();
-            return answers;
+            var persistedAnswers = answerService.Create(answers);
+            return persistedAnswers;
         }
 
         [HttpPut("{id}")]
-        public async Task Update(int id, [FromBody] Answer answerIn)
+        public Answer Update(int id, [FromBody] Answer answerIn)
         {
-            await answerService.Update(answerIn);
-            answerService.SaveChanges();
+            var updatedAnswer = answerService.Update(answerIn);
+            return updatedAnswer;
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        public void Delete(int id)
         {
-            var answer = await answerService.GetById(id);
+            var answer = answerService.GetById(id);
             answerService.Delete(answer);
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(int currentSessionId)
+        public ActionResult ExportSessionsAnswersToExcel(int currentSessionId)
         {            
             var answers = answerService.GetAnswers(x => x.SessionId == currentSessionId);
 
-            List<AnswerReportItem> reportItems = new List<AnswerReportItem>();
+            var reportItems = new List<AnswerReportItem>();
             foreach (var answer in answers)
             {
                 var reportItem = new AnswerReportItem()
                 {
                     AnsweredBy = answer.UserId.ToString(),
                     Answer = answer.AnswerId.ToString(),
-                    Category = answer.CategoryId.ToString()
+                    CategoryName = answer.CategoryId.ToString()
                 };
                 reportItems.Add(reportItem);
             }
@@ -116,7 +105,7 @@ namespace HealthCheck.API.Controllers
                 }                
             };
 
-            var fileName = "Answers.xlsx";
+            var fileName = $"Health Check Answers{DateTime.Today}.xlsx";
             return File(excelExportService.ExportToExcel(reportItems, "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
         }
     }

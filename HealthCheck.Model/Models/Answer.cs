@@ -13,10 +13,13 @@ namespace HealthCheck.Model
         [Required]
         public int UserId { get; set; }
         
+        [Required]
         public int SessionId { get; set; }
         
+        [Required]
         public int CategoryId { get; set; }
 
+        [Required]
         public int AnswerOptionId { get; set; }
 
         public User User { get; set; }

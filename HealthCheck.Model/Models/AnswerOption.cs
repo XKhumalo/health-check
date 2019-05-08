@@ -10,8 +10,10 @@ namespace HealthCheck.Model.Models
         [Key]
         public int AnswerOptionId { get; set; }
 
+        [Required]
         public string Option { get; set; }
 
+        [Required]
         public string Description { get; set; }
     }
 }

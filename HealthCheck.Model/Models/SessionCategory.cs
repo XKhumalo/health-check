@@ -10,9 +10,11 @@ namespace HealthCheck.Model
         public int SessionCategoryId { get; set; }
 
         [ForeignKey("Session")]
+        [Required]
         public int SessionId { get; set; }
 
         [ForeignKey("Category")]
+        [Required]
         public int CategoryId { get; set; }
 
         public Session Session { get; set; }

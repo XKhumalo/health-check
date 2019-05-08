@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -25,14 +24,17 @@ namespace HealthCheck.Model
 
         [Display(Name = "Start Time")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
         public DateTime? StartTime { get; set; }
 
         [Display(Name = "End Time")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
         public DateTime? EndTime { get; set; }
 
         [Display(Name = "Created Date")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
         public DateTime DateCreated { get; set; }
 
         [Display(Name = "Is Complete")]

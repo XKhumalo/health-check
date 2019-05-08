@@ -29,10 +29,10 @@ namespace HealthCheck.Web.Pages
             this.answerController = answerController;
         }
         
-        public async Task OnGet(string sessionKey)
+        public void OnGet(string sessionKey)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
-            SessionViewModel = await sessionController.GetBySessionKey(sessionKey);
+            SessionViewModel = sessionController.GetBySessionKey(sessionKey);
             SessionCategoriesViewModel = sessionController.GetSessionCategories(SessionViewModel.SessionId);
             var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
             CategoriesViewModel = categoryController.GetByIds(categoryIds);

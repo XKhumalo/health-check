@@ -31,14 +31,14 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public async Task OnGet(string sessionId)
+        public void OnGet(string sessionId)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             UserViewModel = userController.GetById(userId);
             SessionsViewModel = sessionController.GetByCreatedById(userId);
         }
 
-        public async Task<IActionResult> OnPostCreate()
+        public IActionResult OnPostCreate()
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             var newSession = new Session()
@@ -49,7 +49,7 @@ namespace HealthCheck.Web.Pages.Sessions
                 IsOpen = false,
                 SessionKey = Helpers.RandomString(6, false)
             };
-            var createdSession = await sessionController.Create(newSession);
+            var createdSession = sessionController.Create(newSession);
             return RedirectToPage("/Sessions/ViewSession", new { sessionId = createdSession.SessionId });
         }
     }

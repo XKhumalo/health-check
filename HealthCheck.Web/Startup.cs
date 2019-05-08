@@ -45,9 +45,9 @@ namespace HealthCheck.Web
             services.AddTransient(typeof(IEFRepository<>), typeof(EFRepository<>));
             services.AddScoped<AnswerRepository>();
             services.AddScoped<UserRepository>();
-            services.AddScoped<SessionService>();
+            services.AddScoped<SessionRepository>();
             services.AddScoped<CategoryRepository>();
-            services.AddScoped<SessionCategoryService>();
+            services.AddScoped<SessionCategoryRepository>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<ExcelExportService>();
             services.AddSignalR();

@@ -2,8 +2,6 @@
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -11,10 +9,10 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class SessionController : ControllerBase
     {
-        private readonly SessionService sessionService;
-        private readonly SessionCategoryService sessionCategoryService;
+        private readonly SessionRepository sessionService;
+        private readonly SessionCategoryRepository sessionCategoryService;
 
-        public SessionController(SessionService sessionService, SessionCategoryService sessionCategoryService)
+        public SessionController(SessionRepository sessionService, SessionCategoryRepository sessionCategoryService)
         {
             this.sessionService = sessionService;
             this.sessionCategoryService = sessionCategoryService;
@@ -28,16 +26,16 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Session>> Get()
+        public IEnumerable<Session> Get()
         {
-            return await sessionService.GetAll();
+            return sessionService.GetAll();
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public async Task<Session> GetBySessionKey(string sessionKey)
+        public Session GetBySessionKey(string sessionKey)
         {
-            return await sessionService.SingleOrDefault(s => s.SessionKey.Contains(sessionKey));
+            return sessionService.SingleOrDefault(s => s.SessionKey.Contains(sessionKey));
         }
 
         [HttpGet("{key}")]
@@ -55,18 +53,14 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpPost]
-        public async Task<Session> Create([FromBody] Session session)
+        public Session Create([FromBody] Session session)
         {
             if (!ModelState.IsValid || session == null)
             {
                 return null;
             }
 
-            var savedSession = await sessionCategoryService.CreateSession(session);
-            var categories = await sessionCategoryService.GetCategories();
-            var categoryIds = categories.Select(c => c.CategoryId);
-            sessionCategoryService.CreateSessionCategory(savedSession, categoryIds);
-            sessionCategoryService.SaveChanges();
+            sessionCategoryService.CreateSessionCategory(session);
             return session;
         }
 
@@ -95,7 +89,7 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             if (!ModelState.IsValid)
             {

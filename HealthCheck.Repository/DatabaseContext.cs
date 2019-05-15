@@ -1,7 +1,6 @@
-﻿using System.IO;
-using HealthCheck.Model;
+﻿using HealthCheck.Model;
+using HealthCheck.Model.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace HealthCheck.Repository
 {
@@ -16,5 +15,6 @@ namespace HealthCheck.Repository
         public DbSet<Session> Sessions { get; set; }
         public DbSet<SessionCategory> SessionCategories { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<AnswerOption> AnswerOptions { get; set; }
     }
 }

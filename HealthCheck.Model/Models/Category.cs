@@ -32,6 +32,8 @@ namespace HealthCheck.Model
         public bool IsDeleted { get; set; }
 
         [ForeignKey("CategoryId")]
-        public ICollection<SessionCategory> SessionCategories { get; set; }
+        public virtual ICollection<SessionCategory> SessionCategories { get; set; }
+
+        public virtual Answer Answer { get; set; }
     }
 }

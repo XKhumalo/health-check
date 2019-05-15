@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Services
 {
@@ -18,7 +19,7 @@ namespace HealthCheck.API.Services
 
         public Answer GetById(int id)
         {
-            return databaseContext.Answers.Find(id);
+            return databaseContext.Answers.FirstOrDefault(x => x.AnswerId == id);
         }
 
         public Answer SingleOrDefault(Expression<Func<Answer, bool>> where)

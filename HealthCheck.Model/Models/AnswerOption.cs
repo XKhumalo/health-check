@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HealthCheck.Model.Models
 {
@@ -15,5 +12,7 @@ namespace HealthCheck.Model.Models
 
         [Required]
         public string Description { get; set; }
+
+        public virtual Answer Answer { get; set; }
     }
 }

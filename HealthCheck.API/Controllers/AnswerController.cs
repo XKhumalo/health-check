@@ -3,7 +3,9 @@ using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Controllers
 {
@@ -83,9 +85,9 @@ namespace HealthCheck.API.Controllers
             {
                 var reportItem = new AnswerReportItem()
                 {
-                    AnsweredBy = answer.UserId.ToString(),
-                    Answer = answer.AnswerId.ToString(),
-                    CategoryName = answer.CategoryId.ToString()
+                    AnsweredBy = answer.User.Name,
+                    Answer = answer.AnswerOption.Option,
+                    CategoryName = answer.Category.Name
                 };
                 reportItems.Add(reportItem);
             }

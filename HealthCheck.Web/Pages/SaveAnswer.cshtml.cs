@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using HealthCheck.API.Controllers;
+﻿using HealthCheck.API.Controllers;
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Linq;
+using System.Security.Claims;
 
 namespace HealthCheck.Web.Pages
 {
@@ -20,18 +18,20 @@ namespace HealthCheck.Web.Pages
             this.answerController = answerController;
             this.sessionController = sessionController;
         }
-        public async Task<IActionResult> OnGet(string categoryId, string sessionId, string answer)
+
+        public IActionResult OnGet(int categoryId, int sessionId, int answer)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             var answerToSave = new Answer()
             {
                 UserId = userId,
                 SessionId = sessionId,
                 CategoryId = categoryId,
-                CategoryChosen = (Model.Enums.AnswerOption)Enum.Parse(typeof(Model.Enums.AnswerOption), answer)
+                //AnswerOption = (Model.Enums.AnswerOptions)Enum.Parse(typeof(Model.Enums.AnswerOptions), answer)
+                AnswerOptionId = answer
             };
-            await answerController.Create(answerToSave);
-            var session = await sessionController.GetById(sessionId);
+            answerController.Create(answerToSave);
+            var session = sessionController.GetById(sessionId);
             return RedirectToPage("/WaitingRoom", new { sessionKey = session.SessionKey });
         }
     }

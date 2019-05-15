@@ -34,25 +34,23 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public async Task OnGet()
+        public void OnGet()
         {
-            CategoriesViewModel = await categoryController.Get();
+            CategoriesViewModel = categoryController.Get();
         }
 
-        public async Task<IActionResult> OnPostCreate()
+        public IActionResult OnPostCreate()
         {
-            var categories = await categoryController.Get();
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             SessionViewModel = new Session()
             {
-                Categories = categories.Select(c => c._id.ToString()),
-                CreatedBy = userId,
+                CreatedById = userId,
                 DateCreated = DateTime.Now,
                 IsComplete = false,
                 SessionKey = Helpers.RandomString(6, false)
             };
-            var createdSession = await sessionController.Create(SessionViewModel);
-            return RedirectToPage("/Sessions/ViewSession", new { sessionId = SessionViewModel._id });
+            var createdSession = sessionController.CreateSessionCategories(SessionViewModel);
+            return RedirectToPage("/Sessions/ViewSession", new { sessionId = SessionViewModel.SessionId });
         }
         
     }

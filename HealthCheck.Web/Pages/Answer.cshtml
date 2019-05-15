@@ -1,7 +1,14 @@
 ﻿@page
+@using HealthCheck.Model.Enums
 @model HealthCheck.Web.Pages.AnswerModel
 @{
     ViewData["Title"] = "Answer";
+}
+
+@{
+    var red = (int) AnswerOptions.Red;
+    var green = (int) AnswerOptions.Green;
+    var amber = (int) AnswerOptions.Amber;
 }
 
 <div class="container">
@@ -21,10 +28,10 @@
                 <p class="mt-3 mb-4">@Model.CategoryViewModel.Negative</p>
                 <a data-admin="@Model.AdminId"
                    data-name="@Model.UserViewModel.Name"
-                   data-user="@Model.UserViewModel._id.ToString()"
-                   data-category="@Model.CategoryViewModel._id.ToString()"
-                   data-session="@Model.SessionViewModel._id.ToString()"
-                   data-answer="Red" class="btn btn-lg btn-block btn-danger answer">Red</a>
+                   data-user="@Model.UserViewModel.UserId"
+                   data-category="@Model.CategoryViewModel.CategoryId"
+                   data-session="@Model.SessionViewModel.SessionId"
+                   data-answer="@red" class="btn btn-lg btn-block btn-danger answer">Red</a>
             </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -35,10 +42,10 @@
                 <p> Neutral </p>
                 <a data-admin="@Model.AdminId"
                    data-name="@Model.UserViewModel.Name"
-                   data-user="@Model.UserViewModel._id.ToString()"
-                   data-category="@Model.CategoryViewModel._id.ToString()"
-                   data-session="@Model.SessionViewModel._id.ToString()"
-                   data-answer="Amber" class="btn btn-lg btn-block btn-warning answer">Amber</a>
+                   data-user="@Model.UserViewModel.UserId"
+                   data-category="@Model.CategoryViewModel.CategoryId"
+                   data-session="@Model.SessionViewModel.SessionId"
+                   data-answer="@amber" class="btn btn-lg btn-block btn-warning answer">Amber</a>
             </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -49,10 +56,10 @@
                 <p class="mt-3 mb-4">@Model.CategoryViewModel.Positive</p>
                 <a data-admin="@Model.AdminId"
                    data-name="@Model.UserViewModel.Name"
-                   data-user="@Model.UserViewModel._id.ToString()"
-                   data-category="@Model.CategoryViewModel._id.ToString()"
-                   data-session="@Model.SessionViewModel._id.ToString()"
-                   data-answer="Green" class="btn btn-lg btn-block btn-success answer">Green</a>
+                   data-user="@Model.UserViewModel.UserId"
+                   data-category="@Model.CategoryViewModel.CategoryId"
+                   data-session="@Model.SessionViewModel.SessionId"
+                   data-answer="@green" class="btn btn-lg btn-block btn-success answer">Green</a>
             </div>
         </div>
     </div>

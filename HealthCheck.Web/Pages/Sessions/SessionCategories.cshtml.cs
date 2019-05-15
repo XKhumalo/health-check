@@ -16,6 +16,7 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public IEnumerable<Category> Categories { get; set; }
         public Session Session { get; set; }
+        public IEnumerable<SessionCategory> SessionCategoriesViewModel { get; set; }
 
         public SessionCategoriesModel(SessionController sessionController, CategoryController categoryController)
         {
@@ -23,11 +24,11 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public async Task OnGet(string sessionId)
+        public async Task OnGet(int sessionId)
         {
-            Session = await sessionController.GetById(sessionId);
-            var categoryIds = Session.Categories;
-            Categories = await categoryController.GetByIds(categoryIds);
+            Session = sessionController.GetById(sessionId);
+            var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
+            Categories = categoryController.GetByIds(categoryIds);
         }
     }
 }

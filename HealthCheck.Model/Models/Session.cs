@@ -1,53 +1,51 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
-using System.Text;
-using HealthCheck.Common;
 
 namespace HealthCheck.Model
 {
     [DataContract]
-    public class Session : MongoEntity
+    public class Session
     {
-        [DataMember]
-        [BsonElement("SessionKey")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int SessionId { get; set; }
+
+        [Required]
         [Display(Name = "Session Key")]
+        [MaxLength(6, ErrorMessage = "Session Key must be 6 characters")]
+        [MinLength(6)]
         public string SessionKey { get; set; }
 
-        [DataMember]
-        [BsonElement("CreatedBy")]
         [Display(Name = "Created By")]
-        public string CreatedBy { get; set;  }
+        public int CreatedById { get; set; }
 
-        [DataMember]
-        [BsonElement("StartTime")]
         [Display(Name = "Start Time")]
-        public DateTime StartTime { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
+        public DateTime? StartTime { get; set; }
 
-        [DataMember]
-        [BsonElement("EndTime")]
         [Display(Name = "End Time")]
-        public DateTime EndTime { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
+        public DateTime? EndTime { get; set; }
 
-        [DataMember]
-        [BsonElement("DateCreated")]
         [Display(Name = "Created Date")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
         public DateTime DateCreated { get; set; }
 
-        [DataMember]
-        [BsonElement("IsComplete")]
         [Display(Name = "Is Complete")]
         public bool IsComplete { get; set; }
 
-        [DataMember]
-        [BsonElement("IsOpen")]
         [Display(Name = "Is Open")]
         public bool IsOpen { get; set; }
 
-        [DataMember]
-        [BsonElement("Categories")]
-        public IEnumerable<string> Categories { get; set; }
+        [ForeignKey("SessionId")]
+        public virtual ICollection<SessionCategory> SessionCategories { get; set; }
+
+        public virtual Answer Answer { get; set; }
     }
 }

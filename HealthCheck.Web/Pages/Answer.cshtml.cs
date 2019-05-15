@@ -28,13 +28,13 @@ namespace HealthCheck.Web.Pages
         public User UserViewModel { get; set; }
         public string AdminId { get; set; }
 
-        public async Task OnGet(string adminId, string sessionId, string categoryId)
+        public async Task OnGet(string adminId, int sessionId, int categoryId)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             AdminId = adminId;
-            SessionViewModel = await sessionController.GetById(sessionId);
-            CategoryViewModel = await categoryController.GetById(categoryId);
-            UserViewModel = await userController.GetById(userId);
+            SessionViewModel = sessionController.GetById(sessionId);
+            CategoryViewModel = categoryController.GetById(categoryId);
+            UserViewModel = userController.GetById(userId);
         }
     }
 }

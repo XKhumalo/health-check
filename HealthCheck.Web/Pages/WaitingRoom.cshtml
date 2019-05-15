@@ -36,13 +36,13 @@
                         <tbody>
                             @foreach (var category in Model.CategoriesViewModel)
                             {
-                                var answer = Model.AnswersViewModel.FirstOrDefault(a => a.CategoryId.Equals(category._id.ToString()));
+                                var answer = Model.AnswersViewModel.FirstOrDefault(a => a.CategoryId.Equals(category.CategoryId));
                                 <tr>
                                     <td>@category.Name</td>
                                     @if (answer != null)
                                     {
                                         <td>
-                                            @answer.CategoryChosen.ToString()
+                                            @answer.AnswerOptionId
                                         </td>
                                     }
                                     else

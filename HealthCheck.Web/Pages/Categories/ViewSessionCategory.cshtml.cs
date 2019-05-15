@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using HealthCheck.API.Controllers;
+﻿using HealthCheck.API.Controllers;
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace HealthCheck.Web.Pages.Categories
 {
@@ -31,23 +30,22 @@ namespace HealthCheck.Web.Pages.Categories
             this.userController = userController;
         }
 
-        public async Task OnGet(string sessionId, string categoryId)
+        public void OnGet(int sessionId, int categoryId)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value;
-            Session = await sessionController.GetById(sessionId);
-            if (Session.CreatedBy.Equals(userId))
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            Session = sessionController.GetById(sessionId);
+            if (Session.CreatedById == userId)
             {
                 IsAuthorized = true;
             }
-            Category = await categoryController.GetById(categoryId);
-            Answers = await answerController.Get(a => a.CategoryId.Equals(categoryId) && a.SessionId.Equals(sessionId));
-            Users = await userController.Get();
+            Category = categoryController.GetById(categoryId);
+            Answers = answerController.Get(a => a.CategoryId == categoryId && a.SessionId == sessionId);
+            Users = userController.Get();
         }
 
-        public async Task<IActionResult> OnPostClose([FromBody] List<Answer> answers)
+        public IActionResult OnPostClose([FromBody] List<Answer> answers)
         {
-            var a = await answerController.CreateList(answers);
-
+            var a = answerController.CreateList(answers);
 
             return RedirectToPage("/ViewSession");
         }

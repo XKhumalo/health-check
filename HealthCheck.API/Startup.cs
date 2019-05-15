@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HealthCheck.API.Services;
+﻿using HealthCheck.API.Services;
+using HealthCheck.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace HealthCheck.API
 {
@@ -35,12 +29,17 @@ namespace HealthCheck.API
             });
 
             services.AddMvc();
-            services.AddScoped<AnswerService>();
-            services.AddScoped<UserService>();
-            services.AddScoped<SessionService>();
-            services.AddScoped<CategoryService>();
+            services.AddTransient(typeof(IEFRepository<>), typeof(EFRepository<>));
+            services.AddScoped<AnswerRepository>();
+            services.AddScoped<UserRepository>();
+            services.AddScoped<SessionRepository>();
+            services.AddScoped<CategoryRepository>();
+            services.AddScoped<SessionCategoryRepository>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<ExcelExportService>();
+
+            var connection = Configuration.GetConnectionString("SQLConnectionString");
+            services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

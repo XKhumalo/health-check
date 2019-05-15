@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HealthCheck.API.Services;
+﻿using HealthCheck.API.Services;
 using HealthCheck.Model;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace HealthCheck.API.Controllers
 {
@@ -13,92 +9,101 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class SessionController : ControllerBase
     {
-        private readonly SessionService sessionService;
+        private readonly SessionRepository sessionService;
+        private readonly SessionCategoryRepository sessionCategoryService;
 
-        public SessionController(SessionService sessionService)
+        public SessionController(SessionRepository sessionService, SessionCategoryRepository sessionCategoryService)
         {
             this.sessionService = sessionService;
+            this.sessionCategoryService = sessionCategoryService;
         }
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<Session> GetById(string id)
+        public Session GetById(int id)
         {
-            return await sessionService.Get(id);
+            return sessionService.GetById(id);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Session>> Get()
+        public IEnumerable<Session> Get()
         {
-            return await sessionService.GetAll();
+            return sessionService.GetAll();
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public async Task<Session> GetBySessionKey(string sessionKey)
+        public Session GetBySessionKey(string sessionKey)
         {
-            return await sessionService.GetBySessionKey(sessionKey);
+            return sessionService.SingleOrDefault(s => s.SessionKey.Contains(sessionKey));
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public async Task<IEnumerable<Session>> GetByCreatedById(string createdById)
+        public IEnumerable<Session> GetByCreatedById(int createdById)
         {
-            return await sessionService.GetByCreatedById(createdById);
+            return sessionService.GetSessions(s => s.CreatedById == createdById);
+        }
+
+        [HttpGet("{key}")]
+        [Route("[action]")]
+        public IEnumerable<SessionCategory> GetSessionCategories(int sessionId)
+        {
+            return sessionCategoryService.GetSessionCategoriesBySessionId(sessionId);
         }
 
         [HttpPost]
-        public async Task<Session> Create([FromBody] Session session)
+        public Session Create([FromBody] Session session)
         {
             if (!ModelState.IsValid || session == null)
             {
                 return null;
             }
 
-            return await sessionService.Create(session);
+            sessionCategoryService.CreateSessionCategory(session);
+            return session;
+        }
+
+        [HttpPost]
+        public IEnumerable<SessionCategory> CreateSessionCategories([FromBody] Session session)
+        {
+            if (!ModelState.IsValid || session == null)
+            {
+                return null;
+            }
+
+            return sessionCategoryService.CreateSessionCategory(session);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, Session sessionIn)
+        public IActionResult Update(Session sessionIn)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var session = sessionService.Get(id);
-
-            if (session == null)
-            {
-                return NotFound();
-            }
-
-            if (!sessionIn._id.ToString().Equals(id))
-            {
-                sessionIn._id = new MongoDB.Bson.ObjectId(id);
-            }
-
-            await sessionService.Update(id, sessionIn);
+            sessionService.Update(sessionIn);
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public IActionResult Delete(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var session = await sessionService.Get(id);
+            var session = sessionService.GetById(id);
 
             if (session == null)
             {
                 return NotFound();
             }
 
-            await sessionService.Delete(session);
+            sessionService.Delete(session);
 
             return NoContent();
 

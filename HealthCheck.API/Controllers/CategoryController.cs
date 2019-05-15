@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HealthCheck.API.Services;
+﻿using HealthCheck.API.Services;
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace HealthCheck.API.Controllers
 {
@@ -12,68 +9,55 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class CategoryController : Controller
     {
-        private readonly CategoryService categoryService;
+        private readonly CategoryRepository categoryService;
 
-        public CategoryController(CategoryService categoryService)
+        public CategoryController(CategoryRepository categoryService)
         {
             this.categoryService = categoryService;
         }
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public async Task<Category> GetById(string id)
+        public Category GetById(int id)
         {
-            return await categoryService.Get(id);
+            return categoryService.GetById(id);
         }
 
         [HttpGet]
         [Route("[action]")]
-        public async Task<IEnumerable<Category>> GetByIds(IEnumerable<string> ids)
+        public IEnumerable<Category> GetByIds(IEnumerable<int> ids)
         {
-            if (ids == null)
-            {
-                return null;
-            }
-            return await categoryService.Get(ids);
+            return ids == null ? null : categoryService.GetCategories(ids);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Category>> Get()
+        public IEnumerable<Category> Get()
         {
-            return await categoryService.GetAll();
+            return categoryService.GetAll();
         }
 
         [HttpPut("{id}")]
-        public async Task Update(string id, Category categoryIn)
+        public void Update(int id, Category categoryIn)
         {
-            var category = await categoryService.Get(id);
-
-            if (category != null)
-            {
-                if (!categoryIn._id.ToString().Equals(id))
-                {
-                    categoryIn._id = new MongoDB.Bson.ObjectId(id);
-                }
-
-                await categoryService.Update(id, categoryIn);
-            }
+            var category = categoryService.GetById(id);
+            categoryService.Update(categoryIn);
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(string id)
+        public void Delete(int id)
         {
-            var category = await categoryService.Get(id);
-            await categoryService.Delete(category);
+            var category = categoryService.GetById(id);
+            categoryService.Delete(category);
         }
 
         [HttpPost]
-        public async Task<Category> Create([FromBody] Category category)
+        public Category Create([FromBody] Category category)
         {
             if (category == null)
             {
                 return null;
             }
-            return await categoryService.Create(category);
+            return categoryService.Create(category);
         }
     }
 }

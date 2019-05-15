@@ -1,12 +1,11 @@
-﻿using System;
+﻿using HealthCheck.API.Services;
+using HealthCheck.Model;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using HealthCheck.API.Services;
-using HealthCheck.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Controllers
 {
@@ -14,93 +13,102 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class AnswerController : Controller
     {
-        private readonly AnswerService answerService;
+        private readonly AnswerRepository answerService;
         private readonly ExcelExportService excelExportService;
 
-        public AnswerController(AnswerService answerService, ExcelExportService excelExportService)
+        public AnswerController(AnswerRepository answerService, ExcelExportService excelExportService)
         {
             this.answerService = answerService;
             this.excelExportService = excelExportService;
         }
 
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{id}")]
         [Route("[action]")]
-        public async Task<Answer> GetById(string id)
+        public Answer GetById(int id)
         {
-            return await answerService.Get(id);
+            return answerService.GetById(id);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Answer>> Get(Expression<Func<Answer, bool>> exp)
+        public IEnumerable<Answer> Get(Expression<Func<Answer, bool>> exp)
         {
-            return await answerService.Get(exp);
-        }
-
-        [HttpGet]
-        [Route("[action]")]
-        public async Task<IEnumerable<Answer>> GetAll()
-        {
-            return await answerService.GetAll();
+            return answerService.GetAnswers(exp);
         }
 
         [HttpPost]
-        public async Task<Answer> Create([FromBody] Answer answer)
+        public Answer Create([FromBody] Answer answer)
         {
             if (answer == null)
             {
                 return null;
             }
-            var existingAnswer = await answerService.Get(a => a.CategoryId.Equals(answer.CategoryId) && a.SessionId.Equals(answer.SessionId) && a.UserId.Equals(answer.UserId));
-            if (existingAnswer.Any())
-            {
-                await answerService.Update(existingAnswer.FirstOrDefault()._id.ToString(), answer);
-                answer._id = existingAnswer.FirstOrDefault()._id;
-                return answer;
-            }
-            return await answerService.Create(answer);
+
+            var persistedAnswer = answerService.Create(answer);
+            return persistedAnswer;
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IEnumerable<Answer>> CreateList([FromBody] IEnumerable<Answer> answers)
+        public IEnumerable<Answer> CreateList([FromBody] IEnumerable<Answer> answers)
         {
             if (answers == null)
             {
                 return null;
             }
 
-            return await answerService.Create(answers);
+            var persistedAnswers = answerService.Create(answers);
+            return persistedAnswers;
         }
 
         [HttpPut("{id}")]
-        public async Task Update(string id, [FromBody] Answer answerIn)
+        public Answer Update(int id, [FromBody] Answer answerIn)
         {
-            var answer = await answerService.Get(id);
-            answerIn._id = new MongoDB.Bson.ObjectId(id);
-            answerIn.SessionId = answer.SessionId;
-            await answerService.Update(id, answerIn);
+            var updatedAnswer = answerService.Update(answerIn);
+            return updatedAnswer;
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(string id)
+        public void Delete(int id)
         {
-            var answer = await answerService.Get(id);
-            await answerService.Remove(answer._id);
+            var answer = answerService.GetById(id);
+            answerService.Delete(answer);
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(string currentSessionId)
+        public ActionResult ExportSessionsAnswersToExcel(int currentSessionId)
         {            
-            var answers = await answerService.Get(x => x.SessionId == currentSessionId);            
+            var answers = answerService.GetAnswers(x => x.SessionId == currentSessionId);
+
+            var reportItems = new List<AnswerReportItem>();
+            foreach (var answer in answers)
+            {
+                var reportItem = new AnswerReportItem()
+                {
+                    AnsweredBy = answer.User.Name,
+                    Answer = answer.AnswerOption.Option,
+                    CategoryName = answer.Category.Name
+                };
+                reportItems.Add(reportItem);
+            }
 
             ExcelExportService.StringReplacementDelegate headingReplacer = s =>
             {
-                return excelExportService.PascalToSpacedString(s);
+                switch (s)
+                {
+                    case "CategoryChosen":
+                        return "Answer";
+                    case "CategoryId":
+                        return "Category";
+                    case "UserId":
+                        return "User";
+                    default:
+                        return excelExportService.PascalToSpacedString(s);
+                }                
             };
 
-            var fileName = "Answers.xlsx";
-            return File(excelExportService.ExportToExcel(answers.ToList(), "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
+            var fileName = $"Health Check Answers{DateTime.Today}.xlsx";
+            return File(excelExportService.ExportToExcel(reportItems, "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
         }
     }
 }

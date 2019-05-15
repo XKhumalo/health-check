@@ -31,7 +31,7 @@
                                     <td class="text-success">@session.StartTime.ToString()</td>
                                     <td class="text-danger">@session.EndTime.ToString()</td>
                                     <td>@(session.IsComplete ? "Yes" : "No")</td>
-                                    <td><a asp-page="/Sessions/ViewSession" asp-route-sessionid="@session._id.ToString()">View</a></td>
+                                    <td><a asp-page="/Sessions/ViewSession" asp-route-sessionid="@session.SessionId">View</a></td>
                                 </tr>
                             }
                         </tbody>

@@ -22,9 +22,9 @@ namespace HealthCheck.Web.Pages.Sessions
             this.sessionController = sessionController;
         }
 
-        public async Task<IActionResult> OnPostJoin()
+        public IActionResult OnPostJoin()
         {
-            var session = await sessionController.GetBySessionKey(SessionKey);
+            var session = sessionController.GetBySessionKey(SessionKey);
 
             if (session == null || (!session.IsOpen && !session.IsComplete))
             {
@@ -32,7 +32,7 @@ namespace HealthCheck.Web.Pages.Sessions
             }
             else
             {
-                return RedirectToPage("/WaitingRoom", new { sessionId = session._id });
+                return RedirectToPage("/WaitingRoom", new { sessionId = session.SessionId });
             }
         }
     }

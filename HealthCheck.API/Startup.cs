@@ -40,6 +40,7 @@ namespace HealthCheck.API
             services.AddScoped<SessionService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<AuthenticationService>();
+            services.AddScoped<ExcelExportService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,8 +48,14 @@ namespace HealthCheck.API
         {
             if (env.IsDevelopment())
             {
-
+                app.UseDeveloperExceptionPage();
             }
+
+            if (env.IsProduction() || env.IsStaging())
+            {
+                app.UseExceptionHandler("/Error");
+            }
+
             app.UseCors("CorsPolicy");
 
             app.UseMvc(routes =>

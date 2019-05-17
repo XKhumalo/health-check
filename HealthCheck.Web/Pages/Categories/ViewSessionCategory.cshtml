@@ -2,60 +2,72 @@
 @model HealthCheck.Web.Pages.Categories.ViewSessionCategoryModel
 @using HealthCheck.Model.Enums
 @{
-    ViewData["Title"] = "ViewSessionCategory";
+    ViewData["Title"] = "View Session Category";
 }
 
-    <div class="container">
-        @if (Model.IsAuthorized)
-        {
-            <main role="main" class="container">
-                <table class="table table-bordered m-3">
-                    <tbody>
-                        <tr>
-                            <td>Session Key</td>
-                            <td>@Model.Session.SessionKey</td>
-                        </tr>
-                        <tr>
-                            <td>Category Name</td>
-                            <td>@Model.Category.Name</td>
-                        </tr>
+<div class="container">
+    @if (Model.IsAuthorized)
+    {
+        <main role="main" class="container">
+            <table class="table table-bordered m-3">
+                <tbody>
+                    <tr>
+                        <td><strong>Session Key</strong></td>
+                        <td>@Model.Session.SessionKey</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Category Name</strong></td>
+                        <td>@Model.Category.Name</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Description</strong></td>
+                        <td>@Model.Category.Description</td>
+                    </tr>
+                    <tr class="alert-success">
+                        <td><strong>Positive Description</strong></td>
+                        <td>@Model.Category.Positive</td>
+                    </tr>
+                    <tr class="alert-danger">
+                        <td><strong>Negative Description</strong></td>
+                        <td>@Model.Category.Negative</td>
+                    </tr>
 
-                    </tbody>
-                </table>
-                <h4 class="h4">Answers</h4>
-                <table id="answersList" class="table table-bordered">
-                    <thead>
+                </tbody>
+            </table>
+            <h4 class="text-center">Answers</h4>
+            <table id="answersList" class="table table-bordered m-3">
+                <thead>
+                    <tr>
+                        <th scope="col">User</th>
+                        <th scope="col">Answer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var answer in Model.Answers)
+                    {
                         <tr>
-                            <th scope="col">User</th>
-                            <th scope="col">Answer</th>
+                            <td class="user-email">@Model.Users.FirstOrDefault(u => u.UserId.Equals(answer.UserId)).Email</td>
+                            <td class="user-answer">@answer.AnswerOptionId</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var answer in Model.Answers)
-                        {
-                            <tr>
-                                <td class="user-email">@Model.Users.FirstOrDefault(u => u.UserId.Equals(answer.UserId)).Email</td>
-                                <td class="user-answer">@answer.AnswerOptionId</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <div class="row justify-content-center mt-5">
-                    <div class="col-3">
-                        <form id="join-session-form" method="post">
-                            <button id="close" data-sessionkey="@Model.Session.SessionKey" data-sessionid="@Model.Session.SessionId" class="btn btn-lg btn-primary btn-block">Close Category</button>
-                        </form>
-                    </div>
+                    }
+                </tbody>
+            </table>
+            <div class="row justify-content-center mt-5">
+                <div class="col-3">
+                    <form id="join-session-form" method="post">
+                        <button id="close" data-sessionkey="@Model.Session.SessionKey" data-sessionid="@Model.Session.SessionId" class="btn btn-lg btn-primary btn-block">Close Category</button>
+                    </form>
                 </div>
-            </main>
-        }
-        else
-        {
-            <h1>You are not authorized to view this page</h1>            
-        }
-    </div>
+            </div>
+        </main>
+    }
+    else
+    {
+        <h1>You are not authorized to view this page</h1>
+    }
+</div>
 
 @section Scripts
-    {
-<script type="text/javascript" src="~/js/viewsessioncategory.js"></script>
+{
+    <script type="text/javascript" src="~/js/viewsessioncategory.js"></script>
 }

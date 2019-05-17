@@ -24,10 +24,10 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public async Task OnGet(string sessionId)
+        public void OnGet(int sessionId)
         {
-            //var allCategories = await categoryController.Get();
-            //Session = await sessionController.GetById(sessionId);
+            //var allCategories = categoryController.Get();
+            //Session = sessionController.GetById(sessionId);
             //if (Session.Categories != null)
             //{
             //    ChosenCategories = allCategories.Where(c => Session.Categories.Contains(c._id.ToString()));

@@ -1,0 +1,38 @@
+﻿@page
+@model HealthCheck.Web.Pages.Categories.AddCategoryModel
+@{
+    ViewData["Title"] = "Add Category";
+}
+
+<h1>Add Category</h1>
+
+
+<form id="add-category-form" method="post">
+    <div class="row justify-content-center mt-5">
+        <div class="container">
+            <div class="form-group">
+                <label for="name">Category Name:</label>
+                <input asp-for="CategoryViewModel.Name" type="text" class="form-control" id="name" placeholder="EG: Culture" name="name">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input asp-for="CategoryViewModel.Description" type="text" class="form-control" id="description" placeholder="EG: The spirit of the team and our identification" name="description">
+            </div>
+
+            <div class="form-group">
+                <label for="positive">Positive Description:</label>
+                <input asp-for="CategoryViewModel.Positive" type="text" class="form-control" id="positive" placeholder="EG: Everyone knows who we are, what we do & how we do it" name="positive">
+            </div>
+
+            <div class="form-group">
+                <label for="negative">Negative Description:</label>
+                <input asp-for="CategoryViewModel.Negative" type="text" class="form-control" id="negative" placeholder="EG: We're a bunch of nobody's who don't even know ourselves" name="negative">
+            </div>
+        </div>
+
+        <div class="col-3">
+            <button asp-page-handler="create" class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+        </div>
+    </div>
+</form>

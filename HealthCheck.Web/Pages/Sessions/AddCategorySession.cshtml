@@ -4,7 +4,7 @@
     ViewData["Title"] = "AddCategorySession";
 }
 
-@*<h1>Add Category</h1>
+<h1>Add Category</h1>
 
 <div class="container">
     <div class="row">
@@ -23,12 +23,12 @@
                         @foreach (var category in Model.AvailableCategories.Where(q => !q.IsDeleted))
                         {
                             <tr>
-                                <td>@category._id.ToString()</td>
+                                <td>@category.CategoryId</td>
                                 <td>@category.Name</td>
                                 <td>@category.Description</td>
                                 <td>
                                     <form method="post">
-                                        <button class="btn btn-sm btn-outline-danger" data-id="@category._id.ToString()" data-toggle="modal" data-target="#deleteQuestionModal"><i class="fas fa-trash-alt"></i>&nbsp; Delete</button>
+                                        <button class="btn btn-sm btn-outline-danger" data-id="@category.CategoryId" data-toggle="modal" data-target="#deleteQuestionModal"><i class="fas fa-trash-alt"></i>&nbsp; Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -43,4 +43,4 @@
         }
         <button asp-page="/Sessions/AddCategorySession" class="btn btn-lg btn-secondary btn-block">Add a category</button>
     </div>
-</div>*@
+</div>

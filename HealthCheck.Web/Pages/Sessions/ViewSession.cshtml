@@ -57,7 +57,9 @@
                                                 </button>
                                             </td>
                                         }
-                                        <td>@categoryAnswers</td>
+                                        <td>
+                                            <span class="badge badge-pill badge-info">@categoryAnswers</span>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -66,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center mt-5">
+        <div class="row justify-content-center mt-5"> 
             <div class="col-3">
                 @if (Model.SessionViewModel.IsOpen)
                 {

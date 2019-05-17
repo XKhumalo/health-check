@@ -1,0 +1,18 @@
+CREATE TABLE [dbo].[Sessions](
+	[SessionId] [INT] IDENTITY(1,1) NOT NULL,
+	[SessionKey] [NVARCHAR](6) NOT NULL,
+	[CreatedById] [INT] NOT NULL,
+	[StartTime] [DATETIME] NULL,
+	[EndTime] [DATETIME] NULL,
+	[DateCreated] [DATETIME] NOT NULL,
+	[IsComplete] [BIT] NOT NULL,
+	[IsOpen] [BIT] NOT NULL,
+ CONSTRAINT [PK_Sessions] PRIMARY KEY CLUSTERED 
+(
+	[SessionId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Sessions] ADD  CONSTRAINT [DF_Sessions_DateCreated]  DEFAULT (GETDATE()) FOR [DateCreated]
+GO

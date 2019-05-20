@@ -11,8 +11,6 @@ using HealthCheck.Web.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Extensions;
-using HealthCheck.Model.Models;
 
 namespace HealthCheck.Web.Pages
 {

@@ -1,4 +1,5 @@
-﻿using HealthCheck.API.Services;
+using System.Data.SqlClient;
+using HealthCheck.API.Services;
 using HealthCheck.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,7 +40,9 @@ namespace HealthCheck.API
             services.AddScoped<ExcelExportService>();
 
             var connection = Configuration.GetConnectionString("SQLConnectionString");
-            services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseSqlServer(connection));
+            var sqlConnection = new SqlConnection("Data Source=ESSQLSERVER02\\SQL2017;Initial Catalog=ServiceDesk_HealthCheck;User ID=servicedesk-hcadmin;Password=8wn_2]_HbXe^CCA");
+
+            services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseSqlServer(sqlConnection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

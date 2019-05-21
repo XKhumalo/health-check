@@ -31,7 +31,7 @@ namespace HealthCheck.Web.Pages.Categories
             }
 
             var category = categoryController.Create(CategoryViewModel);
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Categories/Categories");
         }
     }
 }

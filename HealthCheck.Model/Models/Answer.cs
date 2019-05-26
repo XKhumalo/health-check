@@ -1,4 +1,5 @@
-﻿using HealthCheck.Model.Models;
+﻿using System.Collections.Generic;
+using HealthCheck.Model.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace HealthCheck.Model
@@ -27,5 +28,10 @@ namespace HealthCheck.Model
         public virtual Category Category { get; set; }
 
         public virtual AnswerOption AnswerOption { get; set; }
+
+        public string GetAnsweredByUser()
+        {
+            return User.Name;
+        }
     }
 }

@@ -61,7 +61,7 @@
                                             </td>
                                         }
                                         <td>
-                                            <span class="badge badge-pill badge-info"
+                                            <span class="badge badge-pill badge-info" data-toggle="tooltip"
                                                   title="@foreach (var answer in categoryAnswers)
                                                          {
                                                              answeredByNames.Append(answer.GetAnsweredByUser());
@@ -102,6 +102,7 @@
 }
 
 @section Scripts
-    {
+{
     <script type="text/javascript" src="~/js/viewsession.js"></script>
+    <script type="text/javascript" src="~/js/PageScripts/tooltips.js"></script>
 }

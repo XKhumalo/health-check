@@ -85,6 +85,7 @@ namespace HealthCheck.Web
                 routes.MapHub<SessionHub>("/sessionHub");
                 routes.MapHub<ChatHub>("/chatHub");
                 routes.MapHub<CategoryHub>("/categoryHub");
+                routes.MapHub<CommentHub>("/commentHub");
             });
         }
     }

@@ -69,14 +69,14 @@
         </div>
     </div>
     
-    @Html.HiddenFor(model => model.UserViewModel.Name)
+    @*@Html.HiddenFor(model => model.UserViewModel.Name)
     <h3>Comments</h3>
     <div class="card mb-4 box-shadow">
         <input type="text" id="message" />
         <input type="button" id="sendMessage" data-userId="@Model.UserViewModel.UserId" data-userName="@Model.UserViewModel.Name" class="sendComment" value="Send" />
         <input type="hidden" id="displayName" />
         <ul id="discussion"></ul>
-    </div>
+    </div>*@
 </div>
 
 @section Scripts

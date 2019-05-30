@@ -38,11 +38,11 @@
                         <tbody>
                             @foreach (var category in Model.CategoriesViewModel)
                             {
-                                var answer = category.Answer;
+                                var answer = Model.AnswersViewModel.SingleOrDefault(a => a.CategoryId == category.CategoryId);
 
                                 <tr>
                                     <td>@category.Name</td>
-                                    @if (answer != null)
+                                    @if (answer != null && answer.AnswerOptionId > 0)
                                     {
                                         var enumValue = (AnswerOptions) answer.AnswerOptionId;
                                         var answerOption = EnumExtensions.ParseEnum<AnswerOptions>(enumValue.ToString());

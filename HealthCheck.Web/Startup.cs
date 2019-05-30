@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace HealthCheck.Web
 {
@@ -62,7 +64,7 @@ namespace HealthCheck.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -87,6 +89,9 @@ namespace HealthCheck.Web
                 routes.MapHub<CategoryHub>("/categoryHub");
                 routes.MapHub<CommentHub>("/commentHub");
             });
+
+            // Add NLog to .NET Core
+            loggerFactory.AddNLog();
         }
     }
 }

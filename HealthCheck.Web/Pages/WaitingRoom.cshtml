@@ -1,4 +1,6 @@
 ﻿@page
+@using HealthCheck.Model.Enums
+@using HealthCheck.Web.Extensions
 @model HealthCheck.Web.Pages.WaitingRoomModel
 @{
     ViewData["Title"] = "Waiting Room";
@@ -36,13 +38,17 @@
                         <tbody>
                             @foreach (var category in Model.CategoriesViewModel)
                             {
-                                var answer = Model.AnswersViewModel.FirstOrDefault(a => a.CategoryId.Equals(category.CategoryId));
+                                var answer = category.Answer;
+
                                 <tr>
                                     <td>@category.Name</td>
                                     @if (answer != null)
                                     {
+                                        var enumValue = (AnswerOptions) answer.AnswerOptionId;
+                                        var answerOption = EnumExtensions.ParseEnum<AnswerOptions>(enumValue.ToString());
+
                                         <td>
-                                            @answer.AnswerOption.Option
+                                            @answerOption
                                         </td>
                                     }
                                     else

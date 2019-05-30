@@ -19,7 +19,7 @@ namespace HealthCheck.Web.Pages
             this.sessionController = sessionController;
         }
 
-        public IActionResult OnGet(int categoryId, int sessionId, int answer)
+        public IActionResult OnGet(string sessionKey, int categoryId, int sessionId, int answer)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             var answerToSave = new Answer()
@@ -27,12 +27,11 @@ namespace HealthCheck.Web.Pages
                 UserId = userId,
                 SessionId = sessionId,
                 CategoryId = categoryId,
-                //AnswerOption = (Model.Enums.AnswerOptions)Enum.Parse(typeof(Model.Enums.AnswerOptions), answer)
                 AnswerOptionId = answer
             };
             answerController.Create(answerToSave);
             var session = sessionController.GetById(sessionId);
-            return RedirectToPage("/WaitingRoom", new { sessionKey = session.SessionKey });
+            return RedirectToPage("/WaitingRoom", new { sessionKey });
         }
     }
 }

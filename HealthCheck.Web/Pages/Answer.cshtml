@@ -6,10 +6,12 @@
 }
 
 @{
-    var red = (int) AnswerOptions.Red;
-    var green = (int) AnswerOptions.Green;
-    var amber = (int) AnswerOptions.Amber;
+    var red = (int)AnswerOptions.Red;
+    var green = (int)AnswerOptions.Green;
+    var amber = (int)AnswerOptions.Amber;
 }
+
+@Html.HiddenFor(model => model.SessionViewModel.SessionKey)
 
 <div class="container">
     <div class="row">

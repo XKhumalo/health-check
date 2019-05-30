@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Text
 @model HealthCheck.Web.Pages.Sessions.ViewSessionModel
 @{
     ViewData["Title"] = "ViewSession";
@@ -41,7 +42,9 @@
                             <tbody>
                                 @foreach (var category in Model.CategoriesViewModel)
                                 {
-                                    int categoryAnswers = Model.Answers.Count(a => a.CategoryId == category.CategoryId);
+                                    int categoryAnswersCount = Model.Answers.Count(a => a.CategoryId == category.CategoryId);
+                                    var categoryAnswers = Model.Answers.Where(a => a.CategoryId == category.CategoryId);
+                                    var answeredByNames = new StringBuilder();
                                     <tr>
                                         <td>@category.Name</td>
                                         <td>@category.Description</td>
@@ -58,7 +61,16 @@
                                             </td>
                                         }
                                         <td>
-                                            <span class="badge badge-pill badge-info">@categoryAnswers</span>
+                                            <span class="badge badge-pill badge-info" data-toggle="tooltip"
+                                                  title="@foreach (var answer in categoryAnswers)
+                                                         {
+                                                             answeredByNames.Append(answer.GetAnsweredByUser());
+                                                             answeredByNames.Append("\n");
+                                                             @answeredByNames
+                                                         }
+                                                  ">
+                                                @categoryAnswersCount
+                                            </span>
                                         </td>
                                     </tr>
                                 }
@@ -68,7 +80,7 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center mt-5"> 
+        <div class="row justify-content-center mt-5">
             <div class="col-3">
                 @if (Model.SessionViewModel.IsOpen)
                 {
@@ -92,4 +104,5 @@
 @section Scripts
     {
     <script type="text/javascript" src="~/js/viewsession.js"></script>
+    <script type="text/javascript" src="~/js/PageScripts/tooltips.js"></script>
 }

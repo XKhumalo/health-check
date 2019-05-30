@@ -11,6 +11,8 @@
     var amber = (int)AnswerOptions.Amber;
 }
 
+@Html.HiddenFor(model => model.SessionViewModel.SessionKey)
+
 <div class="container">
     <div class="row">
         <h1 class="h1">@Model.CategoryViewModel.Name</h1>

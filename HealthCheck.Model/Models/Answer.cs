@@ -1,4 +1,5 @@
-﻿using HealthCheck.Model.Models;
+﻿using System.Collections.Generic;
+using HealthCheck.Model.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace HealthCheck.Model

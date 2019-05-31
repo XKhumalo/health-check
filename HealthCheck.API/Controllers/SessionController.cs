@@ -2,6 +2,7 @@
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -18,11 +19,16 @@ namespace HealthCheck.API.Controllers
             this.sessionCategoryService = sessionCategoryService;
         }
 
-        [HttpGet("{id:length(24)}")]
         [Route("[action]")]
         public Session GetById(int id)
         {
             return sessionService.GetById(id);
+        }
+
+        [Route("[action]")]
+        public async Task<Session> GetByIdAsync(int id)
+        {
+            return await sessionService.SingleOrDefaultAsync(s => s.SessionId == id);
         }
 
         [HttpGet]
@@ -33,9 +39,9 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{key}")]
         [Route("[action]")]
-        public Session GetBySessionKey(string sessionKey)
+        public async Task<Session> GetBySessionKey(string sessionKey)
         {
-            return sessionService.SingleOrDefault(s => s.SessionKey.Contains(sessionKey));
+            return await sessionService.SingleOrDefaultAsync(s => s.SessionKey.Contains(sessionKey));
         }
 
         [HttpGet("{key}")]

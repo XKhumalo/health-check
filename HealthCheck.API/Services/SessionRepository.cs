@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Services
 {
@@ -26,9 +28,19 @@ namespace HealthCheck.API.Services
             return databaseContext.Sessions.SingleOrDefault(where);
         }
 
+        public async Task<Session> SingleOrDefaultAsync(Expression<Func<Session, bool>> where)
+        {
+            return await databaseContext.Sessions.SingleOrDefaultAsync(where);
+        }
+
         public Session FirstOrDefault(Expression<Func<Session, bool>> where)
         {
             return databaseContext.Sessions.FirstOrDefault(where);
+        }
+
+        public async Task<Session> FirstOrDefaultAsync(Expression<Func<Session, bool>> where)
+        {
+            return await databaseContext.Sessions.FirstOrDefaultAsync(where);
         }
 
         public IEnumerable<Session> GetAll()

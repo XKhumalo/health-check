@@ -3,9 +3,7 @@ using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Controllers
 {
@@ -36,7 +34,7 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpPost]
-        public Answer Create([FromBody] Answer answer)
+        public Answer InsertOrUpdateAnswer([FromBody] Answer answer)
         {
             if (answer == null)
             {
@@ -58,7 +56,7 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            var persistedAnswer = answerService.Create(answer);
+            var persistedAnswer = answerService.InsertOrUpdateAnswer(answer);
             return persistedAnswer;
         }
 

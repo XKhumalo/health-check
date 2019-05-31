@@ -37,6 +37,22 @@ namespace HealthCheck.API.Services
             return databaseContext.Answers.Where(where);
         }
 
+        public Answer InsertOrUpdateAnswer(Answer answer)
+        {
+            if (answer == null)
+            {
+                return null;
+            }
+
+            var dbAnswer = FirstOrDefault(a => a.UserId == answer.UserId && a.SessionId == answer.SessionId && a.CategoryId == answer.CategoryId);
+            if (dbAnswer != null)
+            {
+                dbAnswer.AnswerOptionId = answer.AnswerOptionId;
+                return Update(dbAnswer);
+            }
+            return Create(answer);
+        }
+
         public Answer Create(Answer answer)
         {
             var persistedAnswer = databaseContext.Answers.Add(answer);

@@ -29,8 +29,7 @@ namespace HealthCheck.Web.Pages
                 CategoryId = categoryId,
                 AnswerOptionId = answer
             };
-            answerController.Create(answerToSave);
-            var session = sessionController.GetById(sessionId);
+            answerController.InsertOrUpdateAnswer(answerToSave);
             return RedirectToPage("/WaitingRoom", new { sessionKey });
         }
     }

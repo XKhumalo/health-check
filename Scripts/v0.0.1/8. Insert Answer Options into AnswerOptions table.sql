@@ -31,7 +31,7 @@ BEGIN TRY
 
 	SELECT TOP(5) * FROM [dbo].[AnswerOptions] ORDER BY [AnswerOptionId] ASC;
 
-	COMMIT TRAN;
+	ROLLBACK TRAN;
 
 	SET IDENTITY_INSERT [dbo].[AnswerOptions] OFF;
 	

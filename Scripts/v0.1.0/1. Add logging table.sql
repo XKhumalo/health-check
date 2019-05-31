@@ -1,6 +1,6 @@
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
-CREATE TABLE [dbo].[Log]
+CREATE TABLE [dbo].[Logs]
 (
     [Id]          [INT]           IDENTITY(1, 1) NOT NULL,
     [TimeStamp]   DATETIME        NOT NULL DEFAULT (GETUTCDATE()),

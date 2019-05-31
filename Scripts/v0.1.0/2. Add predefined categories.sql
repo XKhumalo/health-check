@@ -43,7 +43,7 @@ BEGIN TRY
 	FROM [dbo].[Categories]
     ORDER BY [CategoryId] ASC;
 
-    COMMIT TRAN;
+    ROLLBACK TRAN;
 
     SET IDENTITY_INSERT [dbo].[Categories] OFF;
 

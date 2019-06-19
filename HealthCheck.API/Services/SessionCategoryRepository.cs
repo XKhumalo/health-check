@@ -6,14 +6,14 @@ using HealthCheck.Repository;
 
 namespace HealthCheck.API.Services
 {
-    public class SessionCategoryService
+    public class SessionCategoryRepository
     {
         private readonly IEFRepository<SessionCategory> sessionCategoryRepository;
         private readonly IEFRepository<Category> categoryRepository;
         private readonly IEFRepository<Session> sessionRepository;
         private readonly DatabaseContext databaseContext;
 
-        public SessionCategoryService(IEFRepository<SessionCategory> sessionCategoryRepository, IEFRepository<Category> categoryRepository, 
+        public SessionCategoryRepository(IEFRepository<SessionCategory> sessionCategoryRepository, IEFRepository<Category> categoryRepository, 
             IEFRepository<Session> sessionRepository, DatabaseContext databaseContext)
         {
             this.sessionCategoryRepository = sessionCategoryRepository;

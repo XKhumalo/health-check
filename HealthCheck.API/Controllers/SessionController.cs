@@ -11,47 +11,47 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class SessionController : ControllerBase
     {
-        private readonly SessionService sessionService;
-        private readonly SessionCategoryService sessionCategoryService;
+        private readonly SessionRepository sessionRepository;
+        private readonly SessionCategoryRepository sessionCategoryRepository;
 
-        public SessionController(SessionService sessionService, SessionCategoryService sessionCategoryService)
+        public SessionController(SessionRepository sessionRepository, SessionCategoryRepository sessionCategoryRepository)
         {
-            this.sessionService = sessionService;
-            this.sessionCategoryService = sessionCategoryService;
+            this.sessionRepository = sessionRepository;
+            this.sessionCategoryRepository = sessionCategoryRepository;
         }
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
         public Session GetById(int id)
         {
-            return sessionService.GetById(id);
+            return sessionRepository.GetById(id);
         }
 
         [HttpGet]
         public async Task<IEnumerable<Session>> Get()
         {
-            return await sessionService.GetAll();
+            return await sessionRepository.GetAll();
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
         public async Task<Session> GetBySessionKey(string sessionKey)
         {
-            return await sessionService.SingleOrDefault(s => s.SessionKey.Contains(sessionKey));
+            return await sessionRepository.SingleOrDefault(s => s.SessionKey.Contains(sessionKey));
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
         public IEnumerable<Session> GetByCreatedById(int createdById)
         {
-            return sessionService.GetSessions(s => s.CreatedById == createdById);
+            return sessionRepository.GetSessions(s => s.CreatedById == createdById);
         }
 
         [HttpGet("{key}")]
         [Route("[action]")]
         public IEnumerable<SessionCategory> GetSessionCategories(int sessionId)
         {
-            return sessionCategoryService.GetSessionCategoriesBySessionId(sessionId);
+            return sessionCategoryRepository.GetSessionCategoriesBySessionId(sessionId);
         }
 
         [HttpPost]
@@ -62,11 +62,11 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            var savedSession = await sessionCategoryService.CreateSession(session);
-            var categories = await sessionCategoryService.GetCategories();
+            var savedSession = await sessionCategoryRepository.CreateSession(session);
+            var categories = await sessionCategoryRepository.GetCategories();
             var categoryIds = categories.Select(c => c.CategoryId);
-            sessionCategoryService.CreateSessionCategory(savedSession, categoryIds);
-            sessionCategoryService.SaveChanges();
+            sessionCategoryRepository.CreateSessionCategory(savedSession, categoryIds);
+            sessionCategoryRepository.SaveChanges();
             return session;
         }
 
@@ -78,7 +78,7 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            return sessionCategoryService.CreateSessionCategory(session);
+            return sessionCategoryRepository.CreateSessionCategory(session);
         }
 
         [HttpPut("{id}")]
@@ -89,7 +89,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            sessionService.Update(sessionIn);
+            sessionRepository.Update(sessionIn);
 
             return NoContent();
         }
@@ -102,14 +102,14 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var session = sessionService.GetById(id);
+            var session = sessionRepository.GetById(id);
 
             if (session == null)
             {
                 return NotFound();
             }
 
-            sessionService.Delete(session);
+            sessionRepository.Delete(session);
 
             return NoContent();
 

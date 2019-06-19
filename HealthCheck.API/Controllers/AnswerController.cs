@@ -1,5 +1,4 @@
-﻿using HealthCheck.API.Models;
-using HealthCheck.API.Services;
+﻿using HealthCheck.API.Services;
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,33 +12,33 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class AnswerController : Controller
     {
-        private readonly AnswerService answerService;
+        private readonly AnswerRepository answerRepository;
         private readonly ExcelExportService excelExportService;
 
-        public AnswerController(AnswerService answerService, ExcelExportService excelExportService)
+        public AnswerController(AnswerRepository answerRepository, ExcelExportService excelExportService)
         {
-            this.answerService = answerService;
+            this.answerRepository = answerRepository;
             this.excelExportService = excelExportService;
         }
 
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{id}")]
         [Route("[action]")]
         public async Task<Answer> GetById(int id)
         {
-            return await answerService.GetById(id);
+            return await answerRepository.GetById(id);
         }
 
         [HttpGet]
         public IEnumerable<Answer> Get(Expression<Func<Answer, bool>> exp)
         {
-            return answerService.GetAnswers(exp);
+            return answerRepository.GetAnswers(exp);
         }
 
         [HttpGet]
         [Route("[action]")]
         public async Task<IEnumerable<Answer>> GetAll()
         {
-            return await answerService.GetAll();
+            return await answerRepository.GetAll();
         }
 
         [HttpPost]
@@ -50,8 +49,8 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            await answerService.Create(answer);
-            answerService.SaveChanges();
+            await answerRepository.Create(answer);
+            answerRepository.SaveChanges();
             return answer;
         }
 
@@ -64,30 +63,30 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            await answerService.Create(answers);
-            answerService.SaveChanges();
+            await answerRepository.Create(answers);
+            answerRepository.SaveChanges();
             return answers;
         }
 
         [HttpPut("{id}")]
         public async Task Update(int id, [FromBody] Answer answerIn)
         {
-            await answerService.Update(answerIn);
-            answerService.SaveChanges();
+            await answerRepository.Update(answerIn);
+            answerRepository.SaveChanges();
         }
 
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            var answer = await answerService.GetById(id);
-            answerService.Delete(answer);
+            var answer = await answerRepository.GetById(id);
+            answerRepository.Delete(answer);
         }
 
         [HttpPost]
         [Route("[action]")]
         public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
-            var answers = answerService.GetAnswers(x => x.SessionId == currentSessionId);
+            var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
 
             List<AnswerReportItem> reportItems = new List<AnswerReportItem>();
             foreach (var answer in answers)
@@ -96,7 +95,7 @@ namespace HealthCheck.API.Controllers
                 {
                     AnsweredBy = answer.UserId.ToString(),
                     Answer = answer.AnswerId.ToString(),
-                    Category = answer.CategoryId.ToString()
+                    CategoryName = answer.CategoryId.ToString()
                 };
                 reportItems.Add(reportItem);
             }
@@ -116,7 +115,7 @@ namespace HealthCheck.API.Controllers
                 }                
             };
 
-            var fileName = "Answers.xlsx";
+            var fileName = $"Health Check Answers {DateTime.Today}.xlsx";
             return File(excelExportService.ExportToExcel(reportItems, "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
         }
     }

@@ -8,35 +8,35 @@ using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
-    public class AnswerService
+    public class AnswerRepository
     {
-        private readonly IEFRepository<Answer> repository;
+        private readonly IEFRepository<Answer> answerRepository;
         private readonly DatabaseContext databaseContext;
 
-        public AnswerService(IEFRepository<Answer> repository, DatabaseContext databaseContext)
+        public AnswerRepository(IEFRepository<Answer> answerRepository, DatabaseContext databaseContext)
         {
-            this.repository = repository;
+            this.answerRepository = answerRepository;
             this.databaseContext = databaseContext;
         }
 
         public async Task<Answer> GetById(int id)
         {
-            return await repository.Get(id);
+            return await answerRepository.Get(id);
         }
 
         public async Task<Answer> SingleOrDefault(Expression<Func<Answer, bool>> where)
         {
-            return await repository.SingleOrDefault(where);
+            return await answerRepository.SingleOrDefault(where);
         }
 
         public async Task<Answer> FirstOrDefault(Expression<Func<Answer, bool>> where)
         {
-            return await repository.FirstOrDefault(where);
+            return await answerRepository.FirstOrDefault(where);
         }
 
         public async Task<Answer> GetAnswer(Answer answer)
         {
-            return await repository.SingleOrDefault(a => a.AnswerId == answer.AnswerId
+            return await answerRepository.SingleOrDefault(a => a.AnswerId == answer.AnswerId
                         //&& a.AnswerOptions == answer.AnswerOptions
                         && a.CategoryId == answer.CategoryId
                         && a.SessionId == answer.SessionId
@@ -45,7 +45,7 @@ namespace HealthCheck.API.Services
 
         public async Task<ICollection<Answer>> GetAll()
         {
-            return await repository.GetAll();
+            return await answerRepository.GetAll();
         }
 
         public IQueryable<Answer> GetAnswers(Expression<Func<Answer, bool>> where)
@@ -55,27 +55,27 @@ namespace HealthCheck.API.Services
 
         public async Task<Answer> Create(Answer answer)
         {
-            return await repository.Create(answer);
+            return await answerRepository.Create(answer);
         }
 
         public async Task<IEnumerable<Answer>> Create(IEnumerable<Answer> answers)
         {
-            return await repository.CreateMany(answers);
+            return await answerRepository.CreateMany(answers);
         }
 
         public async Task<Answer> Update(Answer answer)
         {
-            return await repository.Update(answer);
+            return await answerRepository.Update(answer);
         }
 
         public void Delete(Answer answer)
         {
-            repository.Delete(answer);
+            answerRepository.Delete(answer);
         }
 
         public void SaveChanges()
         {
-            repository.SaveChanges();
+            answerRepository.SaveChanges();
         }
     }
 }

@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
-    public class SessionService
+    public class SessionRepository
     {
-        private readonly IEFRepository<Session> repository;
+        private readonly IEFRepository<Session> sessionRepository;
         private readonly DatabaseContext databaseContext;
 
-        public SessionService(IEFRepository<Session> repository, DatabaseContext databaseContext)
+        public SessionRepository(IEFRepository<Session> sessionRepository, DatabaseContext databaseContext)
         {
-            this.repository = repository;
+            this.sessionRepository = sessionRepository;
             this.databaseContext = databaseContext;
         }
 
@@ -26,17 +26,17 @@ namespace HealthCheck.API.Services
 
         public async Task<Session> SingleOrDefault(Expression<Func<Session, bool>> where)
         {
-            return await repository.SingleOrDefault(where);
+            return await sessionRepository.SingleOrDefault(where);
         }
 
         public async Task<Session> FirstOrDefault(Expression<Func<Session, bool>> where)
         {
-            return await repository.FirstOrDefault(where);
+            return await sessionRepository.FirstOrDefault(where);
         }
 
         public async Task<ICollection<Session>> GetAll()
         {
-            return await repository.GetAll();
+            return await sessionRepository.GetAll();
         }
 
         public IQueryable<Session> GetSessions(Expression<Func<Session, bool>> where)
@@ -46,12 +46,12 @@ namespace HealthCheck.API.Services
 
         public async Task<Session> Create(Session session)
         {
-            return await repository.Create(session);
+            return await sessionRepository.Create(session);
         }
 
         public async Task<IEnumerable<Session>> Create(IEnumerable<Session> sessions)
         {
-            return await repository.CreateMany(sessions);
+            return await sessionRepository.CreateMany(sessions);
         }
 
         public Session Update(Session session)
@@ -63,12 +63,12 @@ namespace HealthCheck.API.Services
 
         public void Delete(Session session)
         {
-            repository.Delete(session);
+            sessionRepository.Delete(session);
         }
 
         public void SaveChanges()
         {
-            repository.SaveChanges();
+            sessionRepository.SaveChanges();
         }
     }
 }

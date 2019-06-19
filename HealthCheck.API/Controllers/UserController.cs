@@ -12,43 +12,43 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private readonly UserService userService;
+        private readonly UserRepository userRepository;
 
-        public UserController(UserService userService)
+        public UserController(UserRepository userRepository)
         {
-            this.userService = userService;
+            this.userRepository = userRepository;
         }
 
         public IEnumerable<User> Get()
         {
-            return userService.GetAll();
+            return userRepository.GetAll();
         }
 
         [HttpGet]
         public IEnumerable<User> Get(Expression<Func<User, bool>> exp)
         {
-            return userService.GetUsers(exp);
+            return userRepository.GetUsers(exp);
         }
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
         public User GetById(int id)
         {
-            return userService.GetById(id);
+            return userRepository.GetById(id);
         }
 
         [HttpGet("{name}")]
         [Route("[action]")]
         public async Task<User> GetByName(string name)
         {
-            return await userService.SingleOrDefault(u => u.Name.Contains(name));
+            return await userRepository.SingleOrDefault(u => u.Name.Contains(name));
         }
 
         [HttpGet("{email}")]
         [Route("[action]")]
         public async Task<User> GetByEmail(string email)
         {
-            return await userService.SingleOrDefault(u => u.Email.Contains(email));
+            return await userRepository.SingleOrDefault(u => u.Email.Contains(email));
         }
 
         [HttpPost]
@@ -59,8 +59,8 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            var persistedUser = await userService.Create(user);
-            userService.SaveChanges();
+            var persistedUser = await userRepository.Create(user);
+            userRepository.SaveChanges();
             return persistedUser;
         }
     }

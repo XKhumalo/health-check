@@ -10,46 +10,46 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class CategoryController : Controller
     {
-        private readonly CategoryService categoryService;
+        private readonly CategoryRepository categoryRepository;
 
-        public CategoryController(CategoryService categoryService)
+        public CategoryController(CategoryRepository categoryRepository)
         {
-            this.categoryService = categoryService;
+            this.categoryRepository = categoryRepository;
         }
 
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{id}")]
         [Route("[action]")]
         public Category GetById(int id)
         {
-            return categoryService.GetById(id);
+            return categoryRepository.GetById(id);
         }
 
         [HttpGet]
         [Route("[action]")]
         public IEnumerable<Category> GetByIds(IEnumerable<int> ids)
         {
-            return ids == null ? null : categoryService.GetCategories(ids);
+            return ids == null ? null : categoryRepository.GetCategories(ids);
         }
 
         [HttpGet]
         public async Task<IEnumerable<Category>> Get()
         {
-            return await categoryService.GetAll();
+            return await categoryRepository.GetAll();
         }
 
         [HttpPut("{id}")]
         public async Task Update(int id, Category categoryIn)
         {
-            var category = categoryService.GetById(id);
+            var category = categoryRepository.GetById(id);
 
-            await categoryService.Update(categoryIn);
+            await categoryRepository.Update(categoryIn);
         }
 
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            var category = categoryService.GetById(id);
-            categoryService.Delete(category);
+            var category = categoryRepository.GetById(id);
+            categoryRepository.Delete(category);
         }
 
         [HttpPost]
@@ -59,7 +59,7 @@ namespace HealthCheck.API.Controllers
             {
                 return null;
             }
-            return await categoryService.Create(category);
+            return await categoryRepository.Create(category);
         }
     }
 }

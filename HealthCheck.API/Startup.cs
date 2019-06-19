@@ -39,11 +39,11 @@ namespace HealthCheck.API
 
             services.AddMvc();
             services.AddTransient(typeof(IEFRepository<>), typeof(EFRepository<>));
-            services.AddScoped<AnswerService>();
-            services.AddScoped<UserService>();
-            services.AddScoped<SessionService>();
-            services.AddScoped<CategoryService>();
-            services.AddScoped<SessionCategoryService>();
+            services.AddScoped<AnswerRepository>();
+            services.AddScoped<UserRepository>();
+            services.AddScoped<SessionRepository>();
+            services.AddScoped<CategoryRepository>();
+            services.AddScoped<SessionCategoryRepository>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<ExcelExportService>();
 

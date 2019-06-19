@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
-    public class CategoryService
+    public class CategoryRepository
     {
-        private readonly IEFRepository<Category> repository;
+        private readonly IEFRepository<Category> categoryRepository;
         private readonly DatabaseContext databaseContext;
 
-        public CategoryService(IEFRepository<Category> repository, DatabaseContext databaseContext)
+        public CategoryRepository(IEFRepository<Category> categoryRepository, DatabaseContext databaseContext)
         {
-            this.repository = repository;
+            this.categoryRepository = categoryRepository;
             this.databaseContext = databaseContext;
         }
 
         public async Task<Category> Create(Category category)
         {
-            return await repository.Create(category);
+            return await categoryRepository.Create(category);
         }
 
         public async Task<IEnumerable<Category>> GetAll()
         {
-            return await repository.GetAll();
+            return await categoryRepository.GetAll();
         }
 
         public IEnumerable<Category> GetCategories(Expression<Func<Category, bool>> where)
@@ -47,17 +47,17 @@ namespace HealthCheck.API.Services
 
         public async Task<Category> SingleOrDefault(Expression<Func<Category, bool>> where)
         {
-            return await repository.SingleOrDefault(where);
+            return await categoryRepository.SingleOrDefault(where);
         }
 
         public void Delete(Category category)
         {
-            repository.Delete(category);
+            categoryRepository.Delete(category);
         }
 
         public async Task<Category> Update(Category category)
         {
-            await repository.Update(category);
+            await categoryRepository.Update(category);
             return category;
         }
     }

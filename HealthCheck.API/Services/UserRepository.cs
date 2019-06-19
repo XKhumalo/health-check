@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
-    public class UserService
+    public class UserRepository
     {
-        private readonly IEFRepository<User> repository;
+        private readonly IEFRepository<User> userRepository;
         private readonly DatabaseContext databaseContext;
 
-        public UserService(IEFRepository<User> repository, DatabaseContext databaseContext)
+        public UserRepository(IEFRepository<User> userRepository, DatabaseContext databaseContext)
         {
-            this.repository = repository;
+            this.userRepository = userRepository;
             this.databaseContext = databaseContext;
         }
 
         public async Task<User> Create(User user)
         {
-            return await repository.Create(user);
+            return await userRepository.Create(user);
         }
 
         public IEnumerable<User> GetAll()
@@ -41,12 +41,12 @@ namespace HealthCheck.API.Services
 
         public async Task<User> SingleOrDefault(Expression<Func<User, bool>> where)
         {
-            return await repository.SingleOrDefault(where);
+            return await userRepository.SingleOrDefault(where);
         }
 
         public async Task<User> FirstOrDefault(Expression<Func<User, bool>> where)
         {
-            return await repository.FirstOrDefault(where);
+            return await userRepository.FirstOrDefault(where);
         }
 
         public void SaveChanges()

@@ -68,7 +68,7 @@ namespace HealthCheck.Web.Pages.Sessions
             return RedirectToPagePermanent("/Sessions/ViewSession", new { sessionId });
         }
 
-        public async Task<ActionResult> OnPostExportToExcel(int sessionId)
+        public async Task<IActionResult> OnPostExportToExcel(int sessionId)
         {
             return await answerController.ExportSessionsAnswersToExcelAsync(sessionId);
         }

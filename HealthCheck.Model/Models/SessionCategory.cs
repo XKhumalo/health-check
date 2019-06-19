@@ -17,7 +17,7 @@ namespace HealthCheck.Model
         [Required]
         public int CategoryId { get; set; }
 
-        public Session Session { get; set; }
-        public Category Category { get; set; }
+        public virtual Session Session { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

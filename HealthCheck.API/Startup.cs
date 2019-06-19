@@ -48,7 +48,7 @@ namespace HealthCheck.API
             services.AddScoped<ExcelExportService>();
 
             var connection = Configuration.GetConnectionString("SQLConnectionString");
-            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

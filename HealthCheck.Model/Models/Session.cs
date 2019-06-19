@@ -44,6 +44,8 @@ namespace HealthCheck.Model
         public bool IsOpen { get; set; }
 
         [ForeignKey("SessionId")]
-        public ICollection<SessionCategory> SessionCategories { get; set; }
+        public virtual ICollection<SessionCategory> SessionCategories { get; set; }
+
+        public virtual Answer Answer { get; set; }
     }
 }

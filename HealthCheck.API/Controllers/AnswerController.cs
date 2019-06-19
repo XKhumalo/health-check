@@ -93,9 +93,9 @@ namespace HealthCheck.API.Controllers
             {
                 var reportItem = new AnswerReportItem()
                 {
-                    AnsweredBy = answer.UserId.ToString(),
-                    Answer = answer.AnswerId.ToString(),
-                    CategoryName = answer.CategoryId.ToString()
+                    AnsweredBy = answer.User.Name,
+                    Answer = answer.AnswerOption.Option,
+                    CategoryName = answer.Category.Name
                 };
                 reportItems.Add(reportItem);
             }

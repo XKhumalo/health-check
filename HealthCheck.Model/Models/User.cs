@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
@@ -19,5 +20,7 @@ namespace HealthCheck.Model
         [StringLength(250, ErrorMessage="Email can only contain 250 characters")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        public virtual ICollection<Answer> Answers { get; set; }
     }
 }

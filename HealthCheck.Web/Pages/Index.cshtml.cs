@@ -55,7 +55,7 @@ namespace HealthCheck.Web.Pages
             {
                 LoginUserViewModel.IsCredentialsIncorrect = false;
 
-                User dbUser = GetDatabaseUser(activeDirectoryUser);
+                User dbUser = await GetDatabaseUser(activeDirectoryUser);
                 await SignInClaimsUser(dbUser);
                 return RedirectToPage("/Sessions/Index");
             }

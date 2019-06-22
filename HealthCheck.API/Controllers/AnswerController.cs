@@ -49,6 +49,21 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
+            if (answer.CategoryId == default)
+            {
+                return null;
+            }
+
+            if (answer.SessionId == default)
+            {
+                return null;
+            }
+
+            if (answer.UserId == default)
+            {
+                return null;
+            }
+
             await answerRepository.Create(answer);
             answerRepository.SaveChanges();
             return answer;

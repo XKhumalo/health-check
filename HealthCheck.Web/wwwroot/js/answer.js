@@ -8,6 +8,8 @@ $(document).ready(() => {
     let sessionId = '';
     let answer = '';
 
+    let sessionKey = $("#SessionViewModel_SessionKey").val();
+
     $("#answerSubmitted").hide();
 
     answerHub.start().catch(function (err) {
@@ -31,11 +33,11 @@ $(document).ready(() => {
                 $(".answer").prop("disabled", true);
             })
             .catch(err => {
-            return console.log(err.toString());
-        });
+                return console.log(err.toString());
+            });
     });
 
     categoryHub.on("BackToWaitingRoom", () => {
-        window.location = `/SaveAnswer?categoryId=${categoryId}&sessionId=${sessionId}&answer=${answer}`;
+        window.location = `/SaveAnswer?sessionKey=${sessionKey}&categoryId=${categoryId}&sessionId=${sessionId}&answer=${answer}`;
     });
 });

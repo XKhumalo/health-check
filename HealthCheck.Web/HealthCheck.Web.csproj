@@ -25,4 +25,9 @@
     <ProjectReference Include="..\HealthCheck.Model\HealthCheck.Model.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\" />
+  </ItemGroup>
+
 </Project>

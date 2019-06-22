@@ -20,7 +20,6 @@ namespace HealthCheck.API.Controllers
             this.sessionCategoryRepository = sessionCategoryRepository;
         }
 
-        [HttpGet("{id:length(24)}")]
         [Route("[action]")]
         public Session GetById(int id)
         {

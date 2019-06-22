@@ -42,7 +42,7 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpPost]
-        public async Task<Answer> Create([FromBody] Answer answer)
+        public async Task<Answer> InsertOrUpdate([FromBody] Answer answer)
         {
             if (answer == null)
             {
@@ -64,7 +64,7 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            await answerRepository.Create(answer);
+            await answerRepository.InsertOrUpdateAnswer(answer);
             answerRepository.SaveChanges();
             return answer;
         }

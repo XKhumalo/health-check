@@ -30,6 +30,8 @@ namespace HealthCheck.Web.Pages
 
         public IActionResult OnGet()
         {
+            LoginUserViewModel = new LoginUserViewModel();
+
             if (User.Claims.Any())
             {
                 return RedirectToPage("/Sessions/Index");
@@ -46,11 +48,14 @@ namespace HealthCheck.Web.Pages
             }
             catch (Exception e)
             {
-                return RedirectToPage("/Error", new { ReturnUrl = "/Index", ErrorMessage = "Incorrect Email or Password." });
+                LoginUserViewModel.IsCredentialsIncorrect = true;
+                return Page();
             }
             if (activeDirectoryUser != null)
             {
-                User dbUser = await GetDatabaseUser(activeDirectoryUser);
+                LoginUserViewModel.IsCredentialsIncorrect = false;
+
+                User dbUser = GetDatabaseUser(activeDirectoryUser);
                 await SignInClaimsUser(dbUser);
                 return RedirectToPage("/Sessions/Index");
             }

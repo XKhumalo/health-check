@@ -2,6 +2,15 @@
 @model HealthCheck.Web.Pages.IndexModel
 
 <div class="container">
+    @Html.HiddenFor(model => model.LoginUserViewModel.IsCredentialsIncorrect)
+
+    @if (Model.LoginUserViewModel.IsCredentialsIncorrect)
+    {
+        <div class="alert alert-danger" role="alert">
+            Incorrect Username and/or Password. Please do better next time.
+        </div>
+    }
+
     <form class="form-signin" method="post">
         <div class="row">
             <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
@@ -22,3 +31,7 @@
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <script type="text/javascript" src="js/PageScripts/index.js"></script>
+}

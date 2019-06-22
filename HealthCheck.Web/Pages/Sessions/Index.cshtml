@@ -14,13 +14,14 @@
             <input asp-for="SessionKey" type="text" class="form-control" placeholder="Enter the session Key">
         </div>
         <div class="row justify-content-center mt-2">
-            <div class="col-3">
+            <div class="col-sm-4 mb-1">
                 <button id="join-session" class="btn btn-lg btn-primary btn-block">Join</button>
             </div>
-            <div class="col-3">
+            <div class="col-sm-4 mb-1">
                 <a asp-page="/Sessions/CreateSession" class="btn btn-lg btn-secondary btn-block">Create a session</a>
             </div>
-            <div class="col-3">
+
+            <div class="col-sm-4 mb-1">
                 <a asp-page="/Categories/AddCategory" class="btn btn-lg btn-secondary btn-block">Add Category</a>
             </div>
         </div>

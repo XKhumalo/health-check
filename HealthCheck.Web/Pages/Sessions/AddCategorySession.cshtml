@@ -4,7 +4,7 @@
     ViewData["Title"] = "AddCategorySession";
 }
 
-@*<h1>Add Category</h1>
+<h1>Add Category</h1>
 
 <div class="container">
     <div class="row">
@@ -13,26 +13,26 @@
             <div class="table-responsive w-75">
                 <table class="table table-hover table-bordered">
                     <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
-                        </tr>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach (var category in Model.AvailableCategories.Where(q => !q.IsDeleted))
-                        {
-                            <tr>
-                                <td>@category._id.ToString()</td>
-                                <td>@category.Name</td>
-                                <td>@category.Description</td>
-                                <td>
-                                    <form method="post">
-                                        <button class="btn btn-sm btn-outline-danger" data-id="@category._id.ToString()" data-toggle="modal" data-target="#deleteQuestionModal"><i class="fas fa-trash-alt"></i>&nbsp; Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
+                    @foreach (var category in Model.AvailableCategories.Where(q => !q.IsDeleted))
+                    {
+                        <tr>
+                            <td>@category.CategoryId</td>
+                            <td>@category.Name</td>
+                            <td>@category.Description</td>
+                            <td>
+                                <form method="post">
+                                    <button class="btn btn-sm btn-outline-danger" data-id="@category.CategoryId" data-toggle="modal" data-target="#deleteQuestionModal"><i class="fas fa-trash-alt"></i>&nbsp; Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
             </div>
@@ -43,4 +43,4 @@
         }
         <button asp-page="/Sessions/AddCategorySession" class="btn btn-lg btn-secondary btn-block">Add a category</button>
     </div>
-</div>*@
+</div>

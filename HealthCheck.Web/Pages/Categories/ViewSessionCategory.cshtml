@@ -46,7 +46,7 @@
                     {
                         <tr>
                             <td class="user-email">@Model.Users.FirstOrDefault(u => u.UserId.Equals(answer.UserId)).Email</td>
-                            <td class="user-answer">@answer.AnswerOptionId</td>
+                            <td class="user-answer">@answer.AnswerOption.Option</td>
                         </tr>
                     }
                     </tbody>

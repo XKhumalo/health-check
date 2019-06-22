@@ -23,5 +23,10 @@ namespace HealthCheck.Model
         public virtual Session Session { get; set; }
         public virtual Category Category { get; set; }
         public virtual AnswerOption AnswerOption { get; set; }
+
+        public string GetAnsweredByUser()
+        {
+            return User.Name;
+        }
     }
 }

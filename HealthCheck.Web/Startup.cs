@@ -54,9 +54,9 @@ namespace HealthCheck.Web
             services.AddSignalR();
 
             var connection = Configuration.GetConnectionString("SQLConnectionString");
-            var sqlConnection = new SqlConnection("Data Source=ESSQLSERVER02\\SQL2017;Initial Catalog=ServiceDesk_HealthCheck;User ID=servicedesk-hcadmin;Password=8wn_2]_HbXe^CCA");
+            //var sqlConnection = new SqlConnection("Data Source=ESSQLSERVER02\\SQL2017;Initial Catalog=ServiceDesk_HealthCheck;User ID=servicedesk-hcadmin;Password=8wn_2]_HbXe^CCA");
 
-            services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseSqlServer(sqlConnection));
+            services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

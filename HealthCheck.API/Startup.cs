@@ -1,11 +1,13 @@
-﻿using HealthCheck.API.Services;
+﻿using System.Data.SqlClient;
+using HealthCheck.API.Services;
 using HealthCheck.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace HealthCheck.API
 {
@@ -46,7 +48,7 @@ namespace HealthCheck.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -64,6 +66,9 @@ namespace HealthCheck.API
             {
                 routes.MapRoute("default", "{controller}/{action}/{id?}");
             });
+
+            // Add NLog to .NET Core
+            loggerFactory.AddNLog();
         }
     }
 }

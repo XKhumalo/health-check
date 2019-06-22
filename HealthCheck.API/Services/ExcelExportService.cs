@@ -25,10 +25,8 @@ namespace HealthCheck.API.Services
             {
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add(worksheetName);
                 ExcelRange excelRange = worksheet.Cells["A1"];
-                excelRange.Value = (object)worksheetName;
-                ExcelRange dateRange = worksheet.Cells["A2"];
-                dateRange.Value = "Date: " + (object)$"{DateTime.Now:YYYY:MMM:dd}";
-                int dataRowStartIndex = 4;
+                excelRange.Value = "Health Check - " + (object)$"{DateTime.Now:MMMM yyyy}";
+                int dataRowStartIndex = 3;
                 this.WriteDataToExcelPackage<T>(items, membersToPrint, worksheet, dataRowStartIndex, useSpacedColumnHeaders, columnHeaderReplacer);
                 return excelPackage.GetAsByteArray();
             }

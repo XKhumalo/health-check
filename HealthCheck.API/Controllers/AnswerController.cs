@@ -115,7 +115,7 @@ namespace HealthCheck.API.Controllers
                 }                
             };
 
-            var fileName = $"Health Check Answers {DateTime.Today}.xlsx";
+            var fileName = $"Team Health Check {DateTime.Today:MMM yyyy}.xlsx";
             return File(excelExportService.ExportToExcel(reportItems, "Answers", false, headingReplacer), ExcelExportService.ExcelMimeType, fileName);
         }
     }

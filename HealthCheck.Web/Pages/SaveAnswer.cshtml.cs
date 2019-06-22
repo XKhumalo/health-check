@@ -30,7 +30,7 @@ namespace HealthCheck.Web.Pages
                 CategoryId = categoryId,
                 AnswerOptionId = answer
             };
-            await answerController.InsertOrUpdateAnswer(answerToSave);
+            await answerController.InsertOrUpdate(answerToSave);
             return RedirectToPage("/WaitingRoom", new { sessionKey });
         }
     }

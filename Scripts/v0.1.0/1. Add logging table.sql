@@ -1,0 +1,20 @@
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+CREATE TABLE [dbo].[Logs]
+(
+    [Id]          [INT]           IDENTITY(1, 1) NOT NULL,
+    [TimeStamp]   DATETIME        NOT NULL DEFAULT (GETUTCDATE()),
+    [MachineName] [NVARCHAR](50)  NOT NULL,
+    [Logged]      [DATETIME]      NOT NULL,
+    [Level]       [NVARCHAR](50)  NOT NULL,
+    [Message]     [NVARCHAR](MAX) NOT NULL,
+    [Logger]      [NVARCHAR](250) NULL,
+    [Callsite]    [NVARCHAR](MAX) NULL,
+    [Exception]   [NVARCHAR](MAX) NULL,
+    CONSTRAINT [PK_dbo.Log]
+        PRIMARY KEY CLUSTERED ([Id] ASC)
+        WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+SET ANSI_NULLS OFF;
+SET QUOTED_IDENTIFIER OFF;

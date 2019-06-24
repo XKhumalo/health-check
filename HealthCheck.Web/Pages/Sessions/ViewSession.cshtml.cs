@@ -38,11 +38,11 @@ namespace HealthCheck.Web.Pages.Sessions
             this.answerController = answerController;
         }
 
-        public void OnGet(int sessionId)
+        public async Task OnGet(int sessionId)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
-            UserViewModel = userController.GetById(userId);
-            SessionViewModel = sessionController.GetById(sessionId);
+            UserViewModel = await userController.GetByIdAsync(userId);
+            SessionViewModel = await sessionController.GetByIdAsync(sessionId);
             SessionCategoriesViewModel = sessionController.GetSessionCategories(sessionId);
 
             if (SessionViewModel.CreatedById == userId)
@@ -58,9 +58,9 @@ namespace HealthCheck.Web.Pages.Sessions
             Answers = answerController.Get(a => a.SessionId == sessionId);
         }
 
-        public IActionResult OnPostStart(int sessionId)
+        public async Task<IActionResult> OnPostStartAsync(int sessionId)
         {
-            var session = sessionController.GetById(sessionId);
+            var session = await sessionController.GetByIdAsync(sessionId);
             session.IsOpen = true;
             session.IsComplete = false;
             session.StartTime = DateTime.Now;
@@ -70,12 +70,12 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public IActionResult OnPostExportToExcel(int sessionId)
         {
-            return answerController.ExportSessionsAnswersToExcel(sessionId);
+            return answerController.ExportSessionsAnswersToExcelAsync(sessionId);
         }
 
-        public IActionResult OnPostClose(int sessionId)
+        public async Task<IActionResult> OnPostClose(int sessionId)
         {
-            var session = sessionController.GetById(sessionId);
+            var session = await sessionController.GetByIdAsync(sessionId);
             session.IsOpen = false;
             session.IsComplete = true;
             session.EndTime = DateTime.Now;

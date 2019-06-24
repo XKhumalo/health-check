@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using HealthCheck.API.Controllers;
+﻿using HealthCheck.API.Controllers;
 using HealthCheck.Common;
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HealthCheck.Web.Pages.Sessions
 {
@@ -34,9 +34,9 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            CategoriesViewModel = categoryController.Get();
+            CategoriesViewModel = await categoryController.Get();
         }
 
         public IActionResult OnPostCreate()

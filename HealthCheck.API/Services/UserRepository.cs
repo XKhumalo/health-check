@@ -4,31 +4,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Services
 {
     public class UserRepository
     {
+        private readonly IEFRepository<User> userRepository;
         private readonly DatabaseContext databaseContext;
 
-        public UserRepository(DatabaseContext databaseContext)
+        public UserRepository(IEFRepository<User> userRepository, DatabaseContext databaseContext)
         {
+            this.userRepository = userRepository;
             this.databaseContext = databaseContext;
         }
 
-        public User GetById(int id)
+        public async Task<User> Create(User user)
         {
-            return databaseContext.Users.Find(id);
-        }
-
-        public User SingleOrDefault(Expression<Func<User, bool>> where)
-        {
-            return  databaseContext.Users.SingleOrDefault(where);
-        }
-
-        public User FirstOrDefault(Expression<Func<User, bool>> where)
-        {
-            return  databaseContext.Users.FirstOrDefault(where);
+            return await userRepository.Create(user);
         }
 
         public IEnumerable<User> GetAll()
@@ -41,11 +35,19 @@ namespace HealthCheck.API.Services
             return databaseContext.Users.Where(where);
         }
 
-        public User Create(User user)
+        public async Task<User> GetByIdAsync(int id)
         {
-            var persistedUser = databaseContext.Users.Add(user);
-            SaveChanges();
-            return persistedUser.Entity;
+            return await databaseContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
+        }
+
+        public async Task<User> SingleOrDefault(Expression<Func<User, bool>> where)
+        {
+            return await userRepository.SingleOrDefault(where);
+        }
+
+        public async Task<User> FirstOrDefault(Expression<Func<User, bool>> where)
+        {
+            return await userRepository.FirstOrDefault(where);
         }
 
         public void SaveChanges()

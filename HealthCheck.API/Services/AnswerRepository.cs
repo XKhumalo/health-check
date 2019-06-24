@@ -4,32 +4,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Services
 {
     public class AnswerRepository
     {
+        private readonly IEFRepository<Answer> answerRepository;
         private readonly DatabaseContext databaseContext;
 
-        public AnswerRepository(DatabaseContext databaseContext)
+        public AnswerRepository(IEFRepository<Answer> answerRepository, DatabaseContext databaseContext)
         {
+            this.answerRepository = answerRepository;
             this.databaseContext = databaseContext;
         }
 
-        public Answer GetById(int id)
+        public async Task<Answer> GetById(int id)
         {
-            return databaseContext.Answers.FirstOrDefault(x => x.AnswerId == id);
+            return await answerRepository.Get(id);
         }
 
-        public Answer SingleOrDefault(Expression<Func<Answer, bool>> where)
+        public async Task<Answer> SingleOrDefault(Expression<Func<Answer, bool>> where)
         {
-            return databaseContext.Answers.SingleOrDefault(where);
+            return await answerRepository.SingleOrDefault(where);
         }
 
-        public Answer FirstOrDefault(Expression<Func<Answer, bool>> where)
+        public async Task<Answer> FirstOrDefault(Expression<Func<Answer, bool>> where)
         {
-            return databaseContext.Answers.FirstOrDefault(where);
+            return await answerRepository.FirstOrDefault(where);
+        }
+
+        public async Task<Answer> GetAnswer(Answer answer)
+        {
+            return await answerRepository.SingleOrDefault(a => a.AnswerId == answer.AnswerId
+                        //&& a.AnswerOptions == answer.AnswerOptions
+                        && a.CategoryId == answer.CategoryId
+                        && a.SessionId == answer.SessionId
+                        && a.UserId == answer.UserId);
+        }
+
+        public async Task<ICollection<Answer>> GetAll()
+        {
+            return await answerRepository.GetAll();
         }
 
         public IQueryable<Answer> GetAnswers(Expression<Func<Answer, bool>> where)
@@ -37,56 +53,45 @@ namespace HealthCheck.API.Services
             return databaseContext.Answers.Where(where);
         }
 
-        public Answer InsertOrUpdateAnswer(Answer answer)
+        public async Task<Answer> InsertOrUpdateAnswer(Answer answer)
         {
             if (answer == null)
             {
                 return null;
             }
 
-            var dbAnswer = FirstOrDefault(a => a.UserId == answer.UserId && a.SessionId == answer.SessionId && a.CategoryId == answer.CategoryId);
+            var dbAnswer = await FirstOrDefault(a => a.UserId == answer.UserId && a.SessionId == answer.SessionId && a.CategoryId == answer.CategoryId);
             if (dbAnswer != null)
             {
                 dbAnswer.AnswerOptionId = answer.AnswerOptionId;
-                return Update(dbAnswer);
+                return await Update(dbAnswer);
             }
-            return Create(answer);
+            return await Create(answer);
         }
 
-        public Answer Create(Answer answer)
+        public async Task<Answer> Create(Answer answer)
         {
-            var persistedAnswer = databaseContext.Answers.Add(answer);
-            SaveChanges();
-            return persistedAnswer.Entity;
+            return await answerRepository.Create(answer);
         }
 
-        public IEnumerable<Answer> Create(IEnumerable<Answer> answers)
+        public async Task<IEnumerable<Answer>> Create(IEnumerable<Answer> answers)
         {
-            var answersList = answers.ToList();
-            foreach (var answer in answersList)
-            {
-                databaseContext.Answers.Add(answer);
-            }
-            SaveChanges();
-            return answersList;
+            return await answerRepository.CreateMany(answers);
         }
 
-        public Answer Update(Answer answer)
+        public async Task<Answer> Update(Answer answer)
         {
-            var updatedAnswer = databaseContext.Answers.Update(answer);
-            SaveChanges();
-            return updatedAnswer.Entity;
+            return await answerRepository.Update(answer);
         }
 
         public void Delete(Answer answer)
         {
-            databaseContext.Answers.Remove(answer);
-            SaveChanges();
+            answerRepository.Delete(answer);
         }
 
         public void SaveChanges()
         {
-            databaseContext.SaveChanges();
+            answerRepository.SaveChanges();
         }
     }
 }

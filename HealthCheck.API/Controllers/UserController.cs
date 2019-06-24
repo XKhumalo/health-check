@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -11,55 +12,55 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private readonly UserRepository userService;
+        private readonly UserRepository userRepository;
 
-        public UserController(UserRepository userService)
+        public UserController(UserRepository userRepository)
         {
-            this.userService = userService;
+            this.userRepository = userRepository;
         }
 
         public IEnumerable<User> Get()
         {
-            return userService.GetAll();
+            return userRepository.GetAll();
         }
 
         [HttpGet]
         public IEnumerable<User> Get(Expression<Func<User, bool>> exp)
         {
-            return userService.GetUsers(exp);
+            return userRepository.GetUsers(exp);
         }
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public User GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            return userService.GetById(id);
+            return await userRepository.GetByIdAsync(id);
         }
 
         [HttpGet("{name}")]
         [Route("[action]")]
-        public User GetByName(string name)
+        public async Task<User> GetByName(string name)
         {
-            return userService.SingleOrDefault(u => u.Name.Contains(name));
+            return await userRepository.SingleOrDefault(u => u.Name.Contains(name));
         }
 
         [HttpGet("{email}")]
         [Route("[action]")]
-        public User GetByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
-            return userService.SingleOrDefault(u => u.Email.Contains(email));
+            return await userRepository.SingleOrDefault(u => u.Email.Contains(email));
         }
 
         [HttpPost]
-        public User Create([FromBody] User user)
+        public async Task<User> Create([FromBody] User user)
         {
             if (user == null)
             {
                 return null;
             }
 
-            var persistedUser = userService.Create(user);
-            userService.SaveChanges();
+            var persistedUser = await userRepository.Create(user);
+            userRepository.SaveChanges();
             return persistedUser;
         }
     }

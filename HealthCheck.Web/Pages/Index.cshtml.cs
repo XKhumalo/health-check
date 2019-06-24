@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HealthCheck.API.Controllers;
+using HealthCheck.Model;
+using HealthCheck.Web.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using HealthCheck.Model;
-using HealthCheck.API.Controllers;
-using Services = HealthCheck.API.Services;
-using HealthCheck.Web.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+using System.Threading.Tasks;
+using Services = HealthCheck.API.Services;
 
 namespace HealthCheck.Web.Pages
 {
@@ -46,7 +46,7 @@ namespace HealthCheck.Web.Pages
             {
                 activeDirectoryUser = authenticationService.GetADUser(LoginUserViewModel.Username, LoginUserViewModel.Password);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserViewModel.IsCredentialsIncorrect = true;
                 return Page();
@@ -55,16 +55,20 @@ namespace HealthCheck.Web.Pages
             {
                 LoginUserViewModel.IsCredentialsIncorrect = false;
 
-                User dbUser = GetDatabaseUser(activeDirectoryUser);
+                User dbUser = await GetDatabaseUser(activeDirectoryUser);
                 await SignInClaimsUser(dbUser);
                 return RedirectToPage("/Sessions/Index");
             }
             return RedirectToPage("/Error", new { ReturnUrl = "/Index", ErrorMessage = "Something went wrong." });
         }
         
-        private User GetDatabaseUser(User activeDirectoryUser)
+        private async Task<User> GetDatabaseUser(User activeDirectoryUser)
         {
-            var dbUser = userController.GetByEmail(activeDirectoryUser.Email) ?? userController.Create(activeDirectoryUser);
+            var dbUser = await userController.GetByEmail(activeDirectoryUser.Email);
+            if (dbUser == null)
+            {
+                dbUser = await userController.Create(activeDirectoryUser);
+            }
 
             return dbUser;
         }

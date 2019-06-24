@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HealthCheck.Model.Models
+namespace HealthCheck.Model
 {
     public class AnswerOption
     {

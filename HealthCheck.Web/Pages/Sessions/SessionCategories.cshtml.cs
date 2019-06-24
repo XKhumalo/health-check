@@ -26,7 +26,7 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task OnGet(int sessionId)
         {
-            Session = sessionController.GetById(sessionId);
+            Session = await sessionController.GetByIdAsync(sessionId);
             var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
             Categories = categoryController.GetByIds(categoryIds);
         }

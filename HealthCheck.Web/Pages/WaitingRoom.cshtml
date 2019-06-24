@@ -42,9 +42,9 @@
 
                                 <tr>
                                     <td>@category.Name</td>
-                                    @if (answer != null && answer.AnswerOptionId > 0)
+                                    @if (answer != null && answer.AnswerOptionId != 0)
                                     {
-                                        var enumValue = (AnswerOptions) answer.AnswerOptionId;
+                                        var enumValue = (AnswerOptions)answer.AnswerOptionId;
                                         var answerOption = EnumExtensions.ParseEnum<AnswerOptions>(enumValue.ToString());
 
                                         <td>

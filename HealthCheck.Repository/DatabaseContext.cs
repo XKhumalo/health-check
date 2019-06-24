@@ -1,5 +1,4 @@
 ﻿using HealthCheck.Model;
-using HealthCheck.Model.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.Repository

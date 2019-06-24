@@ -22,7 +22,7 @@ namespace HealthCheck.Web.Pages.Sessions
             this.sessionController = sessionController;
         }
 
-        public async Task<IActionResult> OnPostJoinAsync()
+        public async Task<IActionResult> OnPostJoin()
         {
             var session = await sessionController.GetBySessionKey(SessionKey);
 

@@ -1,4 +1,4 @@
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using HealthCheck.API.Services;
 using HealthCheck.Repository;
 using Microsoft.AspNetCore.Builder;

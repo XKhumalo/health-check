@@ -11,41 +11,33 @@ namespace HealthCheck.API.Services
 {
     public class SessionRepository
     {
+        private readonly IEFRepository<Session> sessionRepository;
         private readonly DatabaseContext databaseContext;
 
-        public SessionRepository(DatabaseContext databaseContext)
+        public SessionRepository(IEFRepository<Session> sessionRepository, DatabaseContext databaseContext)
         {
+            this.sessionRepository = sessionRepository;
             this.databaseContext = databaseContext;
         }
 
-        public Session GetById(int id)
+        public async Task<Session> GetByIdAsync(int id)
         {
-            return databaseContext.Sessions.SingleOrDefault(s => s.SessionId == id);
+            return await databaseContext.Sessions.SingleOrDefaultAsync(s => s.SessionId == id);
         }
 
-        public Session SingleOrDefault(Expression<Func<Session, bool>> where)
+        public async Task<Session> SingleOrDefault(Expression<Func<Session, bool>> where)
         {
-            return databaseContext.Sessions.SingleOrDefault(where);
+            return await sessionRepository.SingleOrDefault(where);
         }
 
-        public async Task<Session> SingleOrDefaultAsync(Expression<Func<Session, bool>> where)
+        public async Task<Session> FirstOrDefault(Expression<Func<Session, bool>> where)
         {
-            return await databaseContext.Sessions.SingleOrDefaultAsync(where);
+            return await sessionRepository.FirstOrDefault(where);
         }
 
-        public Session FirstOrDefault(Expression<Func<Session, bool>> where)
+        public async Task<ICollection<Session>> GetAll()
         {
-            return databaseContext.Sessions.FirstOrDefault(where);
-        }
-
-        public async Task<Session> FirstOrDefaultAsync(Expression<Func<Session, bool>> where)
-        {
-            return await databaseContext.Sessions.FirstOrDefaultAsync(where);
-        }
-
-        public IEnumerable<Session> GetAll()
-        {
-            return databaseContext.Sessions.ToList();
+            return await sessionRepository.GetAll();
         }
 
         public IQueryable<Session> GetSessions(Expression<Func<Session, bool>> where)
@@ -53,28 +45,31 @@ namespace HealthCheck.API.Services
             return databaseContext.Sessions.Where(where);
         }
 
-        public Session Create(Session session)
+        public async Task<Session> Create(Session session)
         {
-            var persistedSession = databaseContext.Sessions.Add(session);
-            SaveChanges();
-            return persistedSession.Entity;
+            return await sessionRepository.Create(session);
+        }
+
+        public async Task<IEnumerable<Session>> Create(IEnumerable<Session> sessions)
+        {
+            return await sessionRepository.CreateMany(sessions);
         }
 
         public Session Update(Session session)
         {
-            var persistedSession = databaseContext.Sessions.Update(session);
+            var persistedSession =  databaseContext.Sessions.Update(session);
             databaseContext.SaveChanges();
             return persistedSession.Entity;
         }
 
         public void Delete(Session session)
         {
-            databaseContext.Sessions.Remove(session);
+            sessionRepository.Delete(session);
         }
 
         public void SaveChanges()
         {
-            databaseContext.SaveChanges();
+            sessionRepository.SaveChanges();
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -11,30 +12,37 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class AnswerController : Controller
     {
-        private readonly AnswerRepository answerService;
+        private readonly AnswerRepository answerRepository;
         private readonly ExcelExportService excelExportService;
 
-        public AnswerController(AnswerRepository answerService, ExcelExportService excelExportService)
+        public AnswerController(AnswerRepository answerRepository, ExcelExportService excelExportService)
         {
-            this.answerService = answerService;
+            this.answerRepository = answerRepository;
             this.excelExportService = excelExportService;
         }
 
         [HttpGet("{id}")]
         [Route("[action]")]
-        public Answer GetById(int id)
+        public async Task<Answer> GetById(int id)
         {
-            return answerService.GetById(id);
+            return await answerRepository.GetById(id);
         }
 
         [HttpGet]
         public IEnumerable<Answer> Get(Expression<Func<Answer, bool>> exp)
         {
-            return answerService.GetAnswers(exp);
+            return answerRepository.GetAnswers(exp);
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IEnumerable<Answer>> GetAll()
+        {
+            return await answerRepository.GetAll();
         }
 
         [HttpPost]
-        public Answer InsertOrUpdateAnswer([FromBody] Answer answer)
+        public async Task<Answer> InsertOrUpdate([FromBody] Answer answer)
         {
             if (answer == null)
             {
@@ -56,42 +64,44 @@ namespace HealthCheck.API.Controllers
                 return null;
             }
 
-            var persistedAnswer = answerService.InsertOrUpdateAnswer(answer);
-            return persistedAnswer;
+            await answerRepository.InsertOrUpdateAnswer(answer);
+            answerRepository.SaveChanges();
+            return answer;
         }
 
         [HttpPost]
         [Route("[action]")]
-        public IEnumerable<Answer> CreateList([FromBody] IEnumerable<Answer> answers)
+        public async Task<IEnumerable<Answer>> CreateList([FromBody] IEnumerable<Answer> answers)
         {
             if (answers == null)
             {
                 return null;
             }
 
-            var persistedAnswers = answerService.Create(answers);
-            return persistedAnswers;
+            await answerRepository.Create(answers);
+            answerRepository.SaveChanges();
+            return answers;
         }
 
         [HttpPut("{id}")]
-        public Answer Update(int id, [FromBody] Answer answerIn)
+        public async Task Update(int id, [FromBody] Answer answerIn)
         {
-            var updatedAnswer = answerService.Update(answerIn);
-            return updatedAnswer;
+            await answerRepository.Update(answerIn);
+            answerRepository.SaveChanges();
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var answer = answerService.GetById(id);
-            answerService.Delete(answer);
+            var answer = await answerRepository.GetById(id);
+            answerRepository.Delete(answer);
         }
 
         [HttpPost]
         [Route("[action]")]
-        public ActionResult ExportSessionsAnswersToExcel(int currentSessionId)
+        public ActionResult ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
-            var answers = answerService.GetAnswers(x => x.SessionId == currentSessionId);
+            var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
 
             var reportItems = new List<AnswerReportItem>();
             foreach (var answer in answers)

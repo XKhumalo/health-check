@@ -2,6 +2,7 @@
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -9,55 +10,56 @@ namespace HealthCheck.API.Controllers
     [Route("api/[controller]")]
     public class CategoryController : Controller
     {
-        private readonly CategoryRepository categoryService;
+        private readonly CategoryRepository categoryRepository;
 
-        public CategoryController(CategoryRepository categoryService)
+        public CategoryController(CategoryRepository categoryRepository)
         {
-            this.categoryService = categoryService;
+            this.categoryRepository = categoryRepository;
         }
 
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{id}")]
         [Route("[action]")]
-        public Category GetById(int id)
+        public async Task<Category> GetById(int id)
         {
-            return categoryService.GetById(id);
+            return await categoryRepository.GetByIdAsync(id);
         }
 
         [HttpGet]
         [Route("[action]")]
         public IEnumerable<Category> GetByIds(IEnumerable<int> ids)
         {
-            return ids == null ? null : categoryService.GetCategories(ids);
+            return ids == null ? null : categoryRepository.GetCategories(ids);
         }
 
         [HttpGet]
-        public IEnumerable<Category> Get()
+        public async Task<IEnumerable<Category>> Get()
         {
-            return categoryService.GetAll();
+            return await categoryRepository.GetAll();
         }
 
         [HttpPut("{id}")]
-        public void Update(int id, Category categoryIn)
+        public async Task Update(int id, Category categoryIn)
         {
-            var category = categoryService.GetById(id);
-            categoryService.Update(categoryIn);
+            var category = categoryRepository.GetByIdAsync(id);
+
+            await categoryRepository.Update(categoryIn);
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var category = categoryService.GetById(id);
-            categoryService.Delete(category);
+            var category = await categoryRepository.GetByIdAsync(id);
+            categoryRepository.Delete(category);
         }
 
         [HttpPost]
-        public Category Create([FromBody] Category category)
+        public async Task<Category> Create([FromBody] Category category)
         {
             if (category == null)
             {
                 return null;
             }
-            return categoryService.Create(category);
+            return await categoryRepository.Create(category);
         }
     }
 }

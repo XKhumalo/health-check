@@ -20,7 +20,7 @@ $(document).ready(() => {
         return console.error(err.toString());
     });
 
-    $(".answer").click((event) => {
+    $(".answer").click(async (event) => {
         const name = $(event.target).data("name");
         const userId = $(event.target).data("user");
         categoryId = $(event.target).data("category");
@@ -33,8 +33,8 @@ $(document).ready(() => {
                 $(".answer").prop("disabled", true);
             })
             .catch(err => {
-            return console.log(err.toString());
-        });
+                return console.log(err.toString());
+            });
     });
 
     categoryHub.on("BackToWaitingRoom", () => {

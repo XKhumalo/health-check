@@ -4,21 +4,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Services
 {
     public class CategoryRepository
     {
+        private readonly IEFRepository<Category> categoryRepository;
         private readonly DatabaseContext databaseContext;
 
-        public CategoryRepository(DatabaseContext databaseContext)
+        public CategoryRepository(IEFRepository<Category> categoryRepository, DatabaseContext databaseContext)
         {
+            this.categoryRepository = categoryRepository;
             this.databaseContext = databaseContext;
         }
 
-        public IEnumerable<Category> GetAll()
+        public async Task<Category> Create(Category category)
         {
-            return databaseContext.Categories.ToList();
+            return await categoryRepository.Create(category);
+        }
+
+        public async Task<IEnumerable<Category>> GetAll()
+        {
+            return await categoryRepository.GetAll();
         }
 
         public IEnumerable<Category> GetCategories(Expression<Func<Category, bool>> where)
@@ -32,38 +41,25 @@ namespace HealthCheck.API.Services
             return databaseContext.Categories.Where(c => listOfCategoryIds.Contains(c.CategoryId));
         }
 
-        public Category GetById(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
-            return databaseContext.Categories.SingleOrDefault(x => x.CategoryId == id);
+            return await databaseContext.Categories.SingleOrDefaultAsync(x => x.CategoryId == id);
         }
 
-        public Category SingleOrDefault(Expression<Func<Category, bool>> where)
+        public async Task<Category> SingleOrDefault(Expression<Func<Category, bool>> where)
         {
-            return databaseContext.Categories.SingleOrDefault(where);
-        }
-        public Category Create(Category category)
-        {
-            var persistedCategory = databaseContext.Categories.Add(category);
-            SaveChanges();
-            return persistedCategory.Entity;
-        }
-
-        public Category Update(Category category)
-        {
-            databaseContext.Categories.Update(category);
-            SaveChanges();
-            return category;
+            return await categoryRepository.SingleOrDefault(where);
         }
 
         public void Delete(Category category)
         {
-            databaseContext.Categories.Remove(category);
-            SaveChanges();
+            categoryRepository.Delete(category);
         }
 
-        public void SaveChanges()
+        public async Task<Category> Update(Category category)
         {
-            databaseContext.SaveChanges();
+            await categoryRepository.Update(category);
+            return category;
         }
     }
 }

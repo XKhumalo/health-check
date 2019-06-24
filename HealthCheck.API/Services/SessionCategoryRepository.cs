@@ -1,18 +1,22 @@
-﻿using HealthCheck.Model;
-using HealthCheck.Repository;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using HealthCheck.Model;
+using HealthCheck.Repository;
 
 namespace HealthCheck.API.Services
 {
     public class SessionCategoryRepository
     {
-        private readonly CategoryRepository categoryRepository;
-        private readonly SessionRepository sessionRepository;
+        private readonly IEFRepository<SessionCategory> sessionCategoryRepository;
+        private readonly IEFRepository<Category> categoryRepository;
+        private readonly IEFRepository<Session> sessionRepository;
         private readonly DatabaseContext databaseContext;
 
-        public SessionCategoryRepository(CategoryRepository categoryRepository, SessionRepository sessionRepository, DatabaseContext databaseContext)
+        public SessionCategoryRepository(IEFRepository<SessionCategory> sessionCategoryRepository, IEFRepository<Category> categoryRepository, 
+            IEFRepository<Session> sessionRepository, DatabaseContext databaseContext)
         {
+            this.sessionCategoryRepository = sessionCategoryRepository;
             this.categoryRepository = categoryRepository;
             this.sessionRepository = sessionRepository;
             this.databaseContext = databaseContext;
@@ -39,14 +43,14 @@ namespace HealthCheck.API.Services
             return sessionCategories;
         }
 
-        public Session CreateSession(Session session)
+        public async Task<Session> CreateSession(Session session)
         {
-            return sessionRepository.Create(session);
+            return await sessionRepository.Create(session);
         }
 
-        public IEnumerable<Category> GetCategories()
+        public async Task<ICollection<Category>> GetCategories()
         {
-            return categoryRepository.GetAll();
+            return await categoryRepository.GetAll();
         }
 
         public IEnumerable<SessionCategory> GetSessionCategoriesBySessionId(int sessionId)
@@ -54,16 +58,28 @@ namespace HealthCheck.API.Services
             return databaseContext.SessionCategories.Where(sc => sc.SessionId == sessionId);
         }
 
-        public SessionCategory Create(SessionCategory sessionCategory)
+        //TODO: NOT BEING USED
+        public async void CreateSessionCategory(Session session, IEnumerable<int> categoryIds)
         {
-            var persistedSessionCategory = databaseContext.Add(sessionCategory);
-            SaveChanges();
-            return persistedSessionCategory.Entity;
+            foreach (var categoryId in categoryIds)
+            {
+                var sessionCategory = new SessionCategory()
+                {
+                    SessionId = session.SessionId,
+                    CategoryId = categoryId
+                };
+                await Create(sessionCategory);
+            }
+        }
+
+        public async Task<SessionCategory> Create(SessionCategory sessionCategory)
+        {
+            return await sessionCategoryRepository.Create(sessionCategory);
         }
 
         public void SaveChanges()
         {
-            databaseContext.SaveChanges();
+            sessionCategoryRepository.SaveChanges();
         }
     }
 }

@@ -32,9 +32,9 @@ namespace HealthCheck.Web.Pages
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             AdminId = adminId;
-            SessionViewModel = sessionController.GetById(sessionId);
-            CategoryViewModel = categoryController.GetById(categoryId);
-            UserViewModel = userController.GetById(userId);
+            SessionViewModel = await sessionController.GetByIdAsync(sessionId);
+            CategoryViewModel = await categoryController.GetById(categoryId);
+            UserViewModel = await userController.GetByIdAsync(userId);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Services
 {
@@ -40,9 +41,9 @@ namespace HealthCheck.API.Services
             return databaseContext.Categories.Where(c => listOfCategoryIds.Contains(c.CategoryId));
         }
 
-        public Category GetById(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
-            return databaseContext.Categories.SingleOrDefault(x => x.CategoryId == id);
+            return await databaseContext.Categories.SingleOrDefaultAsync(x => x.CategoryId == id);
         }
 
         public async Task<Category> SingleOrDefault(Expression<Func<Category, bool>> where)

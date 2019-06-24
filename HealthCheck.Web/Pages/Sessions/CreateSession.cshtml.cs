@@ -34,9 +34,9 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            CategoriesViewModel = categoryController.Get();
+            CategoriesViewModel = await categoryController.Get();
         }
 
         public IActionResult OnPostCreate()

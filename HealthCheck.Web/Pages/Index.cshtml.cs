@@ -62,9 +62,13 @@ namespace HealthCheck.Web.Pages
             return RedirectToPage("/Error", new { ReturnUrl = "/Index", ErrorMessage = "Something went wrong." });
         }
         
-        private User GetDatabaseUser(User activeDirectoryUser)
+        private async Task<User> GetDatabaseUser(User activeDirectoryUser)
         {
-            var dbUser = userController.GetByEmail(activeDirectoryUser.Email) ?? userController.Create(activeDirectoryUser);
+            var dbUser = await userController.GetByEmail(activeDirectoryUser.Email);
+            if (dbUser == null)
+            {
+                dbUser = await userController.Create(activeDirectoryUser);
+            }
 
             return dbUser;
         }

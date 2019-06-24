@@ -2,6 +2,7 @@
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -18,9 +19,9 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{id}")]
         [Route("[action]")]
-        public Category GetById(int id)
+        public async Task<Category> GetById(int id)
         {
-            return categoryRepository.GetById(id);
+            return await categoryRepository.GetByIdAsync(id);
         }
 
         [HttpGet]
@@ -31,15 +32,15 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Category> Get()
+        public async Task<IEnumerable<Category>> Get()
         {
             return await categoryRepository.GetAll();
         }
 
         [HttpPut("{id}")]
-        public void Update(int id, Category categoryIn)
+        public async Task Update(int id, Category categoryIn)
         {
-            var category = categoryRepository.GetById(id);
+            var category = categoryRepository.GetByIdAsync(id);
 
             await categoryRepository.Update(categoryIn);
         }
@@ -47,12 +48,12 @@ namespace HealthCheck.API.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            var category = categoryRepository.GetById(id);
+            var category = categoryRepository.GetByIdAsync(id);
             categoryRepository.Delete(category);
         }
 
         [HttpPost]
-        public Category Create([FromBody] Category category)
+        public async Task<Category> Create([FromBody] Category category)
         {
             if (category == null)
             {

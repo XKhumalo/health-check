@@ -2,6 +2,7 @@
 using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
@@ -25,14 +26,8 @@ namespace HealthCheck.API.Controllers
             return sessionRepository.GetById(id);
         }
 
-        [Route("[action]")]
-        public async Task<Session> GetByIdAsync(int id)
-        {
-            return await sessionService.SingleOrDefaultAsync(s => s.SessionId == id);
-        }
-
         [HttpGet]
-        public IEnumerable<Session> Get()
+        public async Task<IEnumerable<Session>> Get()
         {
             return await sessionRepository.GetAll();
         }
@@ -59,7 +54,7 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpPost]
-        public Session Create([FromBody] Session session)
+        public async Task<Session> Create([FromBody] Session session)
         {
             if (!ModelState.IsValid || session == null)
             {
@@ -99,7 +94,7 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
             {

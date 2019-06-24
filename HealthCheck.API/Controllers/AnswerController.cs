@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -22,7 +23,7 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{id}")]
         [Route("[action]")]
-        public Answer GetById(int id)
+        public async Task<Answer> GetById(int id)
         {
             return await answerRepository.GetById(id);
         }
@@ -70,7 +71,7 @@ namespace HealthCheck.API.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public IEnumerable<Answer> CreateList([FromBody] IEnumerable<Answer> answers)
+        public async Task<IEnumerable<Answer>> CreateList([FromBody] IEnumerable<Answer> answers)
         {
             if (answers == null)
             {
@@ -83,14 +84,14 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public Answer Update(int id, [FromBody] Answer answerIn)
+        public async Task Update(int id, [FromBody] Answer answerIn)
         {
             await answerRepository.Update(answerIn);
             answerRepository.SaveChanges();
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             var answer = await answerRepository.GetById(id);
             answerRepository.Delete(answer);
@@ -98,7 +99,7 @@ namespace HealthCheck.API.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public ActionResult ExportSessionsAnswersToExcel(int currentSessionId)
+        public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
             var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace HealthCheck.API.Controllers
 {
@@ -38,20 +39,20 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{name}")]
         [Route("[action]")]
-        public User GetByName(string name)
+        public async Task<User> GetByName(string name)
         {
             return await userRepository.SingleOrDefault(u => u.Name.Contains(name));
         }
 
         [HttpGet("{email}")]
         [Route("[action]")]
-        public User GetByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
             return await userRepository.SingleOrDefault(u => u.Email.Contains(email));
         }
 
         [HttpPost]
-        public User Create([FromBody] User user)
+        public async Task<User> Create([FromBody] User user)
         {
             if (user == null)
             {

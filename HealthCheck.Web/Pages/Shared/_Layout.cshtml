@@ -29,7 +29,7 @@
 
             @if (User.Claims.Any())
             {
-                <h6 class="my-0 mr-md-auto">Hi, @User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Name)).Value</h6>
+            <h6 class="my-0 mr-md-auto">Hi, @User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Name)).Value</h6>
             }
             <nav class="my-2 my-md-0 mr-md-3">
                 <div class="container">

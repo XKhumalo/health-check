@@ -20,7 +20,7 @@ $(document).ready(() => {
         return console.error(err.toString());
     });
 
-    $(".answer").click(async (event) => {
+    $(".answer").click((event) => {
         const name = $(event.target).data("name");
         const userId = $(event.target).data("user");
         categoryId = $(event.target).data("category");

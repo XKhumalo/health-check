@@ -38,7 +38,7 @@ namespace HealthCheck.Web.Pages.Sessions
             this.answerController = answerController;
         }
 
-        public async Task OnGet(int sessionId)
+        public void OnGet(int sessionId)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             UserViewModel = userController.GetById(userId);
@@ -70,10 +70,10 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task<IActionResult> OnPostExportToExcel(int sessionId)
         {
-            return await answerController.ExportSessionsAnswersToExcelAsync(sessionId);
+            return answerController.ExportSessionsAnswersToExcel(sessionId);
         }
 
-        public async Task<IActionResult> OnPostClose(int sessionId)
+        public IActionResult OnPostClose(int sessionId)
         {
             var session = sessionController.GetById(sessionId);
             session.IsOpen = false;

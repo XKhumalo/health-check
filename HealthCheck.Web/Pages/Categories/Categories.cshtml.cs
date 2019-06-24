@@ -3,9 +3,7 @@ using HealthCheck.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
-using System.Linq;
-using HealthCheck.Web.Extensions;
-using Microsoft.AspNetCore.Antiforgery.Internal;
+using System.Threading.Tasks;
 
 namespace HealthCheck.Web.Pages.Categories
 {
@@ -21,7 +19,7 @@ namespace HealthCheck.Web.Pages.Categories
             this.categoryController = categoryController;
         }
 
-        public async void OnGet()
+        public async Task OnGet()
         {
             CategoriesViewModel = await categoryController.Get();
         }

@@ -32,9 +32,9 @@ namespace HealthCheck.API.Controllers
 
         [HttpGet("{id:length(24)}")]
         [Route("[action]")]
-        public User GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            return userRepository.GetById(id);
+            return await userRepository.GetByIdAsync(id);
         }
 
         [HttpGet("{name}")]

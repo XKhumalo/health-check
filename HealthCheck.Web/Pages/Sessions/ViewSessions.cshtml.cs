@@ -34,7 +34,7 @@ namespace HealthCheck.Web.Pages.Sessions
         public async Task OnGet(string sessionId)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
-            UserViewModel = userController.GetById(userId);
+            UserViewModel = await userController.GetByIdAsync(userId);
             SessionsViewModel = sessionController.GetByCreatedById(userId);
         }
 

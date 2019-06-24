@@ -46,7 +46,7 @@ namespace HealthCheck.Web.Pages
             {
                 activeDirectoryUser = authenticationService.GetADUser(LoginUserViewModel.Username, LoginUserViewModel.Password);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserViewModel.IsCredentialsIncorrect = true;
                 return Page();

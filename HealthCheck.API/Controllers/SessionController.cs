@@ -21,9 +21,9 @@ namespace HealthCheck.API.Controllers
         }
 
         [Route("[action]")]
-        public Session GetById(int id)
+        public async Task<Session> GetByIdAsync(int id)
         {
-            return sessionRepository.GetById(id);
+            return await sessionRepository.GetByIdAsync(id);
         }
 
         [HttpGet]
@@ -101,7 +101,7 @@ namespace HealthCheck.API.Controllers
                 return BadRequest();
             }
 
-            var session = sessionRepository.GetById(id);
+            var session = await sessionRepository.GetByIdAsync(id);
 
             if (session == null)
             {

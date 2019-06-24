@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Services
 {
@@ -34,9 +35,9 @@ namespace HealthCheck.API.Services
             return databaseContext.Users.Where(where);
         }
 
-        public User GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            return databaseContext.Users.SingleOrDefault(u => u.UserId == id);
+            return await databaseContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
         }
 
         public async Task<User> SingleOrDefault(Expression<Func<User, bool>> where)

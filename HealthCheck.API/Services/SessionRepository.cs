@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCheck.API.Services
 {
@@ -19,9 +20,9 @@ namespace HealthCheck.API.Services
             this.databaseContext = databaseContext;
         }
 
-        public Session GetById(int id)
+        public async Task<Session> GetByIdAsync(int id)
         {
-            return databaseContext.Sessions.SingleOrDefault(s => s.SessionId == id);
+            return await databaseContext.Sessions.SingleOrDefaultAsync(s => s.SessionId == id);
         }
 
         public async Task<Session> SingleOrDefault(Expression<Func<Session, bool>> where)

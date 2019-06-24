@@ -46,9 +46,9 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var category = categoryRepository.GetByIdAsync(id);
+            var category = await categoryRepository.GetByIdAsync(id);
             categoryRepository.Delete(category);
         }
 

@@ -24,7 +24,7 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public async Task OnGet(int sessionId)
+        public void OnGet(int sessionId)
         {
             //var allCategories = await categoryController.Get();
             //Session = await sessionController.GetById(sessionId);

@@ -99,7 +99,7 @@ namespace HealthCheck.API.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> ExportSessionsAnswersToExcelAsync(int currentSessionId)
+        public ActionResult ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
             var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
 

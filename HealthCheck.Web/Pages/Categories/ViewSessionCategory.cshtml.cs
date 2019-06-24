@@ -34,7 +34,7 @@ namespace HealthCheck.Web.Pages.Categories
         public async Task OnGet(int sessionId, int categoryId)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
-            Session = sessionController.GetById(sessionId);
+            Session = await sessionController.GetByIdAsync(sessionId);
             if (Session.CreatedById == userId)
             {
                 IsAuthorized = true;

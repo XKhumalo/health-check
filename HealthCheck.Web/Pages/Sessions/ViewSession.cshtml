@@ -7,81 +7,85 @@
 
 @if (Model.IsAuthorized)
 {
-    <div class="container">
-        <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
-        @if (Model.SessionViewModel.IsComplete)
-        {
-            <div class="alert alert-danger">Session is closed</div>
-        }
-        else if (!Model.SessionViewModel.IsOpen)
-        {
-            <div class="alert alert-info">Session has not been started</div>
-        }
-        else
-        {
-            <div class="alert alert-success">Session is open</div>
-        }
+<div class="container">
+    <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
+    @if (Model.SessionViewModel.IsComplete)
+    {
+        <div class="alert alert-danger">Session is closed</div>
+    }
+    else if (!Model.SessionViewModel.IsOpen)
+    {
+        <div class="alert alert-info">Session has not been started</div>
+    }
+    else
+    {
+        <div class="alert alert-success">Session is open</div>
+    }
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Categories</h5>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Categories</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Green</th>
+                                <th scope="col">Red</th>
+                                <th scope="col">Answers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var category in Model.CategoriesViewModel)
+                            {
+                                int categoryAnswersCount = Model.Answers.Count(a => a.CategoryId == category.CategoryId);
+                                var categoryAnswers = Model.Answers.Where(a => a.CategoryId == category.CategoryId);
+                                var answeredByNames = new StringBuilder();
                                 <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Green</th>
-                                    <th scope="col">Red</th>
-                                    <th scope="col">Answers</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var category in Model.CategoriesViewModel)
-                                {
-                                    int categoryAnswersCount = Model.Answers.Count(a => a.CategoryId == category.CategoryId);
-                                    var categoryAnswers = Model.Answers.Where(a => a.CategoryId == category.CategoryId);
-                                    var answeredByNames = new StringBuilder();
-                                    <tr>
-                                        <td>@category.Name</td>
-                                        <td>@category.Description</td>
-                                        <td class="text-success">@category.Positive</td>
-                                        <td class="text-danger">@category.Negative</td>
-                                        @if (Model.SessionViewModel.IsOpen)
-                                        {
-                                            <td>
-                                                <button data-session="@Model.SessionViewModel.SessionId"
-                                                        data-category="@category.CategoryId"
-                                                        class="btn btn-info ask">
-                                                    Ask Category
-                                                </button>
-                                            </td>
-                                        }
+                                    <td>@category.Name</td>
+                                    <td>@category.Description</td>
+                                    <td class="text-success">@category.Positive</td>
+                                    <td class="text-danger">@category.Negative</td>
+                                    @if (Model.SessionViewModel.IsOpen)
+                                    {
                                         <td>
-                                            <span class="badge badge-pill badge-info" data-toggle="tooltip"
-                                                  title="@foreach (var answer in categoryAnswers)
+                                            <button data-session="@Model.SessionViewModel.SessionId"
+                                                    data-category="@category.CategoryId"
+                                                    class="btn btn-info ask">
+                                                Ask Category
+                                            </button>
+                                        </td>
+                                    }
+                                    <td>
+                                        <span class="badge badge-pill badge-info" data-toggle="tooltip"
+                                              title="@foreach (var answer in categoryAnswers)
                                                          {
                                                              answeredByNames.Append(answer.GetAnsweredByUser());
                                                              answeredByNames.Append("\n");
                                                              @answeredByNames
                                                          }
                                                   ">
-                                                @categoryAnswersCount
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                            @categoryAnswersCount
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center mt-5">
-            <div class="col-sm-3">
+    </div>
+    <div class="row justify-content-center mt-5">
+        <<<<<<< HEAD
+        <div class="col-sm-3">
+            =======
+            <div class="col-3">
+                >>>>>>> Bootstrap_removal
                 @if (Model.SessionViewModel.IsOpen)
                 {
                     <form method="post">
@@ -99,10 +103,14 @@
         </div>
 
     </div>
-}
+    }
 
-@section Scripts
-{
-    <script type="text/javascript" src="~/js/viewsession.js"></script>
-    <script type="text/javascript" src="~/js/PageScripts/tooltips.js"></script>
-}
+    @section Scripts
+    {
+    <environment include="Development">
+        <script type="text/javascript" src="~/js/viewsession.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" src="~/js/viewsession.min.js"></script>
+    </environment>
+    }

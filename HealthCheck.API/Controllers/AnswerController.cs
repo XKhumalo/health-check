@@ -84,9 +84,9 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task Update(int id, [FromBody] Answer answerIn)
+        public void Update(int id, [FromBody] Answer answerIn)
         {
-            await answerRepository.Update(answerIn);
+            answerRepository.Update(answerIn);
             answerRepository.SaveChanges();
         }
 

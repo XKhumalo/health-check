@@ -1,0 +1,76 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/viewsession.min.js",
+    "inputFiles": [
+      "wwwroot/js/viewsession.js"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/answer.min.js",
+    "inputFiles": [
+      "wwwroot/js/answer.js"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/createsession.min.js",
+    "inputFiles": [
+      "wwwroot/js/createsession.js"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/sessionindex.min.js",
+    "inputFiles": [
+      "wwwroot/js/sessionindex.js"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/viewsessioncategory.min.js",
+    "inputFiles": [
+      "wwwroot/js/viewsessioncategory.js"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/waitingroom.min.js",
+    "inputFiles": [
+      "wwwroot/js/waitingroom.js"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/css/vendor.min.css",
+    "inputFiles": [
+      "wwwroot/lib/node_modules/foundation-sites/dist/css/foundation.min.css",
+      "wwwroot/lib/node_modules/uikit/dist/css/uikit.min.css",
+      "wwwroot/css/site.min.css"
+    ],
+    "minify": { "enabled": false }
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/vendor.min.js",
+    "inputFiles": [
+      "wwwroot/lib/node_modules/jquery/dist/jquery.min.js",
+      "wwwroot/lib/node_modules/foundation-sites/dist/js/foundation.min.js",
+      "wwwroot/lib/node_modules/uikit/dist/js/uikit.min.js"
+    ],
+    "minify": { "enabled": false }
+  }
+]

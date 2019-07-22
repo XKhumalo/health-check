@@ -13,7 +13,7 @@ namespace HealthCheck.Repository
         Task<ICollection<T>> GetAll();
         Task<T> Create(T entity);
         Task<IEnumerable<T>> CreateMany(IEnumerable<T> entitiesToInsert);
-        Task<T> Update(T entity);
+        T Update(T entity);
         void Delete(T entity);
         void SaveChanges();
     }

@@ -30,7 +30,7 @@ namespace HealthCheck.Repository
             return entitiesToInsert;
         }
 
-        public async void Delete(T entity)
+        public void Delete(T entity)
         {
             entities.Remove(entity);
         }
@@ -60,7 +60,7 @@ namespace HealthCheck.Repository
             return await entities.SingleOrDefaultAsync(where);
         }
 
-        public async Task<T> Update(T entity)
+        public T Update(T entity)
         {
             entities.Update(entity);
             return entity;

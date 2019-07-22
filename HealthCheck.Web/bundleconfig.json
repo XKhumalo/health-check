@@ -52,8 +52,7 @@
     "outputFileName": "wwwroot/css/vendor.min.css",
     "inputFiles": [
       "wwwroot/lib/node_modules/foundation-sites/dist/css/foundation.min.css",
-      "wwwroot/lib/node_modules/uikit/dist/css/uikit.min.css",
-      "wwwroot/css/site.min.css"
+      "wwwroot/lib/node_modules/uikit/dist/css/uikit.min.css"
     ],
     "minify": { "enabled": false }
   },

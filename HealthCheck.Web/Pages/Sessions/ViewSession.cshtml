@@ -2,107 +2,107 @@
 @using System.Text
 @model HealthCheck.Web.Pages.Sessions.ViewSessionModel
 @{
-    ViewData["Title"] = "ViewSession";
+    ViewData["Title"] = "Session";
 }
 
 @if (Model.IsAuthorized)
 {
-    <div class="container">
-        <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
-        @if (Model.SessionViewModel.IsComplete)
-        {
-            <div class="alert alert-danger">Session is closed</div>
-        }
-        else if (!Model.SessionViewModel.IsOpen)
-        {
-            <div class="alert alert-info">Session has not been started</div>
-        }
-        else
-        {
-            <div class="alert alert-success">Session is open</div>
-        }
+    
+    <section id="content">
 
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Categories</h5>
+        <div class="content-wrap">
+
+            <div class="container clearfix">
+
+                <div class="container">
+                    <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
+                    @if (Model.SessionViewModel.IsComplete)
+                    {
+                        <div class="style-msg errormsg">
+                            <div class="sb-msg"><i class="icon-stop1"></i>Session is closed</div>
+                        </div>
+                    }
+                    else if (!Model.SessionViewModel.IsOpen)
+                    {
+                        <div class="style-msg alertmsg">
+                            <div class="sb-msg"><i class="icon-stopwatch1"></i>Session has not been started</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="style-msg successmsg">
+                            <div class="sb-msg"><i class="icon-play1"></i>Session is open</div>
+                        </div>
+                    }
+
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-sm-3">
+                            @if (Model.SessionViewModel.IsOpen)
+                            {
+                                <form method="post">
+                                    <button asp-page-handler="close" asp-route-sessionid="@Model.SessionViewModel.SessionId" class="button button-large button-border button-rounded button-red" type="submit"><i class="icon-stop1"></i>Close Session</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post">
+                                    <button asp-page-handler="start" asp-route-sessionid="@Model.SessionViewModel.SessionId" class="button button-large button-border button-rounded button-green" type="submit"><i class="icon-play1"></i>Start Session</button>
+                                    <button asp-page-handler="exportToExcel" asp-route-sessionid="@Model.SessionViewModel.SessionId" class="button button-large button-border button-rounded button-blue" type="submit"><i class="icon-file-excel"></i>Export</button>
+                                </form>
+                            }
+                        </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Green</th>
-                                    <th scope="col">Red</th>
-                                    <th scope="col">Answers</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var category in Model.CategoriesViewModel)
-                                {
-                                    int categoryAnswersCount = Model.Answers.Count(a => a.CategoryId == category.CategoryId);
-                                    var categoryAnswers = Model.Answers.Where(a => a.CategoryId == category.CategoryId);
-                                    var answeredByNames = new StringBuilder();
-                                    <tr>
-                                        <td>@category.Name</td>
-                                        <td>@category.Description</td>
-                                        <td class="text-success">@category.Positive</td>
-                                        <td class="text-danger">@category.Negative</td>
-                                        @if (Model.SessionViewModel.IsOpen)
-                                        {
-                                            <td>
-                                                <button data-session="@Model.SessionViewModel.SessionId"
-                                                        data-category="@category.CategoryId"
-                                                        class="btn btn-info ask">
-                                                    Ask Category
-                                                </button>
-                                            </td>
-                                        }
-                                        <td>
-                                            <span class="badge badge-pill badge-info" data-toggle="tooltip"
-                                                  title="@foreach (var answer in categoryAnswers)
-                                                         {
-                                                             answeredByNames.Append(answer.GetAnsweredByUser());
-                                                             answeredByNames.Append("\n");
-                                                             @answeredByNames
-                                                         }
-                                                  ">
-                                                @categoryAnswersCount
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+
                 </div>
+
+                <!-- Portfolio Items
+    ============================================= -->
+                <div id="portfolio" class="portfolio grid-container portfolio-3 clearfix">
+
+                    @foreach (var category in Model.CategoriesViewModel)
+                    {
+                        int categoryAnswersCount = Model.Answers.Count(a => a.CategoryId == category.CategoryId);
+                        var categoryAnswers = Model.Answers.Where(a => a.CategoryId == category.CategoryId);
+                        var answeredByNames = new StringBuilder();
+                        var imageName = $"/assets/{category.Name}.jpg";
+
+
+                        <article class="portfolio-item pf-media pf-icons">
+                            <div class="portfolio-image">
+                                <a href="portfolio-single.html">
+                                    <img src="@imageName" alt="Open Imagination">
+                                </a>
+                                <div class="portfolio-overlay">
+                                </div>
+                            </div>
+                            <div class="portfolio-desc">
+                                <h3><a href="portfolio-single.html">@category.Name</a></h3>
+                                <span><a href="#">Answers: @categoryAnswersCount</a></span>
+                            </div>
+                            @if (Model.SessionViewModel.IsOpen)
+                            {
+                                <a data-session="@Model.SessionViewModel.SessionId"
+                                   data-category="@category.CategoryId"
+                                   class="button button-large button-border button-rounded ask">Ask</a>
+
+                            }
+                        </article>
+
+
+
+                    }
+
+                </div><!-- #portfolio end -->
+
             </div>
-        </div>
-        <div class="row justify-content-center mt-5">
-            <div class="col-sm-3">
-                @if (Model.SessionViewModel.IsOpen)
-                {
-                    <form method="post">
-                        <button asp-page-handler="close" asp-route-sessionid="@Model.SessionViewModel.SessionId" class="btn btn-lg btn-primary btn-block" type="submit">Close Session</button>
-                    </form>
-                }
-                else
-                {
-                    <form method="post">
-                        <button asp-page-handler="start" asp-route-sessionid="@Model.SessionViewModel.SessionId" class="btn btn-lg btn-primary btn-block" type="submit">Start Session</button>
-                        <button asp-page-handler="exportToExcel" asp-route-sessionid="@Model.SessionViewModel.SessionId" class="btn btn-lg btn-primary btn-block" type="submit">Export</button>
-                    </form>
-                }
-            </div>
+
         </div>
 
-    </div>
+    </section>
 }
 
 @section Scripts
-{
+    {
     <script type="text/javascript" src="~/js/viewsession.js"></script>
     <script type="text/javascript" src="~/js/PageScripts/tooltips.js"></script>
 }

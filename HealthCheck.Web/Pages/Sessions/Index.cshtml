@@ -4,31 +4,21 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="container">
-    <form class="form-joinsession" method="post">
-        <div class="row">
-            <h1 class="h3 mb-3 font-weight-normal">Join a session</h1>
+<section id="content">
+    <div class="content-wrap">
+        <div class="container clearfix">
+            <form class="form-joinsession" method="post">
+                <div class="col-12 form-group">
+                    <label>Join a Session:</label>
+                    <input asp-for="SessionKey" type="text" class="form-control" placeholder="Enter the session Key">
+                    <button id="join-session" class="btn btn-lg btn-primary btn-block">Join</button>
+                </div>
+            </form>
         </div>
-        <div class="form-group row">
-            <label for="sessionKey"></label>
-            <input asp-for="SessionKey" type="text" class="form-control" placeholder="Enter the session Key">
-        </div>
-        <div class="row justify-content-center mt-2">
-            <div class="col-sm-4 mb-1">
-                <button id="join-session" class="btn btn-lg btn-primary btn-block">Join</button>
-            </div>
-            <div class="col-sm-4 mb-1">
-                <a asp-page="/Sessions/CreateSession" class="btn btn-lg btn-secondary btn-block">Create a session</a>
-            </div>
-
-            <div class="col-sm-4 mb-1">
-                <a asp-page="/Categories/AddCategory" class="btn btn-lg btn-secondary btn-block">Add Category</a>
-            </div>
-        </div>
-    </form>
-</div>
+    </div>
+</section>
 
 @section Scripts
-{
+    {
     <script type="text/javascript" src="~/js/sessionindex.js"></script>
 }

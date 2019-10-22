@@ -6,66 +6,73 @@
     ViewData["Title"] = "Waiting Room";
 }
 
-<div class="container">
-    <h3 id="sessionkey">Session Key: @Model.SessionViewModel.SessionKey</h3>
-    @if (Model.SessionViewModel.IsComplete)
-    {
-        <div class="alert alert-danger">Session is closed</div>
-    }
-    else if (!Model.SessionViewModel.IsOpen)
-    {
-        <div class="alert alert-info">Session has not been started</div>
-    }
-    else
-    {
-        <div class="alert alert-success">Session is open</div>
-    }
+<section id="content">
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Categories</h5>
-                </div>
-                <div class="table-responsive">
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Answer</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var category in Model.CategoriesViewModel)
-                            {
-                                var answer = Model.AnswersViewModel.SingleOrDefault(a => a.CategoryId == category.CategoryId);
+    <div class="content-wrap">
 
-                                <tr>
-                                    <td>@category.Name</td>
-                                    @if (answer != null && answer.AnswerOptionId != 0)
-                                    {
-                                        var enumValue = (AnswerOptions)answer.AnswerOptionId;
-                                        var answerOption = EnumExtensions.ParseEnum<AnswerOptions>(enumValue.ToString());
+        <div class="container clearfix">
 
-                                        <td>
-                                            @answerOption
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            -
-                                        </td>
-                                    }
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+            <div class="container">
+                <h3>Session Key: @Model.SessionViewModel.SessionKey</h3>
+                @if (Model.SessionViewModel.IsComplete)
+                {
+                    <div class="style-msg errormsg">
+                        <div class="sb-msg"><i class="icon-stop1"></i>Session is closed</div>
+                    </div>
+                }
+                else if (!Model.SessionViewModel.IsOpen)
+                {
+                    <div class="style-msg alertmsg">
+                        <div class="sb-msg"><i class="icon-stopwatch1"></i>Session has not been started</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="style-msg successmsg">
+                        <div class="sb-msg"><i class="icon-play1"></i>Session is open</div>
+                    </div>
+                }
             </div>
+
+            <!-- Portfolio Items
+    ============================================= -->
+            <div id="portfolio" class="portfolio grid-container portfolio-3 clearfix">
+                @foreach (var category in Model.CategoriesViewModel)
+                {
+                    var imageName = $"/assets/{category.Name}.jpg";
+                    var answer = Model.AnswersViewModel.SingleOrDefault(a => a.CategoryId == category.CategoryId);
+                    var answerOption = "-";
+                    @if (answer != null && answer.AnswerOptionId != 0)
+                    {
+                        var enumValue = (AnswerOptions)answer.AnswerOptionId;
+                        answerOption = EnumExtensions.ParseEnum<AnswerOptions>(enumValue.ToString()).ToString();
+                    }
+
+                    <article class="portfolio-item pf-media pf-icons">
+                        <div class="portfolio-image">
+                            <a href="portfolio-single.html">
+                                <img src="@imageName" alt="Open Imagination">
+                            </a>
+                            <div class="portfolio-overlay">
+                            </div>
+                        </div>
+                        <div class="portfolio-desc">
+                            <h3><a href="portfolio-single.html">@category.Name</a></h3>
+                            <span><a href="#">Your answer: @answerOption</a></span>
+                        </div>
+                    </article>
+
+
+
+                }
+
+            </div><!-- #portfolio end -->
+
         </div>
+
     </div>
-</div>
+
+</section>
 
 @section Scripts
     {

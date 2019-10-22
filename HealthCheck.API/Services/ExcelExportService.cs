@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using HealthCheck.Model;
+using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
@@ -24,12 +25,57 @@ namespace HealthCheck.API.Services
             {
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add(worksheetName);
                 ExcelRange excelRange = worksheet.Cells["A1"];
-                excelRange.Value = "Health Check - " + (object)$"{DateTime.Now:MMMM yyyy}";
-                int dataRowStartIndex = 3;
-                this.WriteDataToExcelPackage<T>(items, membersToPrint, worksheet, dataRowStartIndex, useSpacedColumnHeaders, columnHeaderReplacer);
+                List<AnswerReportItem> reportItems = (List<AnswerReportItem>)items;
+                IEnumerable<IGrouping<string, AnswerReportItem>> groupedByCategory = reportItems.GroupBy(r => r.CategoryName);
+                IEnumerable<IGrouping<string, AnswerReportItem>> groupedByPerson = reportItems.GroupBy(r => r.AnsweredBy);
+                var headers = groupedByCategory.Select(g => g.Key).OrderBy(g => g).ToList();
+                headers.Add("Average");
+                List<string[]> headerRow = new List<string[]>()
+                {
+                    headers.ToArray()
+                };
+                
+                string headerRange = "B1:" + Char.ConvertFromUtf32(headerRow[0].Length + 65) + "1";
+                worksheet.Cells[headerRange].LoadFromArrays(headerRow);
+                worksheet.Cells[headerRange].Style.Font.Bold = true;
+
+                int row = 2;
+                foreach(var personAnswers in groupedByPerson)
+                {
+                    string rowRange = $"A{row}:" + Char.ConvertFromUtf32(headerRow[0].Length + 65) + $"{row}";
+                    var personName = personAnswers.First().AnsweredBy;
+                    var answerArray = personAnswers.OrderBy(a => a.CategoryName).Select(a => a.Answer).ToList();
+                    answerArray.Prepend(personName);
+                    answerArray.Insert(0, personName);
+                    List<string[]> rowData = new List<string[]>()
+                    {
+                        answerArray.ToArray()
+                    };
+                    worksheet.Cells[rowRange].LoadFromArrays(rowData);
+
+                    //worksheet.Cells[$"{Char.ConvertFromUtf32(rowData[0].Length + 65)}"].Formula = $"=IFS((COUNTIF({rowRange};{"\"Red\""}) >=(COUNTA({rowRange})/2));{"\"Red\""};COUNTIF({rowRange};{"\"Green\""})>(COUNTA({rowRange})/2);{"\"Green\""};COUNTIF({rowRange};{"\"Amber\""})>=SUM(COUNTIF({rowRange};{"\"Green\""});COUNTIF({rowRange};{"\"Red\""}));{"\"Amber\""};COUNTIF({rowRange};{"\"Amber\""})=COUNTIF({rowRange};{"\"Green\""});{"\"Amber\""}; COUNTIF({rowRange};{"\"Red\""})>=(COUNTIF({rowRange};{"\"Green\""})+COUNTIF({rowRange};{"\"Amber\""}))/2;{"\"Red\""};(COUNTIF({rowRange};{"\"Green\""}) >=(COUNTA({rowRange})/2));{"\"Green\""})";
+                    row++;
+                }
+                
+                //excelRange.Value = "Health Check - " + (object)$"{DateTime.Now:MMMM yyyy}";
+                //int dataRowStartIndex = 3;
+                //this.WriteDataToExcelPackage<T>(items, membersToPrint, worksheet, dataRowStartIndex, useSpacedColumnHeaders, columnHeaderReplacer);
                 return excelPackage.GetAsByteArray();
             }
         }
+
+        //private byte[] ExportToExcel<T>(IEnumerable<T> items, string worksheetName, MemberInfo[] membersToPrint, bool useSpacedColumnHeaders, StringReplacementDelegate columnHeaderReplacer)
+        //{
+        //    using (ExcelPackage excelPackage = new ExcelPackage())
+        //    {
+        //        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add(worksheetName);
+        //        ExcelRange excelRange = worksheet.Cells["A1"];
+        //        excelRange.Value = "Health Check - " + (object)$"{DateTime.Now:MMMM yyyy}";
+        //        int dataRowStartIndex = 3;
+        //        this.WriteDataToExcelPackage<T>(items, membersToPrint, worksheet, dataRowStartIndex, useSpacedColumnHeaders, columnHeaderReplacer);
+        //        return excelPackage.GetAsByteArray();
+        //    }
+        //}
 
         private void WriteDataToExcelPackage<T>(IEnumerable<T> items, MemberInfo[] membersToPrint, ExcelWorksheet worksheet, int dataRowStartIndex, bool useSpacedColumnHeaders, StringReplacementDelegate columnHeaderReplacer)
         {

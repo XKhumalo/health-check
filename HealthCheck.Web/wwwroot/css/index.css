@@ -1,0 +1,51 @@
+﻿.file-caption.icon-visible .file-caption-name {
+    font-family: 'Lato', sans-serif;
+    color: #666;
+}
+
+.form-process {
+    position: absolute;
+    -webkit-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
+    background-image: none;
+}
+
+    .form-process > div {
+        background-color: #999;
+    }
+
+.form-process,
+#template-wedding-submitted,
+.template-wedding-complete .form-process {
+    display: none;
+    opacity: 0;
+    background-color: rgba(255,255,255,0.7);
+}
+
+.template-wedding-processing .form-process {
+    display: block;
+    opacity: 1;
+}
+
+.divider.divider-center.divider-short:before,
+.divider.divider-center.divider-short:after {
+    border-color: #CCC;
+}
+
+.btn-group label.error {
+    display: block !important;
+    text-transform: none;
+    position: absolute;
+    bottom: -34px;
+    left: 0;
+    margin-bottom: 10px;
+}
+
+.btn-group input.valid ~ label.error,
+.btn-group input[type="text"] ~ label.error,
+.btn-group input[type="email"] ~ label.error,
+.btn-group input[type="number"] ~ label.error,
+.btn-group select ~ label.error {
+    display: none !important;
+}

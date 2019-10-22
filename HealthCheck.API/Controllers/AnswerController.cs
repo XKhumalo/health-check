@@ -102,10 +102,12 @@ namespace HealthCheck.API.Controllers
         public ActionResult ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
             var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
+            Dictionary<string, string> answerDictionary = new Dictionary<string, string>();
 
             var reportItems = new List<AnswerReportItem>();
             foreach (var answer in answers)
             {
+                answerDictionary.Add($"{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
                 var reportItem = new AnswerReportItem()
                 {
                     AnsweredBy = answer.User.Name,

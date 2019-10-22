@@ -1,38 +1,79 @@
 ﻿@page
 @model HealthCheck.Web.Pages.IndexModel
+@{
+    Layout = "_LayoutNoTopbar";
+}
 
-<div class="container">
-    @Html.HiddenFor(model => model.LoginUserViewModel.IsCredentialsIncorrect)
+<section id="content">
 
-    @if (Model.LoginUserViewModel.IsCredentialsIncorrect)
-    {
-        <div class="alert alert-danger" role="alert">
-            Incorrect Username and/or Password. Please do better next time.
-        </div>
-    }
+    <div class="content-wrap bg-light">
 
-    <form class="form-signin" method="post">
-        <div class="row">
-            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        </div>
-        <div class="form-group row">
-            <label asp-for="LoginUserViewModel.Username"></label>
-            <input asp-for="LoginUserViewModel.Username" type="email" class="form-control" placeholder="Enter your Domain email address">
-        </div>
-        <div class="form-group row">
-            <label asp-for="LoginUserViewModel.Password"></label>
-            <input asp-for="LoginUserViewModel.Password" type="password" class="form-control" placeholder="Enter your Domain password">
-            <small class="form-text text-muted">Don't worry, I can't see it at all</small>
-        </div>
-        <div class="row justify-content-center mt-5">
-            <div class="col-3">
-                <button asp-page-handler="login" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        <div class="container">
+
+            @Html.HiddenFor(model => model.LoginUserViewModel.IsCredentialsIncorrect)
+
+            @if (Model.LoginUserViewModel.IsCredentialsIncorrect)
+            {
+                <div class="alert alert-danger" role="alert">
+                    Incorrect Username and/or Password. Please do better next time.
+                </div>
+            }
+
+            <div class="row justify-content-center">
+                <div class="col-lg-7 col-md-10">
+                    <div class="card my-5 shadow-sm">
+                        <div class="card-body p-5">
+
+                            <h4 class="ls4 center">LOGIN</h4>
+
+                            <div class="divider divider-short divider-center text-dark"><i class="icon-medkit1"></i></div>
+
+                            <div class="form-widget" data-alert-type="false">
+
+                                <div class="form-result"></div>
+
+                                <div class="form-process css3-spinner">
+                                    <div class="css3-spinner-double-bounce1"></div>
+                                    <div class="css3-spinner-double-bounce2"></div>
+                                </div>
+
+                                <form class="nobottommargin" method="post">
+
+                                    <div class="row">
+
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-md-6 bottommargin-sm">
+                                                    <label asp-for="LoginUserViewModel.Username">Email</label>
+                                                    <input type="text" asp-for="LoginUserViewModel.Username" value="" class="form-control required" placeholder="Enter your Email" />
+                                                </div>
+                                                <div class="col-md-6 bottommargin-sm">
+                                                    <label asp-for="LoginUserViewModel.Password">Password</label>
+                                                    <input type="password" asp-for="LoginUserViewModel.Password" value="" class="form-control" placeholder="Enter your Password" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" asp-page-handler="login" class="btn btn-secondary btn-block btn-lg">Login</button>
+                                        </div>
+
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </form>
-</div>
 
-@section Scripts 
-{
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
     <script src="~/js/PageScripts/index.js"></script>
 }

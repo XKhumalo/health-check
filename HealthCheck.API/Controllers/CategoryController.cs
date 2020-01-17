@@ -40,9 +40,8 @@ namespace HealthCheck.API.Controllers
         [HttpPut("{id}")]
         public async Task Update(int id, Category categoryIn)
         {
-            var category = categoryRepository.GetByIdAsync(id);
-
-            await categoryRepository.Update(categoryIn);
+            var category = await categoryRepository.GetByIdAsync(id);
+            categoryRepository.Update(categoryIn);
         }
 
         [HttpDelete("{id}")]

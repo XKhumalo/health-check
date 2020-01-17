@@ -56,9 +56,9 @@ namespace HealthCheck.API.Services
             categoryRepository.Delete(category);
         }
 
-        public async Task<Category> Update(Category category)
+        public Category Update(Category category)
         {
-            await categoryRepository.Update(category);
+            categoryRepository.Update(category);
             return category;
         }
     }

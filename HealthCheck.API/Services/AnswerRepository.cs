@@ -64,7 +64,7 @@ namespace HealthCheck.API.Services
             if (dbAnswer != null)
             {
                 dbAnswer.AnswerOptionId = answer.AnswerOptionId;
-                return await Update(dbAnswer);
+                return Update(dbAnswer);
             }
             return await Create(answer);
         }
@@ -79,9 +79,9 @@ namespace HealthCheck.API.Services
             return await answerRepository.CreateMany(answers);
         }
 
-        public async Task<Answer> Update(Answer answer)
+        public Answer Update(Answer answer)
         {
-            return await answerRepository.Update(answer);
+            return answerRepository.Update(answer);
         }
 
         public void Delete(Answer answer)

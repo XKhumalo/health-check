@@ -6,6 +6,10 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\site.min.css" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="BundlerMinifier.Core" Version="2.9.406" />

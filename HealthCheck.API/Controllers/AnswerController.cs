@@ -35,6 +35,12 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet]
+        public IEnumerable<GuestUserAnswer> GetGuestAnswers(Expression<Func<GuestUserAnswer, bool>> exp)
+        {
+            return answerRepository.GetGuestAnswers(exp);
+        }
+
+        [HttpGet]
         [Route("[action]")]
         public async Task<IEnumerable<Answer>> GetAll()
         {

@@ -40,7 +40,6 @@
                                 <form class="nobottommargin" method="post">
 
                                     <div class="row">
-
                                         <div class="col-12">
                                             <div class="row">
                                                 <div class="col-md-6 bottommargin-sm">
@@ -56,10 +55,33 @@
                                         <div class="col-12">
                                             <button type="submit" asp-page-handler="login" class="btn btn-secondary btn-block btn-lg">Login</button>
                                         </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 topmargin-sm">
+                                            <hr />
+                                        </div>
 
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <span class="text-info"> No Entelect AD account? Join a session, by completing the below. </span>
+                                        </div>
+                                        <div class="col-6 bottommargin-sm topmargin-sm">
+                                            <label asp-for="LoginUserViewModel.GuestName">Guest Name</label>
+                                            <input type="text" asp-for="LoginUserViewModel.GuestName" value="" class="form-control" placeholder="Please type your full name." />
+                                        </div>
+                                        <div class="col-6 bottommargin-sm topmargin-sm">
+                                            <label asp-for="LoginUserViewModel.SessionKey">Session Key</label>
+                                            <input type="text" asp-for="LoginUserViewModel.SessionKey" value="" class="form-control" placeholder="6 letter key provided by host" />
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" asp-page-handler="GuestLogin" class="btn btn-info btn-block btn-lg">Join as Guest</button>
+
+                                        </div>
                                     </div>
 
                                 </form>
+
                             </div>
                         </div>
                     </div>

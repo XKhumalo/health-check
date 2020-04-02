@@ -29,4 +29,27 @@ namespace HealthCheck.Model
             return User.Name;
         }
     }
+
+    public class GuestUserAnswer
+    {
+        [Key]
+        public int GuestUserAnswerId { get; set; }
+
+        [Required]
+        public string GuestUserIdentifier { get; set; }
+
+        [Required]
+        public int SessionId { get; set; }
+
+        [Required]
+        public int CategoryId { get; set; }
+
+        [Required]
+        public int AnswerOptionId { get; set; }
+
+        public virtual Session Session { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual AnswerOption AnswerOption { get; set; }
+
+    }
 }

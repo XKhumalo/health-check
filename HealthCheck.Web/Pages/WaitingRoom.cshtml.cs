@@ -20,6 +20,7 @@ namespace HealthCheck.Web.Pages
         public Session SessionViewModel;
         public IEnumerable<Category> CategoriesViewModel;
         public IEnumerable<Answer> AnswersViewModel;
+        public IEnumerable<GuestUserAnswer> GuestUserAnswersViewModel;
         public IEnumerable<SessionCategory> SessionCategoriesViewModel { get; set; }
 
         public WaitingRoomModel(SessionController sessionController, CategoryController categoryController, AnswerController answerController)
@@ -31,12 +32,28 @@ namespace HealthCheck.Web.Pages
         
         public async Task OnGet(string sessionKey)
         {
-            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
-            SessionViewModel = await sessionController.GetBySessionKey(sessionKey);
-            SessionCategoriesViewModel = sessionController.GetSessionCategories(SessionViewModel.SessionId);
-            var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
-            CategoriesViewModel = categoryController.GetByIds(categoryIds);
-            AnswersViewModel = answerController.Get(a => a.SessionId == SessionViewModel.SessionId && a.UserId == userId);
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision)).Value ==  "guestUser";
+            if (isGuest)
+            {
+                var guestId = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email)).Value;
+                SessionViewModel = await sessionController.GetBySessionKey(sessionKey);
+                SessionCategoriesViewModel = sessionController.GetSessionCategories(SessionViewModel.SessionId);
+                var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
+                CategoriesViewModel = categoryController.GetByIds(categoryIds);
+                GuestUserAnswersViewModel = answerController.GetGuestAnswers(a => a.SessionId == SessionViewModel.SessionId && a.GuestUserIdentifier == guestId);
+                AnswersViewModel = new List<Answer>();
+            }
+            else
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+                SessionViewModel = await sessionController.GetBySessionKey(sessionKey);
+                SessionCategoriesViewModel = sessionController.GetSessionCategories(SessionViewModel.SessionId);
+                var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
+                CategoriesViewModel = categoryController.GetByIds(categoryIds);
+                AnswersViewModel = answerController.Get(a => a.SessionId == SessionViewModel.SessionId && a.UserId == userId);
+                GuestUserAnswersViewModel = new List<GuestUserAnswer>();
+            }
+           
         }
     }
 }

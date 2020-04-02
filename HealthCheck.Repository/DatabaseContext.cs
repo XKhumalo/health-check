@@ -10,6 +10,7 @@ namespace HealthCheck.Repository
         { }
 
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<GuestUserAnswer> GuestAnswers { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<SessionCategory> SessionCategories { get; set; }

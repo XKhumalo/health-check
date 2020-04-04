@@ -41,10 +41,15 @@
                 {
                     var imageName = $"/assets/{category.Name}.jpg";
                     var answer = Model.AnswersViewModel.SingleOrDefault(a => a.CategoryId == category.CategoryId);
+                    var guestAnswer = Model.GuestUserAnswersViewModel.FirstOrDefault(a => a.CategoryId == category.CategoryId);
                     var answerOption = "-";
                     @if (answer != null && answer.AnswerOptionId != 0)
                     {
                         var enumValue = (AnswerOptions)answer.AnswerOptionId;
+                        answerOption = EnumExtensions.ParseEnum<AnswerOptions>(enumValue.ToString()).ToString();
+                    }else if (guestAnswer != null && guestAnswer.AnswerOptionId != 0)
+                    {
+                        var enumValue = (AnswerOptions)guestAnswer.AnswerOptionId;
                         answerOption = EnumExtensions.ParseEnum<AnswerOptions>(enumValue.ToString()).ToString();
                     }
 

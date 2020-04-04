@@ -12,17 +12,24 @@ namespace HealthCheck.API.Services
     public class UserRepository
     {
         private readonly IEFRepository<User> userRepository;
+        private readonly IEFRepository<SessionOnlyUser> sessionUserRepository;
         private readonly DatabaseContext databaseContext;
 
-        public UserRepository(IEFRepository<User> userRepository, DatabaseContext databaseContext)
+        public UserRepository(IEFRepository<User> userRepository, IEFRepository<SessionOnlyUser> sessionUserRepository, DatabaseContext databaseContext)
         {
             this.userRepository = userRepository;
+            this.sessionUserRepository = sessionUserRepository;
             this.databaseContext = databaseContext;
         }
 
         public async Task<User> Create(User user)
         {
             return await userRepository.Create(user);
+        }
+
+        public async Task<SessionOnlyUser> CreateSessionOnlyUser(SessionOnlyUser sessionOnlyUser)
+        {
+            return await sessionUserRepository.Create(sessionOnlyUser);
         }
 
         public IEnumerable<User> GetAll()
@@ -38,6 +45,11 @@ namespace HealthCheck.API.Services
         public async Task<User> GetByIdAsync(int id)
         {
             return await databaseContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
+        }
+
+        public async Task<SessionOnlyUser> GetSessionOnlyUserByIdAsync(int id)
+        {
+            return await databaseContext.SessionOnlyUsers.SingleOrDefaultAsync(u => u.SessionOnlyUserId == id);
         }
 
         public async Task<User> SingleOrDefault(Expression<Func<User, bool>> where)

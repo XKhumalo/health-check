@@ -47,5 +47,6 @@ namespace HealthCheck.Model
         public virtual ICollection<SessionCategory> SessionCategories { get; set; }
 
         public virtual Answer Answer { get; set; }
+        //public virtual GuestUserAnswer GuestUserAnswer { get; set; }
     }
 }

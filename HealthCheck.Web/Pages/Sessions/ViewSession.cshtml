@@ -61,7 +61,8 @@
 
                     @foreach (var category in Model.CategoriesViewModel)
                     {
-                        int categoryAnswersCount = Model.Answers.Count(a => a.CategoryId == category.CategoryId);
+                        int categoryAnswersCount = Model.Answers.Count(a => a.CategoryId == category.CategoryId) + 
+                                                   Model.GuestAnswers.Count(ga => ga.CategoryId == category.CategoryId);
                         var categoryAnswers = Model.Answers.Where(a => a.CategoryId == category.CategoryId);
                         var answeredByNames = new StringBuilder();
                         var imageName = $"/assets/{category.Name}.jpg";

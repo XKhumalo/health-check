@@ -27,7 +27,7 @@ namespace HealthCheck.API.Services
 
         public User GetADUser(string username, string password)
         {
-            //if (config.GetValue<string>("Environment").Equals("Development"))
+            //if (config.GetValue<string>("Environment").Equals("Development") && username.ToLower().Contains("xolani"))
             //{
             //    return new User()
             //    {

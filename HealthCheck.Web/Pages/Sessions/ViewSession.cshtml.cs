@@ -27,6 +27,7 @@ namespace HealthCheck.Web.Pages.Sessions
         public IEnumerable<SessionCategory> SessionCategoriesViewModel { get; set; }
         [BindProperty]
         public IEnumerable<Answer> Answers { get; set; }
+        public IEnumerable<GuestUserAnswer> GuestAnswers { get; set; }
 
         public bool IsAuthorized { get; set; }
 
@@ -40,6 +41,9 @@ namespace HealthCheck.Web.Pages.Sessions
 
         public async Task OnGet(int sessionId)
         {
+            //wait for async answer to complete db persistence on other threads (when closing a category) //TODO optimise this
+            System.Threading.Thread.Sleep(1000);
+
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             UserViewModel = await userController.GetByIdAsync(userId);
             SessionViewModel = await sessionController.GetByIdAsync(sessionId);
@@ -55,7 +59,8 @@ namespace HealthCheck.Web.Pages.Sessions
             {
                 RedirectToPage("/Error");
             }
-            Answers = answerController.Get(a => a.SessionId == sessionId);
+            Answers = answerController.Get(a => a.SessionId == sessionId).ToList();
+            GuestAnswers = answerController.GetGuestAnswers(x => x.SessionId == sessionId).ToList();
         }
 
         public async Task<IActionResult> OnPostStartAsync(int sessionId)

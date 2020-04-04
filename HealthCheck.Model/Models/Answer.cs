@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HealthCheck.Model
 {
@@ -36,7 +37,8 @@ namespace HealthCheck.Model
         public int GuestUserAnswerId { get; set; }
 
         [Required]
-        public string GuestUserIdentifier { get; set; }
+        [ForeignKey("SessionOnlyUser")]
+        public int SessionOnlyUserId { get; set; }
 
         [Required]
         public int SessionId { get; set; }
@@ -47,6 +49,7 @@ namespace HealthCheck.Model
         [Required]
         public int AnswerOptionId { get; set; }
 
+        public virtual SessionOnlyUser SessionOnlyUser { get; set; }
         public virtual Session Session { get; set; }
         public virtual Category Category { get; set; }
         public virtual AnswerOption AnswerOption { get; set; }

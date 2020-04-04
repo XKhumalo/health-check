@@ -3,6 +3,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -38,9 +39,15 @@ namespace HealthCheck.API.Services
                 string headerRange = "B1:" + Char.ConvertFromUtf32(headerRow[0].Length + 65) + "1";
                 worksheet.Cells[headerRange].LoadFromArrays(headerRow);
                 worksheet.Cells[headerRange].Style.Font.Bold = true;
+                worksheet.Column(1).Style.Font.Bold = true;
 
                 int row = 2;
-                foreach(var personAnswers in groupedByPerson)
+                int firstAnswerRow = 2;
+                int firstAnswerColumn = 2;
+                int lastAnswerRow = 2;
+                int lastAnswerColumn = 2;
+                
+                foreach (var personAnswers in groupedByPerson)
                 {
                     string rowRange = $"A{row}:" + Char.ConvertFromUtf32(headerRow[0].Length + 65) + $"{row}";
                     var personName = personAnswers.First().AnsweredBy;
@@ -52,14 +59,39 @@ namespace HealthCheck.API.Services
                         answerArray.ToArray()
                     };
                     worksheet.Cells[rowRange].LoadFromArrays(rowData);
-
                     //worksheet.Cells[$"{Char.ConvertFromUtf32(rowData[0].Length + 65)}"].Formula = $"=IFS((COUNTIF({rowRange};{"\"Red\""}) >=(COUNTA({rowRange})/2));{"\"Red\""};COUNTIF({rowRange};{"\"Green\""})>(COUNTA({rowRange})/2);{"\"Green\""};COUNTIF({rowRange};{"\"Amber\""})>=SUM(COUNTIF({rowRange};{"\"Green\""});COUNTIF({rowRange};{"\"Red\""}));{"\"Amber\""};COUNTIF({rowRange};{"\"Amber\""})=COUNTIF({rowRange};{"\"Green\""});{"\"Amber\""}; COUNTIF({rowRange};{"\"Red\""})>=(COUNTIF({rowRange};{"\"Green\""})+COUNTIF({rowRange};{"\"Amber\""}))/2;{"\"Red\""};(COUNTIF({rowRange};{"\"Green\""}) >=(COUNTA({rowRange})/2));{"\"Green\""})";
+                    lastAnswerRow = row;
                     row++;
                 }
-                
+                var lastRowCell1 = worksheet.Cells.Last(c => c.Start.Row == lastAnswerRow);
+
+                // fill GREEN colour conditions
+                ExcelAddress conditionalFormatRangeAddress = new ExcelAddress("B2:" + lastRowCell1.Address);
+                string _statement = "IF(B2=\"Green\",1,0)";
+                var _cond4 = worksheet.ConditionalFormatting.AddExpression(conditionalFormatRangeAddress);
+                _cond4.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                _cond4.Style.Fill.BackgroundColor.Color = Color.LightGreen;
+                _cond4.Formula = _statement;
+
+
+                // fill RED colour conditions
+                _statement = "IF(B2=\"Red\",1,0)";
+                var _cond1 = worksheet.ConditionalFormatting.AddExpression(conditionalFormatRangeAddress);
+                _cond1.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                _cond1.Style.Fill.BackgroundColor.Color = Color.IndianRed;
+                _cond1.Formula = _statement;
+
+                // fill RED color if value of the current cell is less than value of the previous cell
+                _statement = "IF(B2=\"Amber\",1,0)";
+                var _cond3 = worksheet.ConditionalFormatting.AddExpression(conditionalFormatRangeAddress);
+                _cond3.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                _cond3.Style.Fill.BackgroundColor.Color = Color.Orange;
+                _cond3.Formula = _statement;
+
                 //excelRange.Value = "Health Check - " + (object)$"{DateTime.Now:MMMM yyyy}";
                 //int dataRowStartIndex = 3;
                 //this.WriteDataToExcelPackage<T>(items, membersToPrint, worksheet, dataRowStartIndex, useSpacedColumnHeaders, columnHeaderReplacer);
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
                 return excelPackage.GetAsByteArray();
             }
         }

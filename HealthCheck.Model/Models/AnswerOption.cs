@@ -14,5 +14,6 @@ namespace HealthCheck.Model
         public string Description { get; set; }
 
         public virtual Answer Answer { get; set; }
+        //public virtual GuestUserAnswer GuestUserAnswer { get; set; }
     }
 }

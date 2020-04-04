@@ -18,7 +18,8 @@ $(document).ready(() => {
             senderId,
             categoryId,
             sessionId,
-            answer
+            answer,
+            guestId
         };
         var existingAnswer = answers.find(a => a.senderId === senderId);
         var rowClass = '';

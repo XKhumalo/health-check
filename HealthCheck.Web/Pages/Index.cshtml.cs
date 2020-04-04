@@ -34,6 +34,13 @@ namespace HealthCheck.Web.Pages
 
             if (User.Claims.Any())
             {
+                var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+                if (isGuest)
+                {
+                    var guestId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+                    var guest = userController.GetGuestByIdAsync(guestId).Result;
+                    return RedirectToPage("/WaitingRoom", new { sessionKey = guest.SessionKey });
+                }
                 return RedirectToPage("/Sessions/Index");
             }
             return Page();
@@ -66,28 +73,23 @@ namespace HealthCheck.Web.Pages
         {
             var guestName = LoginUserViewModel.GuestName;
             var guestSessionKey = LoginUserViewModel.SessionKey;
-            var guestUser = new SessionOnlyUser(guestName, guestSessionKey);
-            User activeDirectoryFakeUser = null;
+            SessionOnlyUser sessionOnlyUser = null;
             try
             {
-                activeDirectoryFakeUser = new User()
-                {
-                    Email = guestName.Replace(" ","") + "@guestUser.com",
-                    Name = guestName
-                };
+                var guestUser = new SessionOnlyUser(guestName, guestSessionKey);
+                sessionOnlyUser = await userController.CreateGuestUser(guestUser);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 LoginUserViewModel.IsCredentialsIncorrect = true;
                 return Page();
             }
-            if (activeDirectoryFakeUser != null)
+            if (sessionOnlyUser != null)
             {
                 LoginUserViewModel.IsCredentialsIncorrect = false;
 
-                User dbUser = activeDirectoryFakeUser;
-                await SignInGuestUser(guestUser);
-                return RedirectToPage("/Sessions/Index");
+                await SignInGuestUser(sessionOnlyUser);
+                return RedirectToPage("WaitingRoom", new { sessionKey = sessionOnlyUser.SessionKey });
             }
             return RedirectToPage("/Error", new { ReturnUrl = "/Index", ErrorMessage = "Something went wrong." });
         }
@@ -128,13 +130,11 @@ namespace HealthCheck.Web.Pages
 
         private async Task SignInGuestUser(SessionOnlyUser sessionUser)
         {
-            var random = new Random();
-            var fakeUserId = random.Next(1, 999);
-            var fakeEmail = sessionUser.UserName.Replace(" ","") + fakeUserId.ToString() + "@" + sessionUser.SessionKey + ".com";
+            var fakeEmail = sessionUser.UserName.Replace(" ","") + sessionUser.SessionOnlyUserId.ToString() + "@" + sessionUser.SessionKey + ".com";
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, sessionUser.UserName.Replace(" ","") +"_" + fakeUserId.ToString() + "_guest" + sessionUser.SessionKey ),
-                new Claim(ClaimTypes.NameIdentifier, fakeUserId.ToString()),
+                new Claim(ClaimTypes.Sid, sessionUser.SessionOnlyUserId.ToString() ),
+                new Claim(ClaimTypes.NameIdentifier, sessionUser.SessionOnlyUserId.ToString()),
                 new Claim(ClaimTypes.Name, sessionUser.UserName),
                 new Claim(ClaimTypes.Email, fakeEmail),
                 new Claim(ClaimTypes.AuthorizationDecision, "guestUser")

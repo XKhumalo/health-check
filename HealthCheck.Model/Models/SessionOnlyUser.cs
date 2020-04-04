@@ -10,6 +10,10 @@ namespace HealthCheck.Model
     [DataContract]
     public class SessionOnlyUser
     {
+        public SessionOnlyUser()
+        {
+            
+        }
         public SessionOnlyUser(string name, string sessionKey)
         {
             this.UserName = name;
@@ -30,7 +34,7 @@ namespace HealthCheck.Model
         public string SessionKey { get; set; }
 
         [Display(Name = "Session Id")]
-        public string SessionId { get; set; }
+        public int SessionId { get; set; }
 
         [Display(Name = "Created Date")]
         [DataType(DataType.DateTime)]
@@ -40,5 +44,6 @@ namespace HealthCheck.Model
         [ForeignKey("SessionId")]
         public virtual Session Session { get; set; }
 
+        public virtual ICollection<GuestUserAnswer> Answers { get; set; }
     }
 }

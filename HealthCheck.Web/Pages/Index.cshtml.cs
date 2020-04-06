@@ -137,7 +137,8 @@ namespace HealthCheck.Web.Pages
                 new Claim(ClaimTypes.NameIdentifier, sessionUser.SessionOnlyUserId.ToString()),
                 new Claim(ClaimTypes.Name, sessionUser.UserName),
                 new Claim(ClaimTypes.Email, fakeEmail),
-                new Claim(ClaimTypes.AuthorizationDecision, "guestUser")
+                new Claim(ClaimTypes.AuthorizationDecision, "guestUser"),
+                new Claim("SessionKey",sessionUser.SessionKey)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

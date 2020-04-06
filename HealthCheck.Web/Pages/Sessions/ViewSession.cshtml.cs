@@ -39,14 +39,20 @@ namespace HealthCheck.Web.Pages.Sessions
             this.answerController = answerController;
         }
 
-        public async Task OnGet(int sessionId)
+        public IActionResult OnGet(int sessionId)
         {
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+            if (isGuest)
+            {
+                var sessionKey = User.Claims.FirstOrDefault(c => c.Type.Equals("SessionKey"))?.Value;
+                return RedirectToPage("/WaitingRoom", new { sessionKey = sessionKey });
+            }
             //wait for async answer to complete db persistence on other threads (when closing a category) //TODO optimise this
             System.Threading.Thread.Sleep(1000);
-
+            
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
-            UserViewModel = await userController.GetByIdAsync(userId);
-            SessionViewModel = await sessionController.GetByIdAsync(sessionId);
+            UserViewModel =  userController.GetByIdAsync(userId).Result;
+            SessionViewModel = sessionController.GetByIdAsync(sessionId).Result;
             SessionCategoriesViewModel = sessionController.GetSessionCategories(sessionId);
 
             if (SessionViewModel.CreatedById == userId)
@@ -61,6 +67,7 @@ namespace HealthCheck.Web.Pages.Sessions
             }
             Answers = answerController.Get(a => a.SessionId == sessionId).ToList();
             GuestAnswers = answerController.GetGuestAnswers(x => x.SessionId == sessionId).ToList();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostStartAsync(int sessionId)

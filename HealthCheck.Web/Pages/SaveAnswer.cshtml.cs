@@ -23,14 +23,30 @@ namespace HealthCheck.Web.Pages
         public async Task<IActionResult> OnGet(string sessionKey, int categoryId, int sessionId, int answer)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
-            var answerToSave = new Answer()
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+            if (isGuest)
             {
-                UserId = userId,
-                SessionId = sessionId,
-                CategoryId = categoryId,
-                AnswerOptionId = answer
-            };
-            await answerController.InsertOrUpdate(answerToSave);
+                var answerToSave = new GuestUserAnswer()
+                {
+                    SessionOnlyUserId = userId,
+                    SessionId = sessionId,
+                    CategoryId = categoryId,
+                    AnswerOptionId = answer
+                };
+                await answerController.InsertOrUpdateGuestAnswer(answerToSave);
+            }
+            else
+            {
+                var answerToSave = new Answer()
+                {
+                    UserId = userId,
+                    SessionId = sessionId,
+                    CategoryId = categoryId,
+                    AnswerOptionId = answer
+                };
+                await answerController.InsertOrUpdate(answerToSave);
+            }
+            
             return RedirectToPage("/WaitingRoom", new { sessionKey });
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using HealthCheck.API.Controllers;
 using HealthCheck.Model;
@@ -22,6 +23,18 @@ namespace HealthCheck.Web.Pages.Sessions
             this.sessionController = sessionController;
         }
 
+        public IActionResult OnGet()
+        {
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+            if (isGuest)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            return Page();
+        }
+
+
         public async Task<IActionResult> OnPostJoin()
         {
             var session = await sessionController.GetBySessionKey(SessionKey);
@@ -30,10 +43,7 @@ namespace HealthCheck.Web.Pages.Sessions
             {
                 return RedirectToPage("/Error");
             }
-            else
-            {
-                return RedirectToPage("/WaitingRoom", new { sessionId = session.SessionId });
-            }
+            return RedirectToPage("/WaitingRoom", new { sessionId = session.SessionId });
         }
     }
 }

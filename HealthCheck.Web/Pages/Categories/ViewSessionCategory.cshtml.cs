@@ -20,6 +20,7 @@ namespace HealthCheck.Web.Pages.Categories
         public Session Session { get; set; }
         public Category Category { get; set; }
         public IEnumerable<Answer> Answers { get; set; }
+        public IEnumerable<GuestUserAnswer> GuestAnswers { get; set; }
         public IEnumerable<User> Users { get; set; }
         public bool IsAuthorized { get; set; }
 
@@ -35,12 +36,15 @@ namespace HealthCheck.Web.Pages.Categories
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             Session = await sessionController.GetByIdAsync(sessionId);
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
             if (Session.CreatedById == userId)
             {
                 IsAuthorized = true;
             }
             Category = await categoryController.GetById(categoryId);
             Answers = answerController.Get(a => a.CategoryId == categoryId && a.SessionId == sessionId);
+            GuestAnswers =
+                answerController.GetGuestAnswers(a => a.CategoryId == categoryId && a.SessionId == sessionId);
             Users = userController.Get();
         }
 

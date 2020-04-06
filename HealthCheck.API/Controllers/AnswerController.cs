@@ -35,6 +35,12 @@ namespace HealthCheck.API.Controllers
         }
 
         [HttpGet]
+        public IEnumerable<GuestUserAnswer> GetGuestAnswers(Expression<Func<GuestUserAnswer, bool>> exp)
+        {
+            return answerRepository.GetGuestAnswers(exp);
+        }
+
+        [HttpGet]
         [Route("[action]")]
         public async Task<IEnumerable<Answer>> GetAll()
         {
@@ -60,6 +66,34 @@ namespace HealthCheck.API.Controllers
             }
 
             if (answer.UserId == default)
+            {
+                return null;
+            }
+
+            await answerRepository.InsertOrUpdateAnswer(answer);
+            answerRepository.SaveChanges();
+            return answer;
+        }
+
+        [HttpPost]
+        public async Task<GuestUserAnswer> InsertOrUpdateGuestAnswer([FromBody] GuestUserAnswer answer)
+        {
+            if (answer == null)
+            {
+                return null;
+            }
+
+            if (answer.CategoryId == default)
+            {
+                return null;
+            }
+
+            if (answer.SessionId == default)
+            {
+                return null;
+            }
+
+            if (answer.SessionOnlyUserId == default)
             {
                 return null;
             }
@@ -102,6 +136,7 @@ namespace HealthCheck.API.Controllers
         public ActionResult ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
             var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
+            var guestAnswers = answerRepository.GetGuestAnswers(x => x.SessionId == currentSessionId);
             Dictionary<string, string> answerDictionary = new Dictionary<string, string>();
 
             var reportItems = new List<AnswerReportItem>();
@@ -111,6 +146,17 @@ namespace HealthCheck.API.Controllers
                 var reportItem = new AnswerReportItem()
                 {
                     AnsweredBy = answer.User.Name,
+                    Answer = answer.AnswerOption.Option,
+                    CategoryName = answer.Category.Name
+                };
+                reportItems.Add(reportItem);
+            }
+            foreach (var answer in guestAnswers)
+            {
+                answerDictionary.Add($"{answer.SessionOnlyUser.UserName},{answer.Category.Name}", answer.AnswerOption.Option);
+                var reportItem = new AnswerReportItem()
+                {
+                    AnsweredBy = answer.SessionOnlyUser.UserName,
                     Answer = answer.AnswerOption.Option,
                     CategoryName = answer.Category.Name
                 };

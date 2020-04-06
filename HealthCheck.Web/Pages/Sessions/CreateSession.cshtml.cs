@@ -34,13 +34,26 @@ namespace HealthCheck.Web.Pages.Sessions
             this.categoryController = categoryController;
         }
 
-        public async Task OnGet()
+        public IActionResult OnGet()
         {
-            CategoriesViewModel = await categoryController.Get();
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+            if (isGuest)
+            {
+                var sessionKey = User.Claims.FirstOrDefault(c => c.Type.Equals("SessionKey"))?.Value;
+                return RedirectToPage("/WaitingRoom", new { sessionKey = sessionKey });
+            }
+            CategoriesViewModel =  categoryController.Get().Result;
+            return Page();
         }
 
         public IActionResult OnPostCreate()
         {
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+            if (isGuest)
+            {
+                var sessionKey = User.Claims.FirstOrDefault(c => c.Type.Equals("SessionKey"))?.Value;
+                return RedirectToPage("/WaitingRoom", new { sessionKey = sessionKey });
+            }
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             SessionViewModel = new Session()
             {

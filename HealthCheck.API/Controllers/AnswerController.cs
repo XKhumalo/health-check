@@ -142,7 +142,7 @@ namespace HealthCheck.API.Controllers
             var reportItems = new List<AnswerReportItem>();
             foreach (var answer in answers)
             {
-                answerDictionary.Add($"{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
+                answerDictionary.Add($"{answer.UserId},{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
                 var reportItem = new AnswerReportItem()
                 {
                     AnsweredBy = answer.User.Name,
@@ -153,7 +153,7 @@ namespace HealthCheck.API.Controllers
             }
             foreach (var answer in guestAnswers)
             {
-                answerDictionary.Add($"{answer.SessionOnlyUser.UserName},{answer.Category.Name}", answer.AnswerOption.Option);
+                answerDictionary.Add($"{answer.SessionOnlyUserId},{answer.SessionOnlyUser.UserName},{answer.Category.Name}", answer.AnswerOption.Option);
                 var reportItem = new AnswerReportItem()
                 {
                     AnsweredBy = answer.SessionOnlyUser.UserName,

@@ -58,12 +58,12 @@ namespace HealthCheck.API.Services
                 return null;
             }
 
-            var name = ((string)activeDirectoryUser[NameAttributeKey]).Split(' ');
+            var name = (string)activeDirectoryUser[NameAttributeKey];
             var email = ((string)activeDirectoryUser[EmailAttributeKey]);
 
             var localUser = new User()
             {
-                Name = name.Length > 0 ? name[0] : username,
+                Name = name.Length > 0 ? name : username,
                 Email = email
             };
 

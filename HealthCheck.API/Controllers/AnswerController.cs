@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ILogger = NLog.ILogger;
 
 namespace HealthCheck.API.Controllers
 {
@@ -14,11 +16,13 @@ namespace HealthCheck.API.Controllers
     {
         private readonly AnswerRepository answerRepository;
         private readonly ExcelExportService excelExportService;
+        private readonly ILogger<AnswerController> logger;
 
-        public AnswerController(AnswerRepository answerRepository, ExcelExportService excelExportService)
+        public AnswerController(AnswerRepository answerRepository, ExcelExportService excelExportService, ILogger<AnswerController> logger)
         {
             this.answerRepository = answerRepository;
             this.excelExportService = excelExportService;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -138,31 +142,39 @@ namespace HealthCheck.API.Controllers
             var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
             var guestAnswers = answerRepository.GetGuestAnswers(x => x.SessionId == currentSessionId);
             Dictionary<string, string> answerDictionary = new Dictionary<string, string>();
-
             var reportItems = new List<AnswerReportItem>();
-            foreach (var answer in answers)
+            try
             {
-                answerDictionary.Add($"{answer.UserId},{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
-                var reportItem = new AnswerReportItem()
+                foreach (var answer in answers)
                 {
-                    AnsweredBy = answer.User.Name,
-                    Answer = answer.AnswerOption.Option,
-                    CategoryName = answer.Category.Name
-                };
-                reportItems.Add(reportItem);
-            }
-            foreach (var answer in guestAnswers)
-            {
-                answerDictionary.Add($"{answer.SessionOnlyUserId},{answer.SessionOnlyUser.UserName},{answer.Category.Name}", answer.AnswerOption.Option);
-                var reportItem = new AnswerReportItem()
+                    answerDictionary.Add($"{answer.UserId},{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
+                    var reportItem = new AnswerReportItem()
+                    {
+                        AnsweredBy = answer.User.Name +" (" + answer.User.Email + ")",
+                        Answer = answer.AnswerOption.Option,
+                        CategoryName = answer.Category.Name
+                    };
+                    reportItems.Add(reportItem);
+                }
+                foreach (var answer in guestAnswers)
                 {
-                    AnsweredBy = answer.SessionOnlyUser.UserName,
-                    Answer = answer.AnswerOption.Option,
-                    CategoryName = answer.Category.Name
-                };
-                reportItems.Add(reportItem);
-            }
+                    answerDictionary.Add($"{answer.SessionOnlyUserId},{answer.SessionOnlyUser.UserName},{answer.Category.Name}", answer.AnswerOption.Option);
+                    var reportItem = new AnswerReportItem()
+                    {
+                        AnsweredBy = answer.SessionOnlyUser.UserName + " (Guest" + answer.SessionOnlyUser.SessionOnlyUserId + ")",
+                        Answer = answer.AnswerOption.Option,
+                        CategoryName = answer.Category.Name
+                    };
+                    reportItems.Add(reportItem);
+                }
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                logger.LogError(e.Message + " | " + e.InnerException);
+                throw;
+            }
             ExcelExportService.StringReplacementDelegate headingReplacer = s =>
             {
                 switch (s)
@@ -175,7 +187,7 @@ namespace HealthCheck.API.Controllers
                         return "User";
                     default:
                         return excelExportService.PascalToSpacedString(s);
-                }                
+                }
             };
 
             var fileName = $"Team Health Check {DateTime.Today:MMM yyyy}.xlsx";

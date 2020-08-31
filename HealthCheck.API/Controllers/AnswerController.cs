@@ -150,7 +150,7 @@ namespace HealthCheck.API.Controllers
                     answerDictionary.Add($"{answer.UserId},{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
                     var reportItem = new AnswerReportItem()
                     {
-                        AnsweredBy = answer.User.Name +" (" + answer.User.Email + ")",
+                        AnsweredBy = answer.User.Name.Trim() +" (" + answer.User.Email + ")",
                         Answer = answer.AnswerOption.Option,
                         CategoryName = answer.Category.Name
                     };
@@ -161,7 +161,7 @@ namespace HealthCheck.API.Controllers
                     answerDictionary.Add($"{answer.SessionOnlyUserId},{answer.SessionOnlyUser.UserName},{answer.Category.Name}", answer.AnswerOption.Option);
                     var reportItem = new AnswerReportItem()
                     {
-                        AnsweredBy = answer.SessionOnlyUser.UserName + " (Guest" + answer.SessionOnlyUser.SessionOnlyUserId + ")",
+                        AnsweredBy = answer.SessionOnlyUser.UserName.Trim() + " (Guest" + answer.SessionOnlyUser.SessionOnlyUserId + ")",
                         Answer = answer.AnswerOption.Option,
                         CategoryName = answer.Category.Name
                     };

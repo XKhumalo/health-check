@@ -34,12 +34,29 @@ namespace HealthCheck.Web.Pages.Sessions
         public async Task OnGet(string sessionId)
         {
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
             UserViewModel = await userController.GetByIdAsync(userId);
-            SessionsViewModel = sessionController.GetByCreatedById(userId);
+            if (isGuest)
+            {
+                var sessionKey = userController.GetGuestByIdAsync(userId).Result.SessionKey;
+                var sessions = new List<Session> {await sessionController.GetBySessionKey(sessionKey)};
+                SessionsViewModel = sessions;
+            }
+            else
+            {
+                SessionsViewModel = sessionController.GetByCreatedById(userId);
+            }
+            
         }
 
         public async Task<IActionResult> OnPostCreate()
         {
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+            if (isGuest)
+            {
+                var sessionKey = User.Claims.FirstOrDefault(c => c.Type.Equals("SessionKey"))?.Value;
+                return RedirectToPage("/WaitingRoom", new { sessionKey = sessionKey });
+            }
             var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
             var newSession = new Session()
             {

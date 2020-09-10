@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ILogger = NLog.ILogger;
 
 namespace HealthCheck.API.Controllers
 {
@@ -14,11 +16,13 @@ namespace HealthCheck.API.Controllers
     {
         private readonly AnswerRepository answerRepository;
         private readonly ExcelExportService excelExportService;
+        private readonly ILogger<AnswerController> logger;
 
-        public AnswerController(AnswerRepository answerRepository, ExcelExportService excelExportService)
+        public AnswerController(AnswerRepository answerRepository, ExcelExportService excelExportService, ILogger<AnswerController> logger)
         {
             this.answerRepository = answerRepository;
             this.excelExportService = excelExportService;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -32,6 +36,12 @@ namespace HealthCheck.API.Controllers
         public IEnumerable<Answer> Get(Expression<Func<Answer, bool>> exp)
         {
             return answerRepository.GetAnswers(exp);
+        }
+
+        [HttpGet]
+        public IEnumerable<GuestUserAnswer> GetGuestAnswers(Expression<Func<GuestUserAnswer, bool>> exp)
+        {
+            return answerRepository.GetGuestAnswers(exp);
         }
 
         [HttpGet]
@@ -60,6 +70,34 @@ namespace HealthCheck.API.Controllers
             }
 
             if (answer.UserId == default)
+            {
+                return null;
+            }
+
+            await answerRepository.InsertOrUpdateAnswer(answer);
+            answerRepository.SaveChanges();
+            return answer;
+        }
+
+        [HttpPost]
+        public async Task<GuestUserAnswer> InsertOrUpdateGuestAnswer([FromBody] GuestUserAnswer answer)
+        {
+            if (answer == null)
+            {
+                return null;
+            }
+
+            if (answer.CategoryId == default)
+            {
+                return null;
+            }
+
+            if (answer.SessionId == default)
+            {
+                return null;
+            }
+
+            if (answer.SessionOnlyUserId == default)
             {
                 return null;
             }
@@ -102,21 +140,41 @@ namespace HealthCheck.API.Controllers
         public ActionResult ExportSessionsAnswersToExcelAsync(int currentSessionId)
         {            
             var answers = answerRepository.GetAnswers(x => x.SessionId == currentSessionId);
+            var guestAnswers = answerRepository.GetGuestAnswers(x => x.SessionId == currentSessionId);
             Dictionary<string, string> answerDictionary = new Dictionary<string, string>();
-
             var reportItems = new List<AnswerReportItem>();
-            foreach (var answer in answers)
+            try
             {
-                answerDictionary.Add($"{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
-                var reportItem = new AnswerReportItem()
+                foreach (var answer in answers)
                 {
-                    AnsweredBy = answer.User.Name,
-                    Answer = answer.AnswerOption.Option,
-                    CategoryName = answer.Category.Name
-                };
-                reportItems.Add(reportItem);
-            }
+                    answerDictionary.Add($"{answer.UserId},{answer.User.Name},{answer.Category.Name}", answer.AnswerOption.Option);
+                    var reportItem = new AnswerReportItem()
+                    {
+                        AnsweredBy = answer.User.Name.Trim() +" (" + answer.User.Email + ")",
+                        Answer = answer.AnswerOption.Option,
+                        CategoryName = answer.Category.Name
+                    };
+                    reportItems.Add(reportItem);
+                }
+                foreach (var answer in guestAnswers)
+                {
+                    answerDictionary.Add($"{answer.SessionOnlyUserId},{answer.SessionOnlyUser.UserName},{answer.Category.Name}", answer.AnswerOption.Option);
+                    var reportItem = new AnswerReportItem()
+                    {
+                        AnsweredBy = answer.SessionOnlyUser.UserName.Trim() + " (Guest" + answer.SessionOnlyUser.SessionOnlyUserId + ")",
+                        Answer = answer.AnswerOption.Option,
+                        CategoryName = answer.Category.Name
+                    };
+                    reportItems.Add(reportItem);
+                }
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                logger.LogError(e.Message + " | " + e.InnerException);
+                throw;
+            }
             ExcelExportService.StringReplacementDelegate headingReplacer = s =>
             {
                 switch (s)
@@ -129,7 +187,7 @@ namespace HealthCheck.API.Controllers
                         return "User";
                     default:
                         return excelExportService.PascalToSpacedString(s);
-                }                
+                }
             };
 
             var fileName = $"Team Health Check {DateTime.Today:MMM yyyy}.xlsx";

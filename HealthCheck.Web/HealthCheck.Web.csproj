@@ -6,6 +6,10 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\site.min.css" />
   </ItemGroup>

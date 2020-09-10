@@ -26,15 +26,32 @@ namespace HealthCheck.Web.Pages
         public Session SessionViewModel { get; set; }
         public Category CategoryViewModel { get; set; }
         public User UserViewModel { get; set; }
+        public SessionOnlyUser GuestViewModel { get; set; }
         public string AdminId { get; set; }
 
         public async Task OnGet(string adminId, int sessionId, int categoryId)
         {
-            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value == "guestUser";
+
             AdminId = adminId;
             SessionViewModel = await sessionController.GetByIdAsync(sessionId);
             CategoryViewModel = await categoryController.GetById(categoryId);
-            UserViewModel = await userController.GetByIdAsync(userId);
+            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            if (isGuest)
+            {
+                GuestViewModel = await userController.GetGuestByIdAsync(userId);
+                UserViewModel = new User()
+                {
+                    Name = GuestViewModel.UserName
+                };
+            }
+            else
+            {
+                UserViewModel = await userController.GetByIdAsync(userId);
+            }
+            
+           
+            
         }
     }
 }

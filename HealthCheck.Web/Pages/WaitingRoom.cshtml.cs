@@ -20,6 +20,7 @@ namespace HealthCheck.Web.Pages
         public Session SessionViewModel;
         public IEnumerable<Category> CategoriesViewModel;
         public IEnumerable<Answer> AnswersViewModel;
+        public IEnumerable<GuestUserAnswer> GuestUserAnswersViewModel;
         public IEnumerable<SessionCategory> SessionCategoriesViewModel { get; set; }
 
         public WaitingRoomModel(SessionController sessionController, CategoryController categoryController, AnswerController answerController)
@@ -31,12 +32,24 @@ namespace HealthCheck.Web.Pages
         
         public async Task OnGet(string sessionKey)
         {
-            var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+            var isGuest = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value ==  "guestUser";
+            if (isGuest)
+            {
+                var guestId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+                GuestUserAnswersViewModel = answerController.GetGuestAnswers(a => a.SessionId == SessionViewModel.SessionId && a.SessionOnlyUserId == guestId);
+                AnswersViewModel = new List<Answer>();
+            }
+            else
+            {
+                var userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Sid)).Value);
+                AnswersViewModel = answerController.Get(a => a.SessionId == SessionViewModel.SessionId && a.UserId == userId);
+                GuestUserAnswersViewModel = new List<GuestUserAnswer>();
+            }
             SessionViewModel = await sessionController.GetBySessionKey(sessionKey);
             SessionCategoriesViewModel = sessionController.GetSessionCategories(SessionViewModel.SessionId);
             var categoryIds = SessionCategoriesViewModel.Select(sc => sc.CategoryId);
             CategoriesViewModel = categoryController.GetByIds(categoryIds);
-            AnswersViewModel = answerController.Get(a => a.SessionId == SessionViewModel.SessionId && a.UserId == userId);
+
         }
     }
 }

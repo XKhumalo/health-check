@@ -48,6 +48,7 @@ namespace HealthCheck.Web.Pages
             else
             {
                 UserViewModel = await userController.GetByIdAsync(userId);
+                GuestViewModel = new SessionOnlyUser();
             }
             
            

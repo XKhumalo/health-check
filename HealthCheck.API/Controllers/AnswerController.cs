@@ -51,6 +51,12 @@ namespace HealthCheck.API.Controllers
             return await answerRepository.GetAll();
         }
 
+        [HttpGet]
+        public IEnumerable<AnswerOption> GetAnswerOptions()
+        {
+            return answerRepository.GetAnswerOptions();
+        }
+
         [HttpPost]
         public async Task<Answer> InsertOrUpdate([FromBody] Answer answer)
         {

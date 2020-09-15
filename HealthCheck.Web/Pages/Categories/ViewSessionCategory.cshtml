@@ -45,18 +45,18 @@
                 <tbody>
                     @foreach (var answer in Model.Answers)
                     {
-                        <tr>
-                            <td class="user-email">@Model.Users.FirstOrDefault(u => u.UserId.Equals(answer.UserId)).Email</td>
+                        <tr id="@answer.UserId">
+                            <td class="user-email">@answer.User.Name</td>
                             <td class="user-answer">@answer.AnswerOption.Description</td>
                         </tr>
                     }
-                @foreach (var answer in Model.GuestAnswers)
-                {
-                    <tr>
-                        <td class="user-email">@answer.SessionOnlyUser.UserName</td>
-                        <td class="user-answer">@answer.AnswerOption.Description</td>
-                    </tr>
-                }
+                    @foreach (var answer in Model.GuestAnswers)
+                    {
+                        <tr id="@answer.SessionOnlyUserId">
+                            <td class="user-email">@answer.SessionOnlyUser.UserName</td>
+                            <td class="user-answer">@answer.AnswerOption.Description</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
             <div class="row justify-content-center mt-5">
@@ -76,5 +76,9 @@
 
 @section Scripts
 {
+    <script type="text/javascript">
+        var userAnswers = JSON.parse('@Html.Raw(Json.Serialize(@Model.Answers))');
+        var guestAnswers = JSON.parse('@Html.Raw(Json.Serialize(@Model.GuestAnswers))');
+    </script>
     <script type="text/javascript" src="~/js/viewsessioncategory.js"></script>
 }

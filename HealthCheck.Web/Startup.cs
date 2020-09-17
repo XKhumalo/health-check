@@ -46,7 +46,11 @@ namespace HealthCheck.Web
                 options.MinimumSameSitePolicy = SameSiteMode.Strict;
             });
 
-            services.AddMvc().AddControllersAsServices();
+            services.AddMvc().AddControllersAsServices()
+                .AddJsonOptions(x => { x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+                    x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                });
+
             services.AddTransient(typeof(IEFRepository<>), typeof(EFRepository<>));
             services.AddScoped<AnswerRepository>();
             services.AddScoped<UserRepository>();

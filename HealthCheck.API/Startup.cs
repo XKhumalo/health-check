@@ -31,7 +31,10 @@ namespace HealthCheck.API
                               .AllowCredentials());
             });
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(x => {
+                x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+                x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+            });
             services.AddTransient(typeof(IEFRepository<>), typeof(EFRepository<>));
             services.AddScoped<AnswerRepository>();
             services.AddScoped<UserRepository>();

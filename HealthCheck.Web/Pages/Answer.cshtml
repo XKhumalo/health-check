@@ -33,6 +33,8 @@
                    data-user="@Model.UserViewModel.UserId"
                    data-category="@Model.CategoryViewModel.CategoryId"
                    data-session="@Model.SessionViewModel.SessionId"
+                   data-guest="@Model.GuestViewModel.SessionOnlyUserId"
+                   data-description="@Model.AnswerOptions.FirstOrDefault(ao => "Red".Equals(ao.Option)).Description"
                    data-answer="@red" class="btn btn-lg btn-block btn-danger answer">Red</a>
             </div>
         </div>
@@ -47,7 +49,10 @@
                    data-user="@Model.UserViewModel.UserId"
                    data-category="@Model.CategoryViewModel.CategoryId"
                    data-session="@Model.SessionViewModel.SessionId"
-                   data-answer="@amber" class="btn btn-lg btn-block btn-warning answer">Amber</a>
+                   data-guest="@Model.GuestViewModel.SessionOnlyUserId"
+                   data-answer="@amber" 
+                   data-description="@Model.AnswerOptions.FirstOrDefault(ao => "Amber".Equals(ao.Option)).Description"
+                   class="btn btn-lg btn-block btn-warning answer">Amber</a>
             </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -61,7 +66,10 @@
                    data-user="@Model.UserViewModel.UserId"
                    data-category="@Model.CategoryViewModel.CategoryId"
                    data-session="@Model.SessionViewModel.SessionId"
-                   data-answer="@green" class="btn btn-lg btn-block btn-success answer">Green</a>
+                   data-guest="@Model.GuestViewModel.SessionOnlyUserId"
+                   data-answer="@green" 
+                   data-description="@Model.AnswerOptions.FirstOrDefault(ao => "Green".Equals(ao.Option)).Description"
+                   class="btn btn-lg btn-block btn-success answer">Green</a>
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@ $(document).ready(() => {
     let categoryId = '';
     let sessionId = '';
     let answer = '';
+    let answerDescription = '';
 
     let sessionKey = $("#SessionViewModel_SessionKey").val();
 
@@ -26,8 +27,10 @@ $(document).ready(() => {
         categoryId = $(event.target).data("category");
         sessionId = $(event.target).data("session");
         answer = $(event.target).data("answer");
+        answerDescription = $(event.target).data("description");
+        const guestId = $(event.target).data("guest");
         const admin = $(event.target).data("admin");
-        answerHub.invoke("SendAnswer", userId, name, categoryId, sessionId, answer, admin)
+        answerHub.invoke("SendAnswer", userId, name, categoryId, sessionId, answer, admin, guestId, answerDescription)
             .then(() => {
                 $("#answerSubmitted").show();
                 $(".answer").prop("disabled", true);

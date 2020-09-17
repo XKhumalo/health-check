@@ -3,7 +3,6 @@
 $(document).ready(() => {
     var answerHub = new signalR.HubConnectionBuilder().withUrl("/answerHub").build();
     var categoryHub = new signalR.HubConnectionBuilder().withUrl("/categoryHub").build();
-    var answers = [];
 
     answerHub.start().catch(err => {
         return console.error(err.toString());
@@ -13,23 +12,73 @@ $(document).ready(() => {
         return console.error(err.toString());
     });
 
-    answerHub.on("ReceiveAnswer", (senderId, name, categoryId, sessionId, answer) => {
-        var answerToAdd = {
-            senderId,
-            categoryId,
-            sessionId,
-            answer,
-            guestId
-        };
-        var existingAnswer = answers.find(a => a.senderId === senderId);
-        var rowClass = '';
-        if (existingAnswer) {
-            rowClass = 'table-danger';
+    answerHub.on("ReceiveAnswer", (senderId, name, categoryId, sessionId, answer, guestId, answerDescription) => {
+        if (isGuestUser(guestId)) {
+            var answerToAdd = {
+                sessionOnlyUserId: guestId,
+                name: name,
+                categoryId: categoryId,
+                sessionId: sessionId,
+                answer: answer,
+                answerDescription: answerDescription
+            };
+
+            addOrUpdateGuestAnswer(guestId, name, answerDescription, answerToAdd)
+        } else {
+            var answerToAdd = {
+                userId: senderId,
+                name: name,
+                categoryId: categoryId,
+                sessionId: sessionId,
+                answer: answer,
+                answerDescription: answerDescription
+            };
+
+            addOrUpdateUserAnswer(senderId, name, answerDescription, answerToAdd)
         }
-        answers.push(answerToAdd);
-        var newRow = `<tr class=${rowClass}><td>${name}</td><td>${answer}</td></tr>`;
-        $("#answersList tbody").append(newRow);
     });
+
+    function isGuestUser(guestId) {
+        return guestId > 0;
+    }
+
+    function addOrUpdateGuestAnswer(guestId, name, answerDescription, answerToAdd) {
+        var existingAnswer = guestAnswers.findIndex(a => a.sessionOnlyUserId == guestId);
+        if (existingAnswer != -1) {
+            var newRow = `<tr id=${guestId}>                         
+                                <td class="user-email">${name}</td>
+                                <td class="user-answer">${answerDescription}</td>
+                              </tr>`;
+            $(newRow).replaceAll("#" + guestId);
+        }
+        else {
+            guestAnswers.push(answerToAdd);
+            var newRow = `<tr id=${guestId}>
+                                <td class="user-email">${name}</td>
+                                <td class="user-answer">${answerDescription}</td>
+                              </tr>`;
+            $("#answersList tbody").append(newRow);
+        }
+    }
+
+    function addOrUpdateUserAnswer(senderId, name, answerDescription, answerToAdd) {
+        var existingAnswer = userAnswers.findIndex(a => a.userId == senderId);
+        if (existingAnswer != -1) {
+            var newRow = `<tr id=${senderId}>                         
+                                <td class="user-email">${name}</td>
+                                <td class="user-answer">${answerDescription}</td>
+                              </tr>`;
+            $(newRow).replaceAll("#" + senderId);
+        }
+        else {
+            userAnswers.push(answerToAdd);
+            var newRow = `<tr id=${senderId}>
+                                <td class="user-email">${name}</td>
+                                <td class="user-answer">${answerDescription}</td>
+                              </tr>`;
+            $("#answersList tbody").append(newRow);
+        }
+    }
 
     $("#close").click(event => {
         event.preventDefault();

@@ -12,12 +12,14 @@ namespace HealthCheck.API.Services
     public class AnswerRepository
     {
         private readonly IEFRepository<Answer> answerRepository;
+        private readonly IEFRepository<AnswerOption> answerOptionRepository;
         private readonly IEFRepository<GuestUserAnswer> guestAnswerRepository;
         private readonly DatabaseContext databaseContext;
 
-        public AnswerRepository(IEFRepository<Answer> answerRepository, IEFRepository<GuestUserAnswer> guestAnswerRepository, DatabaseContext databaseContext)
+        public AnswerRepository(IEFRepository<Answer> answerRepository, IEFRepository<AnswerOption> answerOptionRepository, IEFRepository<GuestUserAnswer> guestAnswerRepository, DatabaseContext databaseContext)
         {
             this.answerRepository = answerRepository;
+            this.answerOptionRepository = answerOptionRepository;
             this.guestAnswerRepository = guestAnswerRepository;
             this.databaseContext = databaseContext;
         }
@@ -49,6 +51,11 @@ namespace HealthCheck.API.Services
         public async Task<ICollection<Answer>> GetAll()
         {
             return await answerRepository.GetAll();
+        }
+
+        public IEnumerable<AnswerOption> GetAnswerOptions()
+        {
+            return databaseContext.AnswerOptions.ToList();
         }
 
         public IQueryable<Answer> GetAnswers(Expression<Func<Answer, bool>> where)

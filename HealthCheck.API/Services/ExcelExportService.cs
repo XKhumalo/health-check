@@ -49,9 +49,22 @@ namespace HealthCheck.API.Services
                 
                 foreach (var personAnswers in groupedByPerson)
                 {
+                    var answerArray = new List<string>();
+                    var orderedAnswers = personAnswers.OrderBy(a => a.CategoryName).ToList();
+
+                    foreach (var category in headers) {
+                        if (orderedAnswers.Any(oa => oa.CategoryName == category))
+                        {
+                            answerArray.Add(orderedAnswers.First(oa => oa.CategoryName == category).Answer);
+                        }
+                        else
+                        {
+                            answerArray.Add("");
+                        }
+                    }
+
                     string rowRange = $"A{row}:" + Char.ConvertFromUtf32(headerRow[0].Length + 65) + $"{row}";
                     var personName = personAnswers.First().AnsweredBy;
-                    var answerArray = personAnswers.OrderBy(a => a.CategoryName).Select(a => a.Answer).ToList();
                     answerArray.Prepend(personName);
                     answerArray.Insert(0, personName);
                     List<string[]> rowData = new List<string[]>()

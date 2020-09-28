@@ -53,6 +53,9 @@ $(document).ready(() => {
         }
         else {
             guestAnswers.push(answerToAdd);
+            numAnswersCaptured++;
+            var newAnswers = `<h3 class="text-center" id="answersCaptured">Answers Captured: ${numAnswersCaptured}</h3>`;
+            $(newAnswers).replaceAll("#answersCaptured");
             var newRow = `<tr id=${guestId}>
                                 <td class="user-email">${name}</td>
                                 <td class="user-answer">${answerDescription}</td>
@@ -72,6 +75,9 @@ $(document).ready(() => {
         }
         else {
             userAnswers.push(answerToAdd);
+            numAnswersCaptured++;
+            var newAnswers = `<h3 class="text-center" id="answersCaptured">Answers Captured: ${numAnswersCaptured}</h3>`;
+            $(newAnswers).replaceAll("#answersCaptured");
             var newRow = `<tr id=${senderId}>
                                 <td class="user-email">${name}</td>
                                 <td class="user-answer">${answerDescription}</td>

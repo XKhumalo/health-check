@@ -49,14 +49,33 @@
                 {
                         <tr id="@answer.UserId">
                             <td class="user-email">@answer.User.Name</td>
-                        <td class="user-answer">@answer.AnswerOption.Description</td>
+                            <td class="user-answer">
+                                @if (answer.AnswerOption != null)
+                                {
+                                    @answer.AnswerOption.Description
+                                }
+                                else
+                                {
+                                    <span>answer not available</span>
+                                }
+
+                            </td>
                     </tr>
                 }
                     @foreach (var answer in Model.GuestAnswers)
                     {
                         <tr id="@answer.SessionOnlyUserId">
                             <td class="user-email">@answer.SessionOnlyUser.UserName</td>
-                            <td class="user-answer">@answer.AnswerOption.Description</td>
+                            <td class="user-answer">
+                                @if (answer.AnswerOption != null)
+                                {
+                                    @answer.AnswerOption.Description
+                                }
+                                else
+                                {
+                                    <span>answer not available</span>
+                                }
+                            </td>
                         </tr>
                     }
             </tbody>
